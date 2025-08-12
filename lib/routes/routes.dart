@@ -5,7 +5,10 @@ class CRoutes {
   static const homeRaw = '/home_raw/';
   static const inventory = '/inventory';
   static const inventoryDetails = '/inventory/item_details/';
+  static const landingScreen = '/landing_screen';
   static const login = '/login';
+
+  static const notifications = '/notifications';
   static const onBoarding = '/on_boarding';
   static const resetPassword = '/reset_password';
   static const sales = '/sales';

@@ -18,12 +18,17 @@ import 'package:c_ri/features/store/screens/txns/txn_details/txn_details_revamp_
 import 'package:c_ri/features/store/screens/search/search_results.dart';
 import 'package:c_ri/features/store/screens/txns/sell_item_screen/sell_item_screen.dart';
 import 'package:c_ri/features/store/screens/txns/txns_screen.dart';
+import 'package:c_ri/nav_menu.dart';
 import 'package:get/get.dart';
 
 import 'routes.dart';
 
 class CAppRoutes {
   static final pages = [
+    GetPage(
+      name: CRoutes.landingScreen,
+      page: () => const NavMenu(),
+    ),
     GetPage(
       name: CRoutes.home,
       page: () => const HomeScreen(),

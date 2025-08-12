@@ -1,4 +1,5 @@
 import 'package:awesome_notifications/awesome_notifications.dart';
+import 'package:c_ri/features/store/controllers/nav_menu_controller.dart';
 import 'package:c_ri/main.dart';
 import 'package:get/get.dart';
 
@@ -33,10 +34,12 @@ class CNotificationsController extends GetxController {
     // Your code goes here
 
     // Navigate into pages, avoiding to open the notification details page over another details page already opened
-    globalNavigatorKey.currentState?.pushNamedAndRemoveUntil(
-        '/notification-page',
-        (route) =>
-            (route.settings.name != '/notification-page') || route.isFirst,
+
+    final navController = Get.put(CNavMenuController());
+
+    navController.selectedIndex.value = 4;
+    globalNavigatorKey.currentState?.pushNamedAndRemoveUntil('/landing_screen',
+        (route) => (route.settings.name != '/landing_screen') || route.isFirst,
         arguments: receivedAction);
   }
 
