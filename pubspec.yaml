@@ -47,7 +47,7 @@ dependencies:
   # -- payment integration tings --
   #mpesa_flutter_plugin: any
   #mpesa_flutter_plugin: ^1.0.0
-  mpesa_flutter_plugin: ^1.6.1
+  #mpesa_flutter_plugin: ^1.6.1
   flutter_mpesa_package: ^0.0.4
   #flutter_mpesa_package: any
 
@@ -59,6 +59,7 @@ dependencies:
   cloud_firestore: any
   google_sign_in: any
   firebase_storage: any
+  firebase_crashlytics: any
 
   # -- state management
   get: any
@@ -105,9 +106,9 @@ dependencies:
   permission_handler: any
 
   # -- notifications --
-  flutter_local_notifications: ^18.0.0
-  #flutter_local_notifications: ^18.0.1
-  #flutter_local_notifications: ^15.1.1
+  awesome_notifications_core: any
+  awesome_notifications_fcm: any
+  awesome_notifications: ^0.10.1
 
   # -- utility packages
   timezone: any

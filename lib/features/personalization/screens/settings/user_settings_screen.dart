@@ -77,11 +77,16 @@ class CUserSettingsScreen extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // const SizedBox(
-                //   height: CSizes.spaceBtnSections / 2,
-                // ),
                 Text(
-                  'my account',
+                  userController.user.value.email,
+                  style: Theme.of(context).textTheme.labelSmall!.apply(
+                        color: CNetworkManager.instance.hasConnection.value
+                            ? CColors.rBrown
+                            : CColors.darkGrey,
+                      ),
+                ),
+                Text(
+                  userController.user.value.fullName.split(" ").elementAt(0),
                   style: Theme.of(context).textTheme.labelLarge!.apply(
                         color: CNetworkManager.instance.hasConnection.value
                             ? CColors.rBrown
@@ -91,7 +96,7 @@ class CUserSettingsScreen extends StatelessWidget {
                       ),
                 ),
                 CDivider(
-                  endIndent: 100.0,
+                  endIndent: 200.0,
                   startIndent: 0,
                 ),
                 // -- app settings
