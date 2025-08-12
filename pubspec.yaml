@@ -105,8 +105,9 @@ dependencies:
   permission_handler: any
 
   # -- notifications --
-  # flutter_local_notifications: ^18.0.0 ** works ** 
-  flutter_local_notifications: ^18.0.1
+  flutter_local_notifications: ^18.0.0
+  #flutter_local_notifications: ^18.0.1
+  #flutter_local_notifications: ^15.1.1
 
   # -- utility packages
   timezone: any

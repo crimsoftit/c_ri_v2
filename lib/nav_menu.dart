@@ -101,13 +101,14 @@ class NavMenu extends StatelessWidget {
                 icon: Icon(Iconsax.setting),
                 label: 'account',
               ),
-              NavigationDestination(
-                icon: Icon(Iconsax.wallet_check),
-                label: 'ac raw',
-              ),
+
               NavigationDestination(
                 icon: Icon(Iconsax.user),
                 label: 'profile',
+              ),
+              NavigationDestination(
+                icon: Icon(Iconsax.notification),
+                label: 'calls',
               ),
             ],
           ),

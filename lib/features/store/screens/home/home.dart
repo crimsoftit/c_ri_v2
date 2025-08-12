@@ -96,10 +96,6 @@ class HomeScreen extends StatelessWidget {
                     if (invController.inventoryItems.isEmpty &&
                         !invController.isLoading.value) {
                       invController.fetchUserInventoryItems();
-                    }
-                    if (invController.inventoryItems.isNotEmpty &&
-                        invController.topSoldItems.isEmpty &&
-                        !invController.isLoading.value) {
                       invController.fetchTopSellers();
                     }
 
@@ -204,100 +200,83 @@ class HomeScreen extends StatelessWidget {
                           ),
                         ),
 
-                        SizedBox(
-                          height: CSizes.spaceBtnSections,
+                        // SizedBox(
+                        //   height: CSizes.spaceBtnSections,
+                        // ),
+                        CSectionHeading(
+                          showActionBtn: true,
+                          title: 'weekly sales...',
+                          // txtColor: CColors.white,
+                          txtColor: CColors.rBrown,
+                          btnTitle: '',
+                          btnTxtColor: CColors.grey,
+                          editFontSize: true,
+                          onPressed: () {},
                         ),
 
                         /// -- weekly sales bar graph --
                         CRoundedContainer(
                           bgColor: CColors.grey,
                           borderRadius: CSizes.cardRadiusSm,
-                          child: Column(
-                            //crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Container(
-                                alignment: Alignment.centerRight,
-                                padding: const EdgeInsets.only(
-                                  top: 10.0,
-                                  bottom: 15.0,
-                                ),
-                                width: CHelperFunctions.screenWidth() * .85,
-                                child: Text(
-                                  'weekly sales',
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .labelMedium!
-                                      .apply(
-                                        color: isConnectedToInternet
-                                            ? CColors.rBrown
-                                            : CColors.darkGrey,
-                                        fontSizeFactor: 1.20,
-                                        fontStyle: FontStyle.italic,
+                          padding: const EdgeInsets.only(
+                            top: 20.0,
+                          ),
+                          child: SizedBox(
+                            height: 200.0,
+                            child: Obx(
+                              () {
+                                return BarChart(
+                                  BarChartData(
+                                    titlesData:
+                                        dashboardController.buildFlTitlesData(),
+                                    borderData: FlBorderData(
+                                      show: true,
+                                      border: const Border(
+                                        top: BorderSide.none,
+                                        right: BorderSide.none,
                                       ),
-                                ),
-                              ),
-
-                              // the graph
-                              SizedBox(
-                                height: 200.0,
-                                child: Obx(
-                                  () {
-                                    return BarChart(
-                                      BarChartData(
-                                        titlesData: dashboardController
-                                            .buildFlTitlesData(),
-                                        borderData: FlBorderData(
-                                          show: true,
-                                          border: const Border(
-                                            top: BorderSide.none,
-                                            right: BorderSide.none,
-                                          ),
-                                        ),
-                                        gridData: FlGridData(
-                                          show: true,
-                                          drawHorizontalLine: true,
-                                          drawVerticalLine: false,
-                                          horizontalInterval: 200,
-                                        ),
-                                        barGroups: dashboardController
-                                            .weeklySales
-                                            .asMap()
-                                            .entries
-                                            .map(
-                                              (entry) => BarChartGroupData(
-                                                x: entry.key,
-                                                barRods: [
-                                                  BarChartRodData(
-                                                    width: 25.0,
-                                                    toY: entry.value,
-                                                    color: isConnectedToInternet
-                                                        ? CColors.rBrown
-                                                        : CColors.black,
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                      CSizes.sm,
-                                                    ),
-                                                  ),
-                                                ],
+                                    ),
+                                    gridData: FlGridData(
+                                      show: true,
+                                      drawHorizontalLine: true,
+                                      drawVerticalLine: false,
+                                      horizontalInterval: 200,
+                                    ),
+                                    barGroups: dashboardController.weeklySales
+                                        .asMap()
+                                        .entries
+                                        .map(
+                                          (entry) => BarChartGroupData(
+                                            x: entry.key,
+                                            barRods: [
+                                              BarChartRodData(
+                                                width: 25.0,
+                                                toY: entry.value,
+                                                color: isConnectedToInternet
+                                                    ? CColors.rBrown
+                                                    : CColors.black,
+                                                borderRadius:
+                                                    BorderRadius.circular(
+                                                  CSizes.sm,
+                                                ),
                                               ),
-                                            )
-                                            .toList(),
-                                        groupsSpace: CSizes.spaceBtnItems / 2,
-                                        barTouchData: BarTouchData(
-                                            touchTooltipData:
-                                                BarTouchTooltipData(
-                                              getTooltipColor: (group) {
-                                                return CColors.secondary;
-                                              },
-                                            ),
-                                            touchCallback: (barTouchEvent,
-                                                barTouchResponse) {}),
-                                      ),
-                                    );
-                                  },
-                                ),
-                              ),
-                            ],
+                                            ],
+                                          ),
+                                        )
+                                        .toList(),
+                                    groupsSpace: CSizes.spaceBtnItems / 2,
+                                    barTouchData: BarTouchData(
+                                        touchTooltipData: BarTouchTooltipData(
+                                          getTooltipColor: (group) {
+                                            return CColors.secondary;
+                                          },
+                                        ),
+                                        touchCallback: (barTouchEvent,
+                                            barTouchResponse) {}),
+                                  ),
+                                );
+                              },
+                            ),
                           ),
                         ),
                       ],
