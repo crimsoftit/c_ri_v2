@@ -3,6 +3,7 @@ import 'package:c_ri/api/sheets/store_sheets_api.dart';
 import 'package:c_ri/app.dart';
 import 'package:c_ri/data/repos/auth/auth_repo.dart';
 import 'package:c_ri/firebase_options.dart';
+import 'package:c_ri/utils/constants/colors.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
@@ -27,12 +28,15 @@ Future<void> main() async {
       null,
       [
         NotificationChannel(
-            channelGroupKey: 'basic_channel_group',
-            channelKey: 'basic_channel',
-            channelName: 'Basic notifications',
-            channelDescription: 'Notification channel for basic tests',
-            defaultColor: Color(0xFF9D50DD),
-            ledColor: Colors.white)
+          channelGroupKey: 'basic_channel_group',
+          channelKey: 'basic_channel',
+          channelName: 'Basic notifications',
+          channelDescription: 'Notification channel for basic tests',
+          defaultColor: CColors.rBrown,
+          enableLights: true,
+          enableVibration: true,
+          ledColor: CColors.rBrown,
+        )
       ],
       // Channel groups are only visual and are not required
       channelGroups: [
@@ -41,31 +45,6 @@ Future<void> main() async {
             channelGroupName: 'Basic group')
       ],
       debug: true);
-
-  // AwesomeNotifications().initialize(
-  //   null,
-  //   [
-  //     NotificationChannel(
-  //       channelGroupKey: 'basic_channel_group',
-  //       channelKey: 'key1',
-  //       channelName: 'channelName',
-  //       channelDescription: 'channelDescription',
-  //       defaultColor: Color(0XFF9050DD),
-  //       enableLights: true,
-  //       enableVibration: true,
-  //       ledColor: CColors.white,
-  //       playSound: true,
-  //       //soundSource: '',
-  //     )
-  //   ],
-  //   channelGroups: [
-  //     NotificationChannelGroup(
-  //       channelGroupKey: 'channelGroupKey',
-  //       channelGroupName: 'channelGroupName',
-  //     ),
-  //   ],
-  //   debug: true,
-  // );
 
   /// -- todo: init local storage (GetX Local Storage) --
   await GetStorage.init();

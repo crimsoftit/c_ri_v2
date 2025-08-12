@@ -43,11 +43,15 @@ class CNotificationsController extends GetxController {
   void notify() async {
     AwesomeNotifications().createNotification(
       content: NotificationContent(
-        id: 10,
-        channelKey: 'basic_channel',
         actionType: ActionType.Default,
-        title: 'Hello World!',
-        body: 'This is my first notification!',
+        body: 'noma sana!',
+        channelKey: 'basic_channel',
+        displayOnBackground: true,
+        displayOnForeground: true,
+        fullScreenIntent: true,
+        id: 0,
+        title: 'noma',
+        wakeUpScreen: true,
       ),
     );
   }
