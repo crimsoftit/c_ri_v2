@@ -10,8 +10,8 @@ import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 
-class RSignupForm extends StatelessWidget {
-  const RSignupForm({
+class CSignupForm extends StatelessWidget {
+  const CSignupForm({
     super.key,
   });
 
@@ -42,22 +42,22 @@ class RSignupForm extends StatelessWidget {
           ),
 
           // -- business name field --
-          TextFormField(
-            controller: signupController.txtBusinessName,
-            style: const TextStyle(
-              height: 0.7,
-            ),
-            decoration: const InputDecoration(
-              prefixIcon: Icon(Iconsax.buildings),
-              labelText: 'business name',
-            ),
-            validator: (value) =>
-                CValidator.validateName('business name', value),
-          ),
+          // TextFormField(
+          //   controller: signupController.txtBusinessName,
+          //   style: const TextStyle(
+          //     height: 0.7,
+          //   ),
+          //   decoration: const InputDecoration(
+          //     prefixIcon: Icon(Iconsax.buildings),
+          //     labelText: 'business name',
+          //   ),
+          //   validator: (value) =>
+          //       CValidator.validateName('business name', value),
+          // ),
 
-          const SizedBox(
-            height: CSizes.spaceBtnInputFields,
-          ),
+          // const SizedBox(
+          //   height: CSizes.spaceBtnInputFields,
+          // ),
 
           // -- email field --
           TextFormField(

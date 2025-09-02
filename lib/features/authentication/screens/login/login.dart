@@ -1,8 +1,9 @@
 import 'package:c_ri/common/widgets/appbar/app_bar.dart';
 import 'package:c_ri/features/authentication/screens/login/widgets/login_form.dart';
-import 'package:c_ri/features/authentication/screens/login/widgets/login_header.dart';
+import 'package:c_ri/common/widgets/headers/app_header.dart';
 import 'package:c_ri/utils/constants/colors.dart';
 import 'package:c_ri/utils/constants/sizes.dart';
+import 'package:c_ri/utils/constants/txt_strings.dart';
 import 'package:c_ri/utils/helpers/helper_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -42,7 +43,11 @@ class LoginScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // -- logo, title, and subtitle --
-              const LoginHeader(),
+              const AppScreenHeader(
+                includeAfterSpace: false,
+                subTitle: CTexts.loginSubTitle,
+                title: 'sign in...',
+              ),
 
               // -- login form --
               const LoginForm(),

@@ -1,15 +1,20 @@
 import 'package:c_ri/utils/constants/colors.dart';
 import 'package:c_ri/utils/constants/img_strings.dart';
 import 'package:c_ri/utils/constants/sizes.dart';
-import 'package:c_ri/utils/constants/txt_strings.dart';
 import 'package:c_ri/utils/helpers/network_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class LoginHeader extends StatelessWidget {
-  const LoginHeader({
+class AppScreenHeader extends StatelessWidget {
+  const AppScreenHeader({
     super.key,
+    required this.title,
+    required this.subTitle,
+    required this.includeAfterSpace,
   });
+
+  final bool includeAfterSpace;
+  final String title, subTitle;
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +29,7 @@ class LoginHeader extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                'sign in...',
+                title,
                 style: Theme.of(context).textTheme.labelLarge!.apply(
                       color: CNetworkManager.instance.hasConnection.value
                           ? CColors.rBrown
@@ -48,27 +53,28 @@ class LoginHeader extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(
-            height: CSizes.spaceBtnSections * 1.8,
-          ),
+          // const SizedBox(
+          //   height: CSizes.spaceBtnSections,
+          // ),
+          // Text(
+          //   CTexts.loginTitle,
+          //   style: Theme.of(context).textTheme.headlineMedium!.apply(
+          //         color: CNetworkManager.instance.hasConnection.value
+          //             ? CColors.rBrown
+          //             : CColors.darkGrey,
+          //       ),
+          // ),
+
           Text(
-            CTexts.loginTitle,
-            style: Theme.of(context).textTheme.headlineMedium!.apply(
-                  color: CNetworkManager.instance.hasConnection.value
-                      ? CColors.rBrown
-                      : CColors.darkGrey,
-                ),
-          ),
-          const SizedBox(
-            height: CSizes.sm,
-          ),
-          Text(
-            CTexts.loginSubTitle,
+            subTitle,
             style: Theme.of(context).textTheme.labelSmall!.apply(
                   color: CNetworkManager.instance.hasConnection.value
                       ? CColors.rBrown
                       : CColors.darkGrey,
                 ),
+          ),
+          const SizedBox(
+            height: CSizes.spaceBtnSections / 2,
           ),
         ],
       ),

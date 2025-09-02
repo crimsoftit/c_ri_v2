@@ -355,9 +355,6 @@ class AuthRepo extends GetxController {
   /// -- [LogoutUser] - valid for any authentication --
   Future<void> logout() async {
     try {
-      await GoogleSignIn().signOut();
-      await _auth.signOut();
-
       // -- reset cloud sync keys --
       deviceStorage.write('SyncInvDataWithCloud', true);
 
@@ -366,6 +363,8 @@ class AuthRepo extends GetxController {
       final cartController = Get.put(CCartController());
 
       cartController.clearCart();
+      await GoogleSignIn().signOut();
+      await _auth.signOut();
 
       Get.offAll(() => const LoginScreen());
     } on FirebaseAuthException catch (e) {

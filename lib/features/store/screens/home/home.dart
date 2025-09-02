@@ -4,7 +4,7 @@ import 'package:c_ri/common/widgets/products/cart/cart_counter_icon.dart';
 import 'package:c_ri/common/widgets/products/circle_avatar.dart';
 import 'package:c_ri/common/widgets/shimmers/horizontal_items_shimmer.dart';
 import 'package:c_ri/common/widgets/txt_widgets/c_section_headings.dart';
-import 'package:c_ri/data/repos/auth/auth_repo.dart';
+import 'package:c_ri/features/personalization/controllers/user_controller.dart';
 import 'package:c_ri/features/store/controllers/dashboard_controller.dart';
 import 'package:c_ri/features/store/controllers/inv_controller.dart';
 import 'package:c_ri/features/store/controllers/nav_menu_controller.dart';
@@ -33,7 +33,7 @@ class HomeScreen extends StatelessWidget {
     final isDarkTheme = CHelperFunctions.isDarkMode(context);
 
     final navController = Get.put(CNavMenuController());
-    //final userController = Get.put(CUserController());
+    final userController = Get.put(CUserController());
 
     Get.put(CDashboardController());
 
@@ -80,7 +80,7 @@ class HomeScreen extends StatelessWidget {
                 showAppBarTitle: false,
               ),
               CDivider(
-                endIndent: 0.0,
+                endIndent: 100.0,
               ),
 
               Padding(
@@ -106,7 +106,7 @@ class HomeScreen extends StatelessWidget {
                           child: Column(
                             children: [
                               Text(
-                                'welcome aboard ${AuthRepo.instance.authUser?.displayName.toString()}!'
+                                'welcome aboard ${userController.user.value.fullName}!'
                                     .toUpperCase(),
                               ),
                               Text(
