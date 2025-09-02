@@ -29,7 +29,7 @@ class SignupController extends GetxController {
   final hideConfirmPswdTxt = true.obs;
   final fullName = TextEditingController();
   final txtBusinessName = TextEditingController();
-  final email = TextEditingController();
+  final txtEmail = TextEditingController();
   final phoneNumber = TextEditingController();
   final password = TextEditingController();
   final confirmPassword = TextEditingController();
@@ -44,6 +44,7 @@ class SignupController extends GetxController {
   final RxList<CurrencyModel> currencyItemDetails = <CurrencyModel>[].obs;
 
   List<CurrencyModel> singleItem = [];
+  final userRepo = Get.put(CUserRepo());
 
   @override
   void onInit() {
@@ -134,7 +135,7 @@ class SignupController extends GetxController {
       // -- register user implementing Firebase Authentication & save user data in the Firebase database
       final userCredentials =
           await AuthRepo.instance.signupWithEmailAndPassword(
-        email.text.trim(),
+        txtEmail.text.trim(),
         password.text.trim(),
       );
 
@@ -144,7 +145,8 @@ class SignupController extends GetxController {
         id: userCredentials.user!.uid,
         fullName: fullName.text,
         businessName: txtBusinessName.text,
-        email: email.text.trim(),
+        // email: txtEmail.text.trim(),
+        email: userCredentials.user!.email.toString(),
         countryCode: countryCode.value,
         // phoneNo: phoneNumber.text.trim(),
         phoneNo: completePhoneNo.value,
@@ -153,8 +155,6 @@ class SignupController extends GetxController {
         locationCoordinates: '',
         userAddress: '',
       );
-
-      final userRepo = Get.put(CUserRepo());
 
       await userRepo.saveUserDetails(newUser);
 
@@ -170,7 +170,7 @@ class SignupController extends GetxController {
 
       // -- move to verify email screen
       Get.to(() => VerifyEmailScreen(
-            email: email.text.trim(),
+            email: txtEmail.text.trim(),
           ));
     } catch (e) {
       // -- remove loader --

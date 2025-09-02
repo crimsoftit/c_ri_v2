@@ -32,7 +32,7 @@ class CSocialButtons extends StatelessWidget {
               final isConnectedToInternet =
                   await CNetworkManager.instance.isConnected();
               if (isConnectedToInternet) {
-                loginController.googleSignIn();
+                await loginController.googleSignIn();
               } else {
                 CPopupSnackBar.warningSnackBar(
                   title: 'not connected to internet!',

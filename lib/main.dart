@@ -23,6 +23,9 @@ Future<void> main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   ).then((FirebaseApp value) => Get.put(AuthRepo()));
 
+  /// -- initialize spreadsheets --
+  await StoreSheetsApi.initSpreadSheets();
+
   AwesomeNotifications().initialize(
       // set the icon to null if you want to use the default app icon
       null,
@@ -48,9 +51,6 @@ Future<void> main() async {
 
   /// -- todo: init local storage (GetX Local Storage) --
   await GetStorage.init();
-
-  /// -- initialize spreadsheets --
-  await StoreSheetsApi.initSpreadSheets();
 
   tz.initializeTimeZones();
 

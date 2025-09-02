@@ -1,3 +1,4 @@
+import 'package:c_ri/api/sheets/store_sheets_api.dart';
 import 'package:c_ri/data/repos/user/user_repo.dart';
 import 'package:c_ri/features/authentication/controllers/signup/signup_controller.dart';
 import 'package:c_ri/features/authentication/screens/login/login.dart';
@@ -66,6 +67,9 @@ class AuthRepo extends GetxController {
         } else if (userDets.businessName == '') {
           Get.offAll(() => const CUpdateBusinessName());
         } else {
+          /// -- initialize spreadsheets --
+          await StoreSheetsApi.initSpreadSheets();
+
           //DbHelper dbHelper = DbHelper.instance;
           final invController = Get.put(CInventoryController());
           //final navController = Get.put(CNavMenuController());
@@ -78,7 +82,6 @@ class AuthRepo extends GetxController {
           await txnsController.initTxnsSync();
           Get.put(CCheckoutController());
 
-          //navController.selectedIndex.value = 1;
           Future.delayed(const Duration(milliseconds: 100), () {
             //Get.to(() => const NavMenu());
             Get.offAll(() => const NavMenu());

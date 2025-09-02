@@ -58,7 +58,7 @@ class CUserController extends GetxController {
       await fetchUserDetails();
 
       // -- if no record is already stored for the user --
-      if (user.value.id.isEmpty) {
+      if (user.value.id.isNotEmpty) {
         if (userCredentials != null) {
           // -- map user data
           final user = CUserModel(

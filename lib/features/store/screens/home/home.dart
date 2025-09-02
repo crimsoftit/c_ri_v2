@@ -4,6 +4,7 @@ import 'package:c_ri/common/widgets/products/cart/cart_counter_icon.dart';
 import 'package:c_ri/common/widgets/products/circle_avatar.dart';
 import 'package:c_ri/common/widgets/shimmers/horizontal_items_shimmer.dart';
 import 'package:c_ri/common/widgets/txt_widgets/c_section_headings.dart';
+import 'package:c_ri/data/repos/auth/auth_repo.dart';
 import 'package:c_ri/features/store/controllers/dashboard_controller.dart';
 import 'package:c_ri/features/store/controllers/inv_controller.dart';
 import 'package:c_ri/features/store/controllers/nav_menu_controller.dart';
@@ -32,7 +33,7 @@ class HomeScreen extends StatelessWidget {
     final isDarkTheme = CHelperFunctions.isDarkMode(context);
 
     final navController = Get.put(CNavMenuController());
-    //final txnsController = Get.put(CTxnsController());
+    //final userController = Get.put(CUserController());
 
     Get.put(CDashboardController());
 
@@ -90,13 +91,63 @@ class HomeScreen extends StatelessWidget {
                 ),
                 child: Obx(
                   () {
-                    if (invController.isLoading.value) {
-                      return CHorizontalProductShimmer();
-                    }
-                    if (invController.inventoryItems.isEmpty &&
-                        !invController.isLoading.value) {
+                    if (invController.inventoryItems.isNotEmpty &&
+                        !invController.isLoading.value &&
+                        invController.topSoldItems.isEmpty) {
                       invController.fetchUserInventoryItems();
                       invController.fetchTopSellers();
+                    }
+                    if (invController.isLoading.value &&
+                        invController.inventoryItems.isNotEmpty) {
+                      return CHorizontalProductShimmer();
+                    } else {
+                      if (invController.topSoldItems.isEmpty) {
+                        return Center(
+                          child: Column(
+                            children: [
+                              Text(
+                                'welcome aboard ${AuthRepo.instance.authUser?.displayName.toString()}!'
+                                    .toUpperCase(),
+                              ),
+                              Text(
+                                'good luck on your first sale...',
+                              ),
+                              const SizedBox(
+                                height: CSizes.defaultSpace,
+                              ),
+                              SizedBox(
+                                width: 150.0,
+                                child: OutlinedButton.icon(
+                                  icon: Icon(
+                                    Iconsax.add,
+                                    color: CColors.white,
+                                  ),
+                                  label: Text(
+                                    'start selling',
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .labelLarge!
+                                        .apply(
+                                          color: CColors.white,
+                                        ),
+                                  ),
+                                  style: OutlinedButton.styleFrom(
+                                    backgroundColor: CColors.rBrown,
+                                    //backgroundColor: CColors.dark,
+                                    padding: const EdgeInsets.all(
+                                      CSizes.cardRadiusMd,
+                                    ),
+                                  ),
+                                  onPressed: () {
+                                    navController.selectedIndex.value = 1;
+                                    Get.to(() => const NavMenu());
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      }
                     }
 
                     /// -- top sellers --

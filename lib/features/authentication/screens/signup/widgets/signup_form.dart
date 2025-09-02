@@ -41,7 +41,7 @@ class RSignupForm extends StatelessWidget {
             height: CSizes.spaceBtnInputFields,
           ),
 
-          // -- email field --
+          // -- business name field --
           TextFormField(
             controller: signupController.txtBusinessName,
             style: const TextStyle(
@@ -61,7 +61,7 @@ class RSignupForm extends StatelessWidget {
 
           // -- email field --
           TextFormField(
-            controller: signupController.email,
+            controller: signupController.txtEmail,
             style: const TextStyle(
               height: 0.7,
             ),

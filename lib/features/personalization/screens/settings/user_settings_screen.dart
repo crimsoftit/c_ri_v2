@@ -2,6 +2,7 @@ import 'package:c_ri/common/widgets/divider/c_divider.dart';
 import 'package:c_ri/common/widgets/img_widgets/c_circular_img.dart';
 import 'package:c_ri/common/widgets/list_tiles/menu_tile.dart';
 import 'package:c_ri/common/widgets/txt_widgets/c_section_headings.dart';
+import 'package:c_ri/data/repos/auth/auth_repo.dart';
 import 'package:c_ri/features/personalization/controllers/user_controller.dart';
 import 'package:c_ri/features/store/controllers/nav_menu_controller.dart';
 import 'package:c_ri/nav_menu.dart';
@@ -152,6 +153,38 @@ class CUserSettingsScreen extends StatelessWidget {
                   subTitle: 'add, remove products, and proceed to checkout',
                   title: 'checkout items',
                   onTap: () {},
+                ),
+
+                const Divider(),
+                const SizedBox(
+                  height: CSizes.spaceBtnItems,
+                ),
+
+                Center(
+                  child: Row(
+                    children: [
+                      const Icon(
+                        Iconsax.logout,
+                        size: 28.0,
+                        color: CColors.primaryBrown,
+                      ),
+                      const SizedBox(
+                        width: CSizes.spaceBtnInputFields,
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          AuthRepo.instance.logout();
+                        },
+                        child: Text(
+                          'log out',
+                          style: TextStyle(
+                            color:
+                                isDarkTheme ? CColors.grey : CColors.darkGrey,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),

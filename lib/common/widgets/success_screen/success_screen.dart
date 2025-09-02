@@ -16,8 +16,10 @@ class CSuccessScreen extends StatelessWidget {
     required this.subTitle,
     this.onGenerateRecieptBtnPressed,
     required this.onContinueBtnPressed,
+    required this.displayReceiptGenerationSection,
   });
 
+  final bool displayReceiptGenerationSection;
   final String image, title, subTitle;
   final VoidCallback? onGenerateRecieptBtnPressed;
   final VoidCallback onContinueBtnPressed;
@@ -80,23 +82,24 @@ class CSuccessScreen extends StatelessWidget {
                 width: double.infinity,
                 child: Column(
                   children: [
-                    TextButton.icon(
-                      onPressed: onGenerateRecieptBtnPressed,
-                      icon: Icon(
-                        Iconsax.receipt,
-                        color: CColors.white,
+                    if (displayReceiptGenerationSection)
+                      TextButton.icon(
+                        onPressed: onGenerateRecieptBtnPressed,
+                        icon: Icon(
+                          Iconsax.receipt,
+                          color: CColors.white,
+                        ),
+                        label: Text(
+                          'generate receipt?',
+                        ),
+                        style: ElevatedButton.styleFrom(
+                          foregroundColor:
+                              CColors.white, // foreground (text) color
+                          backgroundColor: CColors.rBrown.withValues(
+                            alpha: 0.4,
+                          ), // background color
+                        ),
                       ),
-                      label: Text(
-                        'generate receipt?',
-                      ),
-                      style: ElevatedButton.styleFrom(
-                        foregroundColor:
-                            CColors.white, // foreground (text) color
-                        backgroundColor: CColors.rBrown.withValues(
-                          alpha: 0.4,
-                        ), // background color
-                      ),
-                    ),
                     SizedBox(
                       width: double.infinity,
                       child: ElevatedButton(

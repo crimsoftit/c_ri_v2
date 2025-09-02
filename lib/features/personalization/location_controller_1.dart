@@ -6,6 +6,7 @@ import 'package:c_ri/features/personalization/controllers/user_controller.dart';
 import 'package:c_ri/utils/helpers/network_manager.dart';
 import 'package:c_ri/utils/popups/snackbars.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
@@ -17,11 +18,19 @@ class CLocationController1 extends GetxController {
   @override
   void onInit() {
     getCurrentPosition();
-    if (permissionStatus.value == "NO PERMISSION") {
-      userCountry.value = 'Kenya';
-      signupController.fetchUserCurrencyByCountry(userCountry.value);
+    // if (permissionStatus.value == "NO PERMISSION") {
+    //   userCountry.value = 'Kenya';
+    //   signupController.fetchUserCurrencyByCountry(userCountry.value);
 
-      uCurCode.value = 'KES';
+    //   uCurCode.value = 'KES';
+    // }
+    if (permissionStatus.value == "NO PERMISSION") {
+      CPopupSnackBar.warningSnackBar(
+        title: 'location services are required!',
+        message:
+            'kindly note that rIntel requires access to your device\'s location to operate optimally...',
+      );
+      SystemNavigator.pop();
     }
 
     super.onInit();

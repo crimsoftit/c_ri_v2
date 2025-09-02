@@ -5,6 +5,7 @@ import 'package:c_ri/features/authentication/controllers/signup/signup_controlle
 import 'package:c_ri/features/personalization/controllers/user_controller.dart';
 import 'package:c_ri/features/personalization/models/user_model.dart';
 import 'package:c_ri/utils/popups/snackbars.dart';
+import 'package:flutter/foundation.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:location/location.dart';
@@ -41,14 +42,15 @@ class CLocationController extends GetxController {
     uCurCode.value = signupController.userCurrencyCode.value;
   }
 
-  Future<void> updateUserSettings() async {
+  Future<bool> updateUserLocationAndCurrencyDetails() async {
     try {
       updateLoading.value = true;
+      await userController.fetchUserDetails();
       var updatedUser = CUserModel(
         id: userController.user.value.id,
         fullName: userController.user.value.fullName,
         businessName: userController.user.value.businessName,
-        email: userController.user.value.email,
+        email: signupController.txtEmail.text.trim(),
         countryCode: userController.user.value.countryCode,
         phoneNo: userController.user.value.phoneNo,
         currencyCode: uCurCode.value,
@@ -58,17 +60,35 @@ class CLocationController extends GetxController {
         userAddress: uAddress.value,
       );
 
+      // Map<String, dynamic> updates = {
+      //   'currencyCode': uCurCode.value,
+      //   'locationCoordinates':
+      //       'lat: ${userLocation.value!.latitude}, long: ${userLocation.value!.longitude}',
+      //   'userAddress': uAddress.value,
+      // };
+      // await userRepo.updateSpecificUser(updates);
+
       userRepo.updateUserDetails(updatedUser);
-      //AuthRepo.instance.screenRedirect();
+      return true;
     } catch (e) {
       updateLoading.value = false;
-      CPopupSnackBar.errorSnackBar(
-        title: "An error occurred",
-        message: e.toString(),
-      );
-      throw 'error updating user details! please try again!';
-    } finally {
-      updateLoading.value = false;
+      if (kDebugMode) {
+        print('$e');
+        CPopupSnackBar.errorSnackBar(
+          title: "error updating user currency & location details",
+          message: e.toString(),
+        );
+      } else {
+        CPopupSnackBar.errorSnackBar(
+            title: "error updating your details",
+            message:
+                'an unknown error occurred while updating user currency & location details');
+      }
+
+      return false;
     }
+    // finally {
+    //   updateLoading.value = false;
+    // }
   }
 }

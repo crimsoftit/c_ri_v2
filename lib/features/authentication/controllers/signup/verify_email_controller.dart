@@ -49,6 +49,7 @@ class CVerifyEmailController extends GetxController {
         if (user?.emailVerified ?? false) {
           timer.cancel();
           Get.off(() => CSuccessScreen(
+                displayReceiptGenerationSection: false,
                 image: CImages.successfulRegAnimation,
                 title: CTexts.accountCreatedTitle,
                 subTitle: CTexts.accountCreatedSubTitle,
@@ -67,6 +68,7 @@ class CVerifyEmailController extends GetxController {
     if (currentUser != null && currentUser.emailVerified) {
       Get.off(() {
         CSuccessScreen(
+          displayReceiptGenerationSection: false,
           image: CImages.successfulRegAnimation,
           title: CTexts.accountCreatedTitle,
           subTitle: CTexts.accountCreatedSubTitle,

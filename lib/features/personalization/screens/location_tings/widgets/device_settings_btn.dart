@@ -22,10 +22,13 @@ class DeviceSettingsBtn extends StatelessWidget {
           onPressed: locationController.uCurCode.value != '' &&
                   locationController.uCountry.value != '' &&
                   locationController.uAddress.value != ''
-              ? () {
+              ? () async {
                   if (!locationController.updateLoading.value) {
-                    locationController.updateUserSettings();
-                    AuthRepo.instance.screenRedirect();
+                    locationController.updateUserLocationAndCurrencyDetails();
+                    if (await locationController
+                        .updateUserLocationAndCurrencyDetails()) {
+                      AuthRepo.instance.screenRedirect();
+                    }
                   }
                 }
               : null,

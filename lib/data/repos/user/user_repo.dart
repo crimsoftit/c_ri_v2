@@ -151,10 +151,20 @@ class CUserRepo extends GetxController {
   /* == update user data in firestore == */
   Future<void> updateUserDetails(CUserModel updatedUser) async {
     try {
-      await _db
-          .collection("users")
-          .doc(updatedUser.id)
-          .update(updatedUser.toJson());
+      if (AuthRepo.instance.authUser!.uid.isNotEmpty) {
+        await _db
+            .collection("users")
+            .doc(AuthRepo.instance.authUser!.uid)
+            .update(updatedUser.toJson());
+      } else {
+        if (kDebugMode) {
+          print('user id not established...');
+          CPopupSnackBar.errorSnackBar(
+            title: 'invalid user id',
+            message: 'user id not established!!!',
+          );
+        }
+      }
     } on FirebaseAuthException catch (e) {
       CPopupSnackBar.errorSnackBar(
         title: "firebaseAuth exception error",
@@ -181,7 +191,7 @@ class CUserRepo extends GetxController {
       throw CPlatformExceptions(e.code).message;
     } catch (e) {
       CPopupSnackBar.errorSnackBar(
-        title: "An error occurred",
+        title: "error updating user details",
         message: e.toString(),
       );
       //throw 'something went wrong! please try again!';
