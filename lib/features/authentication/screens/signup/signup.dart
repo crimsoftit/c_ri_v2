@@ -1,5 +1,4 @@
 import 'package:c_ri/common/widgets/login_signup/form_divider.dart';
-import 'package:c_ri/common/widgets/login_signup/social_buttons.dart';
 import 'package:c_ri/features/authentication/screens/login/login.dart';
 import 'package:c_ri/features/authentication/screens/signup/widgets/signup_form.dart';
 import 'package:c_ri/utils/constants/colors.dart';
@@ -47,19 +46,6 @@ class SignupScreen extends StatelessWidget {
               //   dividerText: 'already have an account?',
               // ),
 
-              TextButton(
-                onPressed: () {
-                  Get.offAll(const LoginScreen());
-                },
-                child: Text(
-                  'or click here to sign in',
-                  style: Theme.of(context).textTheme.bodySmall!.apply(
-                        color: isDarkTheme ? CColors.grey : CColors.rBrown,
-                      ),
-                  textAlign: TextAlign.left,
-                ),
-              ),
-
               const SizedBox(
                 height: CSizes.spaceBtnSections / 4,
               ),
@@ -69,7 +55,19 @@ class SignupScreen extends StatelessWidget {
 
               // -- divider --
               CFormDivider(
-                dividerText: CTexts.orSignInWith.capitalize!,
+                dividerText: 'or'.capitalize!,
+              ),
+              TextButton(
+                onPressed: () {
+                  Get.offAll(const LoginScreen());
+                },
+                child: Text(
+                  'click here to sign in',
+                  style: Theme.of(context).textTheme.bodySmall!.apply(
+                        color: isDarkTheme ? CColors.grey : CColors.rBrown,
+                      ),
+                  textAlign: TextAlign.left,
+                ),
               ),
 
               const SizedBox(
@@ -77,7 +75,7 @@ class SignupScreen extends StatelessWidget {
               ),
 
               // -- footer --
-              const CSocialButtons(),
+              //const CSocialButtons(),
             ],
           ),
         ),

@@ -2,6 +2,7 @@ import 'package:c_ri/common/widgets/appbar/app_bar.dart';
 import 'package:c_ri/common/widgets/custom_shapes/containers/primary_header_container.dart';
 import 'package:c_ri/common/widgets/list_tiles/menu_tile.dart';
 import 'package:c_ri/common/widgets/loaders/default_loader.dart';
+import 'package:c_ri/data/repos/auth/auth_repo.dart';
 import 'package:c_ri/features/personalization/controllers/location_controller.dart';
 import 'package:c_ri/features/personalization/screens/location_tings/widgets/device_settings_btn.dart';
 import 'package:c_ri/main.dart';
@@ -14,7 +15,6 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 import 'dart:developer';
 import 'package:flutter/scheduler.dart';
-import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -28,6 +28,7 @@ class CDeviceSettingsScreen extends StatefulWidget {
 
 class _CLocationSettingsScreenState extends State<CDeviceSettingsScreen> {
   /// -- variables --
+
   late StreamController<PermissionStatus> _permissionStatusStream;
   late StreamController<AppLifecycleState> _appCycleStateStream;
   late final AppLifecycleListener _listener;
@@ -120,6 +121,8 @@ class _CLocationSettingsScreenState extends State<CDeviceSettingsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isDarkTheme = CHelperFunctions.isDarkMode(context);
+
     return Scaffold(
       body: SingleChildScrollView(
         physics: AlwaysScrollableScrollPhysics(),
@@ -140,7 +143,8 @@ class _CLocationSettingsScreenState extends State<CDeviceSettingsScreen> {
                             ),
                       ),
                       backIconAction: () {
-                        SystemNavigator.pop();
+                        //SystemNavigator.pop();
+                        Navigator.of(context, rootNavigator: true).pop(context);
                         //Get.back();
                       },
                       showBackArrow: true,
@@ -245,7 +249,7 @@ class _CLocationSettingsScreenState extends State<CDeviceSettingsScreen> {
                             }
 
                             return Padding(
-                              padding: const EdgeInsets.all(10.0),
+                              padding: const EdgeInsets.all(5.0),
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 mainAxisSize: MainAxisSize.min,
@@ -277,6 +281,36 @@ class _CLocationSettingsScreenState extends State<CDeviceSettingsScreen> {
                                     ),
                                   ),
                                   const DeviceSettingsBtn(),
+                                  // const SizedBox(
+                                  //   height: CSizes.defaultSpace,
+                                  // ),
+                                  Center(
+                                    child: Row(
+                                      children: [
+                                        const Icon(
+                                          Iconsax.logout,
+                                          size: 28.0,
+                                          color: CColors.primaryBrown,
+                                        ),
+                                        const SizedBox(
+                                          width: CSizes.spaceBtnInputFields,
+                                        ),
+                                        TextButton(
+                                          onPressed: () {
+                                            AuthRepo.instance.logout();
+                                          },
+                                          child: Text(
+                                            'log out',
+                                            style: TextStyle(
+                                              color: isDarkTheme
+                                                  ? CColors.grey
+                                                  : CColors.darkGrey,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
                                 ],
                               ),
                             );

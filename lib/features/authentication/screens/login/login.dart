@@ -1,15 +1,11 @@
 import 'package:c_ri/common/widgets/appbar/app_bar.dart';
-import 'package:c_ri/common/widgets/login_signup/form_divider.dart';
-import 'package:c_ri/common/widgets/login_signup/social_buttons.dart';
 import 'package:c_ri/features/authentication/screens/login/widgets/login_form.dart';
 import 'package:c_ri/features/authentication/screens/login/widgets/login_header.dart';
 import 'package:c_ri/utils/constants/colors.dart';
 import 'package:c_ri/utils/constants/sizes.dart';
-import 'package:c_ri/utils/constants/txt_strings.dart';
 import 'package:c_ri/utils/helpers/helper_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:get/get.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
@@ -52,15 +48,15 @@ class LoginScreen extends StatelessWidget {
               const LoginForm(),
 
               // -- divider --
-              CFormDivider(
-                dividerText: CTexts.orSignInWith.capitalize!,
-              ),
-              const SizedBox(
-                height: CSizes.spaceBtnSections,
-              ),
+              // CFormDivider(
+              //   dividerText: CTexts.orSignInWith.capitalize!,
+              // ),
+              // const SizedBox(
+              //   height: CSizes.spaceBtnSections,
+              // ),
 
               // -- footer --
-              const CSocialButtons(),
+              //const CSocialButtons(),
             ],
           ),
         ),
