@@ -13,6 +13,7 @@ import 'package:c_ri/features/store/controllers/inv_controller.dart';
 import 'package:c_ri/features/store/controllers/nav_menu_controller.dart';
 import 'package:c_ri/features/store/controllers/search_bar_controller.dart';
 import 'package:c_ri/features/store/controllers/txns_controller.dart';
+import 'package:c_ri/features/store/screens/store_items_tings/checkout/widgets/amt_issued_field.dart';
 import 'package:c_ri/features/store/screens/store_items_tings/checkout/widgets/billing_amount_section.dart';
 import 'package:c_ri/features/store/screens/store_items_tings/checkout/widgets/checkout_scan_fab.dart';
 import 'package:c_ri/features/store/screens/store_items_tings/checkout/widgets/payment_methods/payment_method_section.dart';
@@ -634,84 +635,7 @@ class CCheckoutScreen extends StatelessWidget {
                                                       1.3,
                                                   height: 38.0,
                                                 ),
-                                                CRoundedContainer(
-                                                  width: CHelperFunctions
-                                                          .screenWidth() *
-                                                      0.5,
-                                                  bgColor: isDarkTheme
-                                                      ? CColors.rBrown
-                                                          .withValues(
-                                                              alpha: 0.3)
-                                                      : CColors.white,
-                                                  child: TextFormField(
-                                                    // keyboardType:
-                                                    //     const TextInputType
-                                                    //         .numberWithOptions(
-                                                    //   decimal: true,
-                                                    //   signed: false,
-                                                    // ),
-                                                    inputFormatters: <TextInputFormatter>[
-                                                      FilteringTextInputFormatter
-                                                          .allow(RegExp(
-                                                              r'^\d+(\.\d*)?')),
-                                                    ],
-                                                    // autofocus: checkoutController
-                                                    //     .setFocusOnAmtIssuedField
-                                                    //     .value,
-                                                    autofocus: false,
-                                                    controller: checkoutController
-                                                        .amtIssuedFieldController,
-                                                    decoration: InputDecoration(
-                                                      focusColor: CColors.rBrown
-                                                          .withValues(
-                                                        alpha: 0.3,
-                                                      ),
-                                                      enabledBorder:
-                                                          OutlineInputBorder(
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(
-                                                          CSizes.cardRadiusLg,
-                                                        ),
-                                                        borderSide: BorderSide(
-                                                          color: CColors.grey,
-                                                        ),
-                                                      ),
-                                                      focusedBorder:
-                                                          OutlineInputBorder(
-                                                        borderSide: BorderSide(
-                                                          color: CColors.rBrown
-                                                              .withValues(
-                                                            alpha: 0.3,
-                                                          ),
-                                                        ),
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(
-                                                          CSizes.cardRadiusLg,
-                                                        ),
-                                                      ),
-                                                      //border: InputBorder.none,
-                                                      labelText:
-                                                          'amount issued by customer',
-                                                    ),
-                                                    style: const TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.normal,
-                                                    ),
-                                                    onChanged: (value) {
-                                                      if (value != '') {
-                                                        checkoutController
-                                                            .computeCustomerBal(
-                                                          cartController
-                                                              .totalCartPrice
-                                                              .value,
-                                                          double.parse(value),
-                                                        );
-                                                      }
-                                                    },
-                                                  ),
-                                                ),
+                                                CAmountIssuedTxtField(),
                                               ],
                                             )
                                           : Row(
@@ -852,46 +776,47 @@ class CCheckoutScreen extends StatelessWidget {
                   width: CHelperFunctions.screenWidth() * 0.98,
                   child: ElevatedButton.icon(
                     onPressed: () {
-                      if (checkoutController
-                              .selectedPaymentMethod.value.platformName ==
-                          'cash') {
-                        if (checkoutController.amtIssuedFieldController.text ==
-                            '') {
-                          CPopupSnackBar.customToast(
-                            message:
-                                'please enter the amount issued by customer!!',
-                            forInternetConnectivityStatus: false,
-                          );
-                          checkoutController.setFocusOnAmtIssuedField.value =
-                              true;
-                          return;
-                        }
-                        if (double.parse(checkoutController
-                                .amtIssuedFieldController.text
-                                .trim()) <
-                            cartController.totalCartPrice.value) {
-                          CPopupSnackBar.errorSnackBar(
-                            title: 'customer still owes you!!',
-                            message: 'the amount issued is not enough',
-                          );
-                          return;
-                        }
-                      }
-                      if (checkoutController
-                                  .selectedPaymentMethod.value.platformName ==
-                              'mPesa' &&
-                          checkoutController.customerNameFieldController.text ==
-                              '') {
-                        checkoutController.customerNameFocusNode.value
-                            .requestFocus();
-                        CPopupSnackBar.warningSnackBar(
-                          title: 'customer details required!',
-                          message:
-                              'please provide customer\'s name for ${checkoutController.selectedPaymentMethod.value.platformName} payment verification',
-                        );
-                        return;
-                      }
-                      checkoutController.processTxn();
+                      checkoutController.checkoutActionModal(context);
+                      // if (checkoutController
+                      //         .selectedPaymentMethod.value.platformName ==
+                      //     'cash') {
+                      //   if (checkoutController.amtIssuedFieldController.text ==
+                      //       '') {
+                      //     CPopupSnackBar.customToast(
+                      //       message:
+                      //           'please enter the amount issued by customer!!',
+                      //       forInternetConnectivityStatus: false,
+                      //     );
+                      //     checkoutController.setFocusOnAmtIssuedField.value =
+                      //         true;
+                      //     return;
+                      //   }
+                      //   if (double.parse(checkoutController
+                      //           .amtIssuedFieldController.text
+                      //           .trim()) <
+                      //       cartController.totalCartPrice.value) {
+                      //     CPopupSnackBar.errorSnackBar(
+                      //       title: 'customer still owes you!!',
+                      //       message: 'the amount issued is not enough',
+                      //     );
+                      //     return;
+                      //   }
+                      // }
+                      // if (checkoutController
+                      //             .selectedPaymentMethod.value.platformName ==
+                      //         'mPesa' &&
+                      //     checkoutController.customerNameFieldController.text ==
+                      //         '') {
+                      //   checkoutController.customerNameFocusNode.value
+                      //       .requestFocus();
+                      //   CPopupSnackBar.warningSnackBar(
+                      //     title: 'customer details required!',
+                      //     message:
+                      //         'please provide customer\'s name for ${checkoutController.selectedPaymentMethod.value.platformName} payment verification',
+                      //   );
+                      //   return;
+                      // }
+                      // checkoutController.processTxn();
                     },
                     label: SizedBox(
                       height: 34.1,

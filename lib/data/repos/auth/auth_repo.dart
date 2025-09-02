@@ -68,7 +68,7 @@ class AuthRepo extends GetxController {
           Get.offAll(() => const CUpdateBusinessName());
         } else {
           /// -- initialize spreadsheets --
-          await StoreSheetsApi.initSpreadSheets();
+          StoreSheetsApi.initSpreadSheets();
 
           //DbHelper dbHelper = DbHelper.instance;
           final invController = Get.put(CInventoryController());
@@ -82,6 +82,7 @@ class AuthRepo extends GetxController {
           await txnsController.initTxnsSync();
           Get.put(CCheckoutController());
 
+          //navController.selectedIndex.value = 1;
           Future.delayed(const Duration(milliseconds: 100), () {
             //Get.to(() => const NavMenu());
             Get.offAll(() => const NavMenu());

@@ -1,4 +1,5 @@
 import 'package:barcode_scan2/barcode_scan2.dart';
+import 'package:c_ri/common/widgets/custom_shapes/containers/rounded_container.dart';
 import 'package:c_ri/common/widgets/success_screen/txn_success.dart';
 import 'package:c_ri/common/widgets/txt_widgets/c_section_headings.dart';
 import 'package:c_ri/features/personalization/controllers/location_controller.dart';
@@ -13,6 +14,7 @@ import 'package:c_ri/features/store/models/inv_model.dart';
 import 'package:c_ri/features/store/models/payment_method_model.dart';
 import 'package:c_ri/features/store/models/txns_model.dart';
 import 'package:c_ri/features/store/screens/store_items_tings/checkout/checkout_screen.dart';
+import 'package:c_ri/features/store/screens/store_items_tings/checkout/widgets/amt_issued_field.dart';
 import 'package:c_ri/features/store/screens/store_items_tings/checkout/widgets/payment_methods/payment_methods_tile.dart';
 import 'package:c_ri/features/store/screens/store_items_tings/inventory/inventory_details/widgets/add_to_cart_bottom_nav_bar.dart';
 import 'package:c_ri/features/store/screens/store_items_tings/inventory/widgets/inv_dialog.dart';
@@ -32,6 +34,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:iconsax/iconsax.dart';
 import 'package:intl/intl.dart';
 import 'package:simple_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:simple_barcode_scanner/simple_barcode_scanner.dart';
@@ -45,6 +48,7 @@ class CCheckoutController extends GetxController {
 
     amtIssuedFieldController.text = '';
     setFocusOnAmtIssuedField.value = false;
+    //includeAmtIssuedFieldonModal.value = false;
     CLocationServices.instance
         .getUserLocation(locationController: locationController);
 
@@ -70,6 +74,7 @@ class CCheckoutController extends GetxController {
 
   final RxBool setFocusOnAmtIssuedField = false.obs;
 
+  final cartController = Get.put(CCartController());
   final invController = Get.put(CInventoryController());
   final navController = Get.put(CNavMenuController());
   final txnsController = Get.put(CTxnsController());
@@ -83,8 +88,9 @@ class CCheckoutController extends GetxController {
 
   DbHelper dbHelper = DbHelper.instance;
 
-  final RxBool itemExists = false.obs;
+  //final RxBool includeAmtIssuedFieldonModal = false.obs;
   final RxBool isLoading = false.obs;
+  final RxBool itemExists = false.obs;
 
   final RxInt itemStockCount = 0.obs;
   final RxInt checkoutItemId = 0.obs;
@@ -588,6 +594,172 @@ class CCheckoutController extends GetxController {
     navController.selectedIndex.value = 1;
 
     Get.offAll(() => NavMenu());
+  }
+
+  /// -- display bottom sheet modal popup for checkout --
+  Future<dynamic> checkoutActionModal(BuildContext context) {
+    final isDarkTheme = CHelperFunctions.isDarkMode(context);
+    return showModalBottomSheet(
+      context: context,
+      backgroundColor: CColors.transparent,
+      isScrollControlled: true,
+      useSafeArea: true,
+      builder: (context) {
+        return Obx(
+          () {
+            return Padding(
+              padding: MediaQuery.of(context).viewInsets,
+              child: CRoundedContainer(
+                height: CHelperFunctions.screenHeight() * 0.35,
+                padding: const EdgeInsets.all(
+                  CSizes.lg / 3,
+                ),
+                bgColor: isDarkTheme ? CColors.rBrown : CColors.white,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text(
+                      'is this transaction complete?',
+                      style: Theme.of(context).textTheme.labelMedium!.apply(
+                            color: isDarkTheme ? CColors.white : CColors.rBrown,
+                            fontSizeFactor: 1.5,
+                            fontWeightDelta: 2,
+                          ),
+                    ),
+                    const SizedBox(
+                      height: CSizes.spaceBtnInputFields,
+                    ),
+                    Text(
+                      'if the customer is yet to pay, you are advised to suspend (or rather invoice) it',
+                      style: Theme.of(context).textTheme.labelMedium!.apply(
+                            color: isDarkTheme ? CColors.white : CColors.rBrown,
+                          ),
+                    ),
+                    Divider(
+                      color: isDarkTheme ? CColors.white : CColors.rBrown,
+                      endIndent: 100.0,
+                      indent: 100.0,
+                      thickness: 0.2,
+                    ),
+                    const SizedBox(
+                      height: CSizes.spaceBtnInputFields / 4,
+                    ),
+                    Visibility(
+                      visible: amtIssuedFieldController.text == '',
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          CAmountIssuedTxtField(),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(
+                      height: CSizes.spaceBtnInputFields / 4,
+                    ),
+                    Row(
+                      children: [
+                        SizedBox(
+                          width: CHelperFunctions.screenWidth() * 0.45,
+                          child: ElevatedButton.icon(
+                            onPressed: () async {},
+                            label: Text(
+                              'invoice/suspend',
+                              style:
+                                  Theme.of(context).textTheme.bodyMedium!.apply(
+                                        color: isDarkTheme
+                                            ? CColors.white
+                                            : CColors.rBrown,
+                                      ),
+                            ),
+                            icon: Icon(
+                              Iconsax.brifecase_timer,
+                              color:
+                                  isDarkTheme ? CColors.white : CColors.rBrown,
+                              //color: CColors.white,
+                            ),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: isDarkTheme
+                                  ? CColors.black
+                                  : CColors.black.withValues(
+                                      alpha: 0.25,
+                                    ),
+                              //backgroundColor: CColors.black,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(
+                          width: CSizes.spaceBtnInputFields,
+                        ),
+                        SizedBox(
+                          width: CHelperFunctions.screenWidth() * 0.45,
+                          child: ElevatedButton.icon(
+                            onPressed: () {
+                              if (selectedPaymentMethod.value.platformName ==
+                                  'cash') {
+                                if (amtIssuedFieldController.text == '') {
+                                  //includeAmtIssuedFieldonModal.value = true;
+                                  CPopupSnackBar.customToast(
+                                    message:
+                                        'please enter the amount issued by customer!!',
+                                    forInternetConnectivityStatus: false,
+                                  );
+                                  setFocusOnAmtIssuedField.value = true;
+
+                                  return;
+                                }
+                                // else {
+                                //   includeAmtIssuedFieldonModal.value = false;
+                                // }
+                                if (double.parse(
+                                        amtIssuedFieldController.text.trim()) <
+                                    cartController.totalCartPrice.value) {
+                                  CPopupSnackBar.errorSnackBar(
+                                    title: 'customer still owes you!!',
+                                    message: 'the amount issued is not enough',
+                                  );
+                                  return;
+                                }
+                              }
+                              if (selectedPaymentMethod.value.platformName ==
+                                      'mPesa' &&
+                                  customerNameFieldController.text == '') {
+                                customerNameFocusNode.value.requestFocus();
+                                CPopupSnackBar.warningSnackBar(
+                                  title: 'customer details required!',
+                                  message:
+                                      'please provide customer\'s name for ${selectedPaymentMethod.value.platformName} payment verification',
+                                );
+                                return;
+                              }
+                              processTxn();
+                            },
+                            label: Text(
+                              'complete txn',
+                              style:
+                                  Theme.of(context).textTheme.bodyMedium!.apply(
+                                        color: CColors.white,
+                                      ),
+                            ),
+                            icon: Icon(
+                              Iconsax.tick_circle,
+                              color: CColors.white,
+                            ),
+                            style: ElevatedButton.styleFrom(
+                              // backgroundColor: CColors.black.withValues(alpha: 0.5),
+                              backgroundColor: CColors.black,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
   }
 
   @override
