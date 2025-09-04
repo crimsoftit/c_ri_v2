@@ -11,7 +11,11 @@ import 'package:get/get.dart';
 class CAmountIssuedTxtField extends StatelessWidget {
   const CAmountIssuedTxtField({
     super.key,
+    this.txtFieldHeight = 45.0,
+    required this.txtFieldWidth,
   });
+
+  final double txtFieldWidth, txtFieldHeight;
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +24,8 @@ class CAmountIssuedTxtField extends StatelessWidget {
     final isDarkTheme = CHelperFunctions.isDarkMode(context);
 
     return CRoundedContainer(
-      width: CHelperFunctions.screenWidth() * 0.5,
+      width: txtFieldWidth,
+      height: txtFieldHeight,
       bgColor:
           isDarkTheme ? CColors.rBrown.withValues(alpha: 0.3) : CColors.white,
       child: TextFormField(

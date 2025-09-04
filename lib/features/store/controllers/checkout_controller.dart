@@ -47,8 +47,9 @@ class CCheckoutController extends GetxController {
     await dbHelper.openDb();
 
     amtIssuedFieldController.text = '';
+    customerBalField.text == '';
     setFocusOnAmtIssuedField.value = false;
-    //includeAmtIssuedFieldonModal.value = false;
+    includeAmtIssuedFieldonModal.value = false;
     CLocationServices.instance
         .getUserLocation(locationController: locationController);
 
@@ -83,12 +84,12 @@ class CCheckoutController extends GetxController {
   TextEditingController amtIssuedFieldController = TextEditingController();
 
   TextEditingController customerNameFieldController = TextEditingController();
-
+  final customerBalField = TextEditingController();
   final TextEditingController modalQtyFieldController = TextEditingController();
 
   DbHelper dbHelper = DbHelper.instance;
 
-  //final RxBool includeAmtIssuedFieldonModal = false.obs;
+  final RxBool includeAmtIssuedFieldonModal = false.obs;
   final RxBool isLoading = false.obs;
   final RxBool itemExists = false.obs;
 
@@ -544,11 +545,13 @@ class CCheckoutController extends GetxController {
 
   computeCustomerBal(double cartTotals, double amtIssued) {
     customerBal.value = amtIssued - cartTotals;
+    customerBalField.text = customerBal.value.toString();
   }
 
   resetSalesFields() {
     customerBal.value = 0.0;
     amtIssuedFieldController.text = '';
+    customerBalField.text == '';
     itemExists.value = false;
 
     // clear cart
@@ -597,7 +600,7 @@ class CCheckoutController extends GetxController {
   }
 
   /// -- display bottom sheet modal popup for checkout --
-  Future<dynamic> checkoutActionModal(BuildContext context) {
+  Future<dynamic> triggerCheckoutActionModal(BuildContext context) {
     final isDarkTheme = CHelperFunctions.isDarkMode(context);
     return showModalBottomSheet(
       context: context,
@@ -605,161 +608,170 @@ class CCheckoutController extends GetxController {
       isScrollControlled: true,
       useSafeArea: true,
       builder: (context) {
-        return Obx(
-          () {
-            return Padding(
-              padding: MediaQuery.of(context).viewInsets,
-              child: CRoundedContainer(
-                height: CHelperFunctions.screenHeight() * 0.35,
-                padding: const EdgeInsets.all(
-                  CSizes.lg / 3,
+        return Padding(
+          padding: MediaQuery.of(context).viewInsets,
+          child: CRoundedContainer(
+            height: CHelperFunctions.screenHeight() * 0.35,
+            padding: const EdgeInsets.all(
+              CSizes.lg / 3,
+            ),
+            bgColor: isDarkTheme ? CColors.rBrown : CColors.white,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text(
+                  'complete or suspend transaction?',
+                  style: Theme.of(context).textTheme.labelMedium!.apply(
+                        color: isDarkTheme ? CColors.white : CColors.rBrown,
+                        fontSizeFactor: 1.2,
+                        fontWeightDelta: 2,
+                      ),
                 ),
-                bgColor: isDarkTheme ? CColors.rBrown : CColors.white,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Text(
-                      'is this transaction complete?',
-                      style: Theme.of(context).textTheme.labelMedium!.apply(
-                            color: isDarkTheme ? CColors.white : CColors.rBrown,
-                            fontSizeFactor: 1.5,
-                            fontWeightDelta: 2,
-                          ),
-                    ),
-                    const SizedBox(
-                      height: CSizes.spaceBtnInputFields,
-                    ),
-                    Text(
-                      'if the customer is yet to pay, you are advised to suspend (or rather invoice) it',
-                      style: Theme.of(context).textTheme.labelMedium!.apply(
-                            color: isDarkTheme ? CColors.white : CColors.rBrown,
-                          ),
-                    ),
-                    Divider(
-                      color: isDarkTheme ? CColors.white : CColors.rBrown,
-                      endIndent: 100.0,
-                      indent: 100.0,
-                      thickness: 0.2,
-                    ),
-                    const SizedBox(
-                      height: CSizes.spaceBtnInputFields / 4,
-                    ),
-                    Visibility(
-                      visible: amtIssuedFieldController.text == '',
+                const SizedBox(
+                  height: CSizes.spaceBtnInputFields,
+                ),
+                Text(
+                  'if the customer is yet to pay, you are advised to suspend (or rather invoice) it',
+                  style: Theme.of(context).textTheme.labelMedium!.apply(
+                        color: isDarkTheme ? CColors.white : CColors.rBrown,
+                      ),
+                ),
+                Divider(
+                  color: isDarkTheme ? CColors.white : CColors.rBrown,
+                  endIndent: 100.0,
+                  indent: 100.0,
+                  thickness: 0.2,
+                ),
+                const SizedBox(
+                  height: CSizes.spaceBtnInputFields / 4,
+                ),
+                Obx(
+                  () {
+                    return Visibility(
+                      visible: (amtIssuedFieldController.text == '' ||
+                              double.parse(customerBalField.text) < 0 ||
+                              customerBalField.text == '') &&
+                          includeAmtIssuedFieldonModal.value,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
-                          CAmountIssuedTxtField(),
+                          CAmountIssuedTxtField(
+                            txtFieldWidth: CHelperFunctions.screenWidth() * 0.6,
+                            txtFieldHeight: 45.0,
+                          ),
                         ],
+                      ),
+                    );
+                  },
+                ),
+                const SizedBox(
+                  height: CSizes.spaceBtnInputFields / 4,
+                ),
+                Row(
+                  children: [
+                    SizedBox(
+                      width: CHelperFunctions.screenWidth() * 0.45,
+                      child: ElevatedButton.icon(
+                        onPressed: () async {
+                          includeAmtIssuedFieldonModal.value = false;
+                          amtIssuedFieldController.text = '';
+                          customerBal.value =
+                              0 - cartController.totalCartPrice.value;
+                        },
+                        label: Text(
+                          'invoice/suspend',
+                          style: Theme.of(context).textTheme.bodyMedium!.apply(
+                                color: isDarkTheme
+                                    ? CColors.white
+                                    : CColors.rBrown,
+                              ),
+                        ),
+                        icon: Icon(
+                          Iconsax.brifecase_timer,
+                          color: isDarkTheme ? CColors.white : CColors.rBrown,
+                          //color: CColors.white,
+                        ),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: isDarkTheme
+                              ? CColors.black
+                              : CColors.black.withValues(
+                                  alpha: 0.25,
+                                ),
+                          //backgroundColor: CColors.black,
+                        ),
                       ),
                     ),
                     const SizedBox(
-                      height: CSizes.spaceBtnInputFields / 4,
+                      width: CSizes.spaceBtnInputFields,
                     ),
-                    Row(
-                      children: [
-                        SizedBox(
-                          width: CHelperFunctions.screenWidth() * 0.45,
-                          child: ElevatedButton.icon(
-                            onPressed: () async {},
-                            label: Text(
-                              'invoice/suspend',
-                              style:
-                                  Theme.of(context).textTheme.bodyMedium!.apply(
-                                        color: isDarkTheme
-                                            ? CColors.white
-                                            : CColors.rBrown,
-                                      ),
-                            ),
-                            icon: Icon(
-                              Iconsax.brifecase_timer,
-                              color:
-                                  isDarkTheme ? CColors.white : CColors.rBrown,
-                              //color: CColors.white,
-                            ),
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: isDarkTheme
-                                  ? CColors.black
-                                  : CColors.black.withValues(
-                                      alpha: 0.25,
-                                    ),
-                              //backgroundColor: CColors.black,
-                            ),
-                          ),
+                    SizedBox(
+                      width: CHelperFunctions.screenWidth() * 0.45,
+                      child: ElevatedButton.icon(
+                        onPressed: () {
+                          includeAmtIssuedFieldonModal.value = true;
+                          onCompleteTxnBtnPressed();
+                        },
+                        label: Text(
+                          'complete txn',
+                          style: Theme.of(context).textTheme.bodyMedium!.apply(
+                                color: CColors.white,
+                              ),
                         ),
-                        const SizedBox(
-                          width: CSizes.spaceBtnInputFields,
+                        icon: Icon(
+                          Iconsax.tick_circle,
+                          color: CColors.white,
                         ),
-                        SizedBox(
-                          width: CHelperFunctions.screenWidth() * 0.45,
-                          child: ElevatedButton.icon(
-                            onPressed: () {
-                              if (selectedPaymentMethod.value.platformName ==
-                                  'cash') {
-                                if (amtIssuedFieldController.text == '') {
-                                  //includeAmtIssuedFieldonModal.value = true;
-                                  CPopupSnackBar.customToast(
-                                    message:
-                                        'please enter the amount issued by customer!!',
-                                    forInternetConnectivityStatus: false,
-                                  );
-                                  setFocusOnAmtIssuedField.value = true;
-
-                                  return;
-                                }
-                                // else {
-                                //   includeAmtIssuedFieldonModal.value = false;
-                                // }
-                                if (double.parse(
-                                        amtIssuedFieldController.text.trim()) <
-                                    cartController.totalCartPrice.value) {
-                                  CPopupSnackBar.errorSnackBar(
-                                    title: 'customer still owes you!!',
-                                    message: 'the amount issued is not enough',
-                                  );
-                                  return;
-                                }
-                              }
-                              if (selectedPaymentMethod.value.platformName ==
-                                      'mPesa' &&
-                                  customerNameFieldController.text == '') {
-                                customerNameFocusNode.value.requestFocus();
-                                CPopupSnackBar.warningSnackBar(
-                                  title: 'customer details required!',
-                                  message:
-                                      'please provide customer\'s name for ${selectedPaymentMethod.value.platformName} payment verification',
-                                );
-                                return;
-                              }
-                              processTxn();
-                            },
-                            label: Text(
-                              'complete txn',
-                              style:
-                                  Theme.of(context).textTheme.bodyMedium!.apply(
-                                        color: CColors.white,
-                                      ),
-                            ),
-                            icon: Icon(
-                              Iconsax.tick_circle,
-                              color: CColors.white,
-                            ),
-                            style: ElevatedButton.styleFrom(
-                              // backgroundColor: CColors.black.withValues(alpha: 0.5),
-                              backgroundColor: CColors.black,
-                            ),
-                          ),
+                        style: ElevatedButton.styleFrom(
+                          // backgroundColor: CColors.black.withValues(alpha: 0.5),
+                          backgroundColor: CColors.black,
                         ),
-                      ],
+                      ),
                     ),
                   ],
                 ),
-              ),
-            );
-          },
+              ],
+            ),
+          ),
         );
       },
     );
+  }
+
+  onCompleteTxnBtnPressed() {
+    if (selectedPaymentMethod.value.platformName == 'cash') {
+      if (amtIssuedFieldController.text == '') {
+        CPopupSnackBar.customToast(
+          message: 'please enter the amount issued by customer!!',
+          forInternetConnectivityStatus: false,
+        );
+        setFocusOnAmtIssuedField.value = true;
+
+        return;
+      }
+      // else {
+      //   includeAmtIssuedFieldonModal.value = false;
+      // }
+      if (amtIssuedFieldController.text == '' ||
+          double.parse(amtIssuedFieldController.text.trim()) <
+              cartController.totalCartPrice.value) {
+        CPopupSnackBar.errorSnackBar(
+          title: 'customer still owes you!!',
+          message: 'the amount issued is not enough',
+        );
+        return;
+      }
+    }
+    if (selectedPaymentMethod.value.platformName == 'mPesa' &&
+        customerNameFieldController.text == '') {
+      customerNameFocusNode.value.requestFocus();
+      CPopupSnackBar.warningSnackBar(
+        title: 'customer details required!',
+        message:
+            'please provide customer\'s name for ${selectedPaymentMethod.value.platformName} payment verification',
+      );
+      return;
+    }
+    processTxn();
   }
 
   @override

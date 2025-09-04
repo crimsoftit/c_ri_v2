@@ -1,3 +1,4 @@
+import 'package:c_ri/common/widgets/custom_shapes/containers/rounded_container.dart';
 import 'package:c_ri/common/widgets/txt_widgets/product_price_txt.dart';
 import 'package:c_ri/features/store/controllers/cart_controller.dart';
 import 'package:c_ri/features/store/controllers/checkout_controller.dart';
@@ -118,10 +119,32 @@ class CBillingAmountSection extends StatelessWidget {
             Obx(
               () {
                 final checkoutController = Get.put(CCheckoutController());
-                return CProductPriceTxt(
-                  price: checkoutController.customerBal.toStringAsFixed(2),
-                  isLarge: true,
-                  txtColor: isDarkTheme ? CColors.white : CColors.rBrown,
+                return Column(
+                  children: [
+                    CProductPriceTxt(
+                      price: checkoutController.amtIssuedFieldController.text !=
+                              ''
+                          ? checkoutController.customerBal.toStringAsFixed(2)
+                          : (0 - cartController.totalCartPrice.value)
+                              .toStringAsFixed(2),
+                      isLarge: true,
+                      txtColor: checkoutController.customerBal.value < 0
+                          ? Colors.red
+                          : isDarkTheme
+                              ? CColors.white
+                              : CColors.rBrown,
+                    ),
+                    Visibility(
+                      visible: false,
+                      child: CRoundedContainer(
+                        height: 40,
+                        width: 100,
+                        child: TextFormField(
+                          controller: checkoutController.customerBalField,
+                        ),
+                      ),
+                    ),
+                  ],
                 );
               },
             ),

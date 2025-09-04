@@ -635,7 +635,12 @@ class CCheckoutScreen extends StatelessWidget {
                                                       1.3,
                                                   height: 38.0,
                                                 ),
-                                                CAmountIssuedTxtField(),
+                                                CAmountIssuedTxtField(
+                                                  txtFieldWidth:
+                                                      CHelperFunctions
+                                                              .screenWidth() *
+                                                          0.5,
+                                                ),
                                               ],
                                             )
                                           : Row(
@@ -771,52 +776,28 @@ class CCheckoutScreen extends StatelessWidget {
                 padding: const EdgeInsets.all(8.0),
                 child:
 
-                    /// -- button to complete txn --
+                    /// -- button to complete/suspend txn --
                     SizedBox(
                   width: CHelperFunctions.screenWidth() * 0.98,
                   child: ElevatedButton.icon(
                     onPressed: () {
-                      checkoutController.checkoutActionModal(context);
-                      // if (checkoutController
-                      //         .selectedPaymentMethod.value.platformName ==
-                      //     'cash') {
-                      //   if (checkoutController.amtIssuedFieldController.text ==
-                      //       '') {
-                      //     CPopupSnackBar.customToast(
-                      //       message:
-                      //           'please enter the amount issued by customer!!',
-                      //       forInternetConnectivityStatus: false,
-                      //     );
-                      //     checkoutController.setFocusOnAmtIssuedField.value =
-                      //         true;
-                      //     return;
-                      //   }
-                      //   if (double.parse(checkoutController
-                      //           .amtIssuedFieldController.text
-                      //           .trim()) <
-                      //       cartController.totalCartPrice.value) {
-                      //     CPopupSnackBar.errorSnackBar(
-                      //       title: 'customer still owes you!!',
-                      //       message: 'the amount issued is not enough',
-                      //     );
-                      //     return;
-                      //   }
-                      // }
-                      // if (checkoutController
-                      //             .selectedPaymentMethod.value.platformName ==
-                      //         'mPesa' &&
-                      //     checkoutController.customerNameFieldController.text ==
-                      //         '') {
-                      //   checkoutController.customerNameFocusNode.value
-                      //       .requestFocus();
-                      //   CPopupSnackBar.warningSnackBar(
-                      //     title: 'customer details required!',
-                      //     message:
-                      //         'please provide customer\'s name for ${checkoutController.selectedPaymentMethod.value.platformName} payment verification',
-                      //   );
-                      //   return;
-                      // }
-                      // checkoutController.processTxn();
+                      if ((checkoutController.amtIssuedFieldController.text
+                                      .trim() ==
+                                  '' &&
+                              checkoutController.selectedPaymentMethod.value
+                                      .platformName ==
+                                  'cash') ||
+                          (double.parse(checkoutController
+                                      .amtIssuedFieldController.text
+                                      .trim()) <
+                                  cartController.totalCartPrice.value) &&
+                              checkoutController.selectedPaymentMethod.value
+                                      .platformName ==
+                                  'cash') {
+                        checkoutController.triggerCheckoutActionModal(context);
+                      } else {
+                        checkoutController.onCompleteTxnBtnPressed();
+                      }
                     },
                     label: SizedBox(
                       height: 34.1,
