@@ -116,6 +116,11 @@ class CImages {
   static const String cash5 = "assets/icons/payment_methods/cash_5.png";
   static const String cash6 = "assets/icons/payment_methods/cash_6.png";
   static const String cash7 = "assets/icons/payment_methods/cash_7.png";
+  static const String credit1 = "assets/icons/payment_methods/credit1.webp";
+  static const String credit2 = "assets/icons/payment_methods/credit.jpeg";
+  //static const String deferred = "assets/icons/payment_methods/deferred.jpg";
+  static const String deferred = "assets/icons/payment_methods/deferred.webp";
+  static const String deferred1 = "assets/icons/payment_methods/deferred1.webp";
 
   static const String googlePayLogo =
       "assets/icons/payment_methods/google-pay.png";

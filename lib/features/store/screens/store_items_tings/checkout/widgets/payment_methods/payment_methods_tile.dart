@@ -41,14 +41,14 @@ class CPaymentMethodsTile extends StatelessWidget {
         //   checkoutController.customerNameFieldController.text = '';
         //   checkoutController.customerNameFieldController.dispose();
         // }
-        
+
         Navigator.pop(context);
       },
       leading: CRoundedContainer(
-        width: 60.0,
-        height: 40.0,
+        width: 100.0,
+        height: 100.0,
         padding: const EdgeInsets.all(
-          CSizes.sm,
+          CSizes.sm / 2,
         ),
         bgColor:
             isDarkTheme ? CColors.rBrown.withValues(alpha: 0.2) : CColors.white,

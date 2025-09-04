@@ -32,23 +32,26 @@ class CUserController extends GetxController {
   final signupController = Get.put(SignupController());
 
   @override
-  void onInit() {
+  void onInit() async {
     super.onInit();
-    fetchUserDetails();
+    await fetchUserDetails();
   }
 
   /// -- fetch user details --
-  Future<void> fetchUserDetails() async {
+  Future<bool> fetchUserDetails() async {
     try {
       profileLoading.value = true;
       final user = await userRepo.fetchUserDetails();
       this.user(user);
       profileLoading.value = false;
+      return true;
     } catch (e) {
       user(CUserModel.empty());
-    } finally {
-      profileLoading.value = false;
+      return false;
     }
+    // finally {
+    //   profileLoading.value = false;
+    // }
   }
 
   /// -- save user details from any reg/authentication  provider --

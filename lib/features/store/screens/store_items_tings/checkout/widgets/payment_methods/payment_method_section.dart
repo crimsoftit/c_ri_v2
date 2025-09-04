@@ -64,6 +64,7 @@ class CPaymentMethodSection extends StatelessWidget {
             //   width: CSizes.spaceBtnItems / 4,
             // ),
             Expanded(
+              flex: 3,
               child: Text(
                 //checkoutController.selectedPaymentMethod.value.platformName,
                 platformName,

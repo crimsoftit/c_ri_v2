@@ -5,6 +5,7 @@ import 'package:c_ri/common/widgets/loaders/animated_loader.dart';
 import 'package:c_ri/common/widgets/products/store_item.dart';
 import 'package:c_ri/common/widgets/search_bar/animated_typeahead_field.dart';
 import 'package:c_ri/common/widgets/shimmers/vert_items_shimmer.dart';
+import 'package:c_ri/common/widgets/txt_fields/custom_txtfield.dart';
 import 'package:c_ri/common/widgets/txt_widgets/product_price_txt.dart';
 import 'package:c_ri/features/personalization/controllers/user_controller.dart';
 import 'package:c_ri/features/store/controllers/cart_controller.dart';
@@ -36,9 +37,10 @@ class CCheckoutScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final cartController = Get.put(CCartController());
     final checkoutController = Get.put(CCheckoutController());
+    final isDarkTheme = CHelperFunctions.isDarkMode(context);
     final invController = Get.put(CInventoryController());
     //final isConnectedToInternet = CNetworkManager.instance.hasConnection.value;
-    final isDarkTheme = CHelperFunctions.isDarkMode(context);
+
     final navController = Get.put(CNavMenuController());
     final scrollController = ScrollController();
     final searchBarController = Get.put(CSearchBarController());
@@ -589,7 +591,7 @@ class CCheckoutScreen extends StatelessWidget {
                               ),
                               // -- billing section --
                               CRoundedContainer(
-                                padding: const EdgeInsets.all(CSizes.md),
+                                padding: const EdgeInsets.all(CSizes.md / 4),
                                 showBorder: true,
                                 bgColor:
                                     isDarkTheme ? CColors.black : CColors.white,
@@ -613,7 +615,12 @@ class CCheckoutScreen extends StatelessWidget {
                                                       .selectedPaymentMethod
                                                       .value
                                                       .platformName ==
-                                                  'mPesa'
+                                                  'mPesa' ||
+                                              checkoutController
+                                                      .selectedPaymentMethod
+                                                      .value
+                                                      .platformName ==
+                                                  'credit'
                                           ? checkoutController
                                               .selectedPaymentMethod
                                               .value
@@ -659,61 +666,89 @@ class CCheckoutScreen extends StatelessWidget {
                                                           .withValues(
                                                               alpha: 0.3)
                                                       : CColors.white,
-                                                  child: TextFormField(
-                                                    keyboardType:
-                                                        TextInputType.text,
-                                                    // focusNode: checkoutController
-                                                    //     .customerNameFocusNode
-                                                    //     .value,
-                                                    autofocus: false,
-
-                                                    controller: checkoutController
-                                                        .customerNameFieldController,
-                                                    decoration: InputDecoration(
-                                                      focusColor: CColors.rBrown
-                                                          .withValues(
-                                                        alpha: 0.3,
+                                                  child: Column(
+                                                    children: [
+                                                      //TextFormField(),
+                                                      CCustomTxtField(
+                                                        labelTxt: checkoutController
+                                                                        .selectedPaymentMethod
+                                                                        .value
+                                                                        .platformName ==
+                                                                    'mPesa' ||
+                                                                checkoutController
+                                                                        .selectedPaymentMethod
+                                                                        .value
+                                                                        .platformName ==
+                                                                    'credit'
+                                                            ? 'customer name'
+                                                            : 'customer name(optional)',
+                                                        txtFieldController:
+                                                            checkoutController
+                                                                .customerNameFieldController,
                                                       ),
-                                                      enabledBorder:
-                                                          OutlineInputBorder(
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(
-                                                          CSizes.cardRadiusLg,
-                                                        ),
-                                                        borderSide: BorderSide(
-                                                          color: CColors.grey,
-                                                        ),
+                                                      const SizedBox(
+                                                        height: 4.0,
                                                       ),
-                                                      focusedBorder:
-                                                          OutlineInputBorder(
-                                                        borderSide: BorderSide(
-                                                          color: CColors.rBrown
-                                                              .withValues(
-                                                            alpha: 0.3,
-                                                          ),
-                                                        ),
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(
-                                                          CSizes.cardRadiusLg,
-                                                        ),
+                                                      // -- phone number field --
+                                                      CCustomTxtField(
+                                                        txtFieldController:
+                                                            checkoutController
+                                                                .customerContactsFieldController,
+                                                        labelTxt:
+                                                            'customer contacts',
                                                       ),
-                                                      labelText: checkoutController
-                                                                  .selectedPaymentMethod
-                                                                  .value
-                                                                  .platformName ==
-                                                              'mPesa'
-                                                          ? 'customer name'
-                                                          : 'customer name(optional)',
-                                                    ),
-                                                    style: TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.normal,
-                                                      color: isDarkTheme
-                                                          ? CColors.white
-                                                          : CColors.rBrown,
-                                                    ),
+                                                      // IntlPhoneField(
+                                                      //   controller:
+                                                      //       checkoutController
+                                                      //           .customerContactsFieldController,
+                                                      //   initialCountryCode:
+                                                      //       'KE',
+                                                      //   //focusNode: focusNode,
+                                                      //   dropdownTextStyle:
+                                                      //       const TextStyle(
+                                                      //     fontSize: 12,
+                                                      //     fontFamily: 'Poppins',
+                                                      //     height: 0.8,
+                                                      //   ),
+                                                      //   decoration:
+                                                      //       const InputDecoration(
+                                                      //     counterText: '',
+                                                      //     label: Text(
+                                                      //         'Phone number'),
+                                                      //     focusedBorder:
+                                                      //         OutlineInputBorder(
+                                                      //       borderSide:
+                                                      //           BorderSide(
+                                                      //         width: 2.0,
+                                                      //         color: CColors
+                                                      //             .rBrown,
+                                                      //       ),
+                                                      //     ),
+                                                      //   ),
+                                                      //   style: const TextStyle(
+                                                      //     fontSize: 10,
+                                                      //     fontFamily: 'Poppins',
+                                                      //     height: 0.8,
+                                                      //   ),
+                                                      //   keyboardType:
+                                                      //       TextInputType.phone,
+                                                      //   languageCode: "en",
+                                                      //   onChanged: (phone) {
+                                                      //     //signupController.completePhoneNo.value = phone.completeNumber;
+                                                      //   },
+                                                      //   onCountryChanged:
+                                                      //       (country) {
+                                                      //     if (kDebugMode) {
+                                                      //       print(
+                                                      //           'country changed to: ${country.dialCode}');
+                                                      //     }
+                                                      //   },
+                                                      //   validator: (value) => CValidator
+                                                      //       .validatePhoneNumber(
+                                                      //           value
+                                                      //               .toString()),
+                                                      // ),
+                                                    ],
                                                   ),
                                                 ),
                                               ],
@@ -796,7 +831,7 @@ class CCheckoutScreen extends StatelessWidget {
                                   'cash') {
                         checkoutController.triggerCheckoutActionModal(context);
                       } else {
-                        checkoutController.onCompleteTxnBtnPressed();
+                        checkoutController.onCheckoutBtnPressed();
                       }
                     },
                     label: SizedBox(

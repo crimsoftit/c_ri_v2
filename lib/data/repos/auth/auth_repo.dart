@@ -4,6 +4,7 @@ import 'package:c_ri/features/authentication/controllers/signup/signup_controlle
 import 'package:c_ri/features/authentication/screens/login/login.dart';
 import 'package:c_ri/features/authentication/screens/onboarding/onboarding_screen.dart';
 import 'package:c_ri/features/authentication/screens/signup/verify_email.dart';
+import 'package:c_ri/features/personalization/controllers/user_controller.dart';
 import 'package:c_ri/features/personalization/screens/location_tings/device_settings_screen.dart';
 import 'package:c_ri/features/personalization/screens/profile/widgets/update_bizname_widget.dart';
 import 'package:c_ri/features/store/controllers/cart_controller.dart';
@@ -51,13 +52,15 @@ class AuthRepo extends GetxController {
   void screenRedirect() async {
     final user = _auth.currentUser;
 
+    final userController = Get.put(CUserController());
+
     if (user != null) {
       if (user.emailVerified) {
         // initialize user-specific local storage
         await CLocalStorage.init(user.uid);
 
         var userRepo = Get.put(CUserRepo());
-
+        userController.fetchUserDetails();
         var userDets = await userRepo.fetchUserDetails();
 
         if (userDets.currencyCode == '' ||
@@ -78,15 +81,24 @@ class AuthRepo extends GetxController {
           deviceStorage.writeIfNull('SyncInvDataWithCloud', true);
           deviceStorage.writeIfNull('SyncTxnsDataWithCloud', true);
 
-          await invController.initInvSync();
-          await txnsController.initTxnsSync();
-          Get.put(CCheckoutController());
+          if (await userController.fetchUserDetails()) {
+            await invController.initInvSync();
+            await txnsController.initTxnsSync();
+            Get.put(CCheckoutController());
 
-          //navController.selectedIndex.value = 1;
-          Future.delayed(const Duration(milliseconds: 100), () {
-            //Get.to(() => const NavMenu());
-            Get.offAll(() => const NavMenu());
-          });
+            //navController.selectedIndex.value = 1;
+            Future.delayed(const Duration(milliseconds: 100), () {
+              //Get.to(() => const NavMenu());
+              Get.offAll(() => const NavMenu());
+            });
+          } else {
+            if (kDebugMode) {
+              print('error fetching user details!!');
+              CPopupSnackBar.errorSnackBar(
+                title: 'error fetching user details!!',
+              );
+            }
+          }
         }
       } else {
         Get.offAll(() => VerifyEmailScreen(

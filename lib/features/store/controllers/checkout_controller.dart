@@ -47,6 +47,8 @@ class CCheckoutController extends GetxController {
     await dbHelper.openDb();
 
     amtIssuedFieldController.text = '';
+    customerContactsFieldController.text = '';
+    customerNameFieldController.text = '';
     customerBalField.text == '';
     setFocusOnAmtIssuedField.value = false;
     includeAmtIssuedFieldonModal.value = false;
@@ -84,6 +86,8 @@ class CCheckoutController extends GetxController {
   TextEditingController amtIssuedFieldController = TextEditingController();
 
   TextEditingController customerNameFieldController = TextEditingController();
+  TextEditingController customerContactsFieldController =
+      TextEditingController();
   final customerBalField = TextEditingController();
   final TextEditingController modalQtyFieldController = TextEditingController();
 
@@ -298,6 +302,15 @@ class CCheckoutController extends GetxController {
                   title: 'select payment method...',
                   btnTitle: '',
                   editFontSize: true,
+                ),
+                const SizedBox(
+                  height: CSizes.spaceBtnSections / 4,
+                ),
+                CPaymentMethodsTile(
+                  paymentMethod: CPaymentMethodModel(
+                    platformLogo: CImages.deferred1,
+                    platformName: 'credit',
+                  ),
                 ),
                 const SizedBox(
                   height: CSizes.spaceBtnSections / 4,
@@ -549,8 +562,10 @@ class CCheckoutController extends GetxController {
   }
 
   resetSalesFields() {
-    customerBal.value = 0.0;
     amtIssuedFieldController.text = '';
+    customerNameFieldController.text = '';
+    customerBal.value = 0.0;
+    customerContactsFieldController.text = '';
     customerBalField.text == '';
     itemExists.value = false;
 
@@ -709,7 +724,7 @@ class CCheckoutController extends GetxController {
                       child: ElevatedButton.icon(
                         onPressed: () {
                           includeAmtIssuedFieldonModal.value = true;
-                          onCompleteTxnBtnPressed();
+                          onCheckoutBtnPressed();
                         },
                         label: Text(
                           'complete txn',
@@ -737,11 +752,11 @@ class CCheckoutController extends GetxController {
     );
   }
 
-  onCompleteTxnBtnPressed() {
+  onCheckoutBtnPressed() {
     if (selectedPaymentMethod.value.platformName == 'cash') {
       if (amtIssuedFieldController.text == '') {
         CPopupSnackBar.customToast(
-          message: 'please enter the amount issued by customer!!',
+          message: 'please enter the amount issued by the customer!!',
           forInternetConnectivityStatus: false,
         );
         setFocusOnAmtIssuedField.value = true;
