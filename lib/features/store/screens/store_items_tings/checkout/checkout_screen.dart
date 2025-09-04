@@ -816,23 +816,24 @@ class CCheckoutScreen extends StatelessWidget {
                   width: CHelperFunctions.screenWidth() * 0.98,
                   child: ElevatedButton.icon(
                     onPressed: () {
-                      if ((checkoutController.amtIssuedFieldController.text
-                                      .trim() ==
-                                  '' &&
-                              checkoutController.selectedPaymentMethod.value
-                                      .platformName ==
-                                  'cash') ||
-                          (double.parse(checkoutController
-                                      .amtIssuedFieldController.text
-                                      .trim()) <
-                                  cartController.totalCartPrice.value) &&
-                              checkoutController.selectedPaymentMethod.value
-                                      .platformName ==
-                                  'cash') {
-                        checkoutController.triggerCheckoutActionModal(context);
-                      } else {
-                        checkoutController.onCheckoutBtnPressed();
-                      }
+                      // if ((checkoutController.amtIssuedFieldController.text
+                      //                 .trim() ==
+                      //             '' &&
+                      //         checkoutController.selectedPaymentMethod.value
+                      //                 .platformName ==
+                      //             'cash') ||
+                      //     (double.parse(checkoutController
+                      //                 .amtIssuedFieldController.text
+                      //                 .trim()) <
+                      //             cartController.totalCartPrice.value) &&
+                      //         checkoutController.selectedPaymentMethod.value
+                      //                 .platformName ==
+                      //             'cash') {
+                      //   checkoutController.triggerCheckoutActionModal(context);
+                      // } else {
+                      //   checkoutController.onCheckoutBtnPressed();
+                      // }
+                      checkoutController.onCheckoutBtnPressed();
                     },
                     label: SizedBox(
                       height: 34.1,

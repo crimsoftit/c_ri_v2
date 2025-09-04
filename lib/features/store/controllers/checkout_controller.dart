@@ -112,7 +112,7 @@ class CCheckoutController extends GetxController {
   final Rx<FocusNode> customerNameFocusNode = FocusNode().obs;
 
   /// -- process txn --
-  void processTxn() async {
+  void processTxn(String txnStatus) async {
     try {
       // -- start loader --
       CFullScreenLoader.openLoadingDialog(
@@ -180,7 +180,8 @@ class CCheckoutController extends GetxController {
             DateFormat('yyyy-MM-dd @ kk:mm').format(clock.now()),
             0,
             'append',
-            'complete',
+            txnStatus,
+            //'complete',
           );
 
           // save txn data into the db
@@ -776,7 +777,8 @@ class CCheckoutController extends GetxController {
         return;
       }
     }
-    if (selectedPaymentMethod.value.platformName == 'mPesa' &&
+    if ((selectedPaymentMethod.value.platformName == 'mPesa' ||
+            selectedPaymentMethod.value.platformName == 'credit') &&
         customerNameFieldController.text == '') {
       customerNameFocusNode.value.requestFocus();
       CPopupSnackBar.warningSnackBar(
@@ -786,7 +788,28 @@ class CCheckoutController extends GetxController {
       );
       return;
     }
-    processTxn();
+    if (selectedPaymentMethod.value.platformName == 'credit') {
+      if (customerNameFieldController.text == '') {
+        customerNameFocusNode.value.requestFocus();
+        CPopupSnackBar.warningSnackBar(
+          title: 'customer details required!',
+          message:
+              'please provide customer\'s name for ${selectedPaymentMethod.value.platformName} payment verification',
+        );
+        return;
+      }
+    }
+
+    /// -- check if txn is to be completed or invoiced --
+    String txnType;
+    switch (selectedPaymentMethod.value.platformName) {
+      case "credit":
+        txnType = 'invoiced';
+        break;
+      default:
+        txnType = 'complete';
+    }
+    processTxn(txnType);
   }
 
   @override

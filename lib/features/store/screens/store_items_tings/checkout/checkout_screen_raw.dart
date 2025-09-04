@@ -833,7 +833,7 @@ class CCheckoutScreenRaw extends StatelessWidget {
                       );
                       return;
                     }
-                    checkoutController.processTxn();
+                    checkoutController.processTxn("complete");
                   },
                   label: SizedBox(
                     height: 34.1,
