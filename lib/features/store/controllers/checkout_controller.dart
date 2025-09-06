@@ -570,9 +570,6 @@ class CCheckoutController extends GetxController {
     customerBalField.text == '';
     itemExists.value = false;
 
-    // clear cart
-    //cartController.clearCart();
-
     setFocusOnAmtIssuedField.value = false;
   }
 

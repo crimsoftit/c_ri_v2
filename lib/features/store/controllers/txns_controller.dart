@@ -551,7 +551,9 @@ class CTxnsController extends GetxController {
             if (unsyncedTxnUpdates.isNotEmpty) {
               for (var updateItem in unsyncedTxnUpdates) {
                 updateItem.syncAction = 'none';
-                updateItem.txnStatus = 'complete';
+                updateItem.txnStatus = updateItem.txnStatus == 'invoiced'
+                    ? 'invoiced'
+                    : 'complete';
 
                 // -- update sales data on the cloud
                 updateReceiptItemCloudData(updateItem.soldItemId!, updateItem);

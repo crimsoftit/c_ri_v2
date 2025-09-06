@@ -109,15 +109,17 @@ class CItemsListView extends StatelessWidget {
               itemCount: itemsCount,
               itemBuilder: (context, index) {
                 var avatarTxt = '';
-                var itemProductId = 0;
+                var itemIsSynced = 0;
                 var itemName = '';
+                var itemProductId = 0;
+
                 var qtyRefunded = 0;
                 var qtySold = 0;
+                var syncAction = '';
                 var txnAmount = 0.0;
                 var txnModifiedDate = '';
+                var txnStatus = '';
                 var unitSellingPrice = 0.0;
-                var itemIsSynced = 0;
-                var syncAction = '';
 
                 switch (space) {
                   case "refunds":
@@ -158,6 +160,10 @@ class CItemsListView extends StatelessWidget {
                     txnModifiedDate = salesController.foundRefunds.isNotEmpty
                         ? salesController.foundRefunds[index].lastModified
                         : salesController.refunds[index].lastModified;
+
+                    txnStatus = salesController.foundRefunds.isNotEmpty
+                        ? salesController.foundRefunds[index].txnStatus
+                        : salesController.refunds[index].txnStatus;
 
                     unitSellingPrice = salesController.foundRefunds.isNotEmpty
                         ? salesController.foundRefunds[index].unitSellingPrice
@@ -202,6 +208,10 @@ class CItemsListView extends StatelessWidget {
                         ? salesController.foundSales[index].lastModified
                         : salesController.sales[index].lastModified;
 
+                    txnStatus = salesController.foundSales.isNotEmpty
+                        ? salesController.foundSales[index].txnStatus
+                        : salesController.sales[index].txnStatus;
+
                     unitSellingPrice = salesController.foundSales.isNotEmpty
                         ? salesController.foundSales[index].unitSellingPrice
                         : salesController.sales[index].unitSellingPrice;
@@ -215,6 +225,7 @@ class CItemsListView extends StatelessWidget {
                     syncAction = '';
                     txnAmount = 0.0;
                     txnModifiedDate = '';
+                    txnStatus = '';
                     unitSellingPrice = 0.0;
                     CPopupSnackBar.errorSnackBar(
                       title: 'invalid tab space',
@@ -232,8 +243,6 @@ class CItemsListView extends StatelessWidget {
                         avatarTxt: avatarTxt,
                         includeRefundBtn: space == 'sales' ? true : false,
                         isSynced: 'isSynced: $itemIsSynced',
-                        syncAction: 'syncAction: $syncAction',
-                        titleTxt: itemName.toUpperCase(),
                         subTitleTxt1Item1:
                             't.Amount: $userCurrencyCode.$txnAmount ',
                         subTitleTxt1Item2:
@@ -243,6 +252,9 @@ class CItemsListView extends StatelessWidget {
                         subTitleTxt2Item2: '',
                         subTitleTxt3Item1: txnModifiedDate,
                         subTitleTxt3Item2: 'product id: $itemProductId',
+                        syncAction: 'syncAction: $syncAction',
+                        txnStatus: 'txnStatus: $txnStatus',
+                        titleTxt: itemName.toUpperCase(),
                         btn1Txt: 'info',
                         btn2Txt: space == 'inventory' ? 'sell' : 'update',
                         btn2Icon: space == 'inventory'
