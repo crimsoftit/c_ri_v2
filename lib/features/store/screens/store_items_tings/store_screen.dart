@@ -8,11 +8,13 @@ import 'package:c_ri/features/store/controllers/checkout_controller.dart';
 import 'package:c_ri/features/store/controllers/inv_controller.dart';
 import 'package:c_ri/features/store/controllers/search_bar_controller.dart';
 import 'package:c_ri/features/store/controllers/sync_controller.dart';
+import 'package:c_ri/features/store/controllers/txns_controller.dart';
 import 'package:c_ri/features/store/models/inv_model.dart';
 import 'package:c_ri/features/store/screens/store_items_tings/checkout/widgets/checkout_scan_fab.dart';
 import 'package:c_ri/features/store/screens/store_items_tings/inventory/widgets/inv_dialog.dart';
 import 'package:c_ri/features/store/screens/store_items_tings/widgets/inv_gridview_screen.dart';
 import 'package:c_ri/features/store/screens/store_items_tings/widgets/items_listview.dart';
+import 'package:c_ri/features/store/screens/store_items_tings/widgets/txn_items.dart';
 import 'package:c_ri/utils/constants/colors.dart';
 import 'package:c_ri/utils/constants/sizes.dart';
 import 'package:c_ri/utils/helpers/helper_functions.dart';
@@ -38,6 +40,9 @@ class CStoreScreen extends StatelessWidget {
 
     final searchController = Get.put(CSearchBarController());
 
+    //txnsController.fetchTxns();
+    Get.put(CTxnsController());
+
     // if (!invController.isLoading.value &&
     //     !syncController.processingSync.value &&
     //     !txnsController.isLoading.value &&
@@ -47,7 +52,10 @@ class CStoreScreen extends StatelessWidget {
     // }
 
     return DefaultTabController(
-      length: 3,
+      animationDuration: Duration(
+        seconds: 1,
+      ),
+      length: 5,
       child: Obx(
         () {
           return Scaffold(
@@ -261,7 +269,13 @@ class CStoreScreen extends StatelessWidget {
                           child: Text('inventory'),
                         ),
                         Tab(
-                          child: Text('sales'),
+                          child: Text('sales (all)'),
+                        ),
+                        Tab(
+                          child: Text('receipts'),
+                        ),
+                        Tab(
+                          child: Text('invoices'),
                         ),
                         Tab(
                           child: Text('refunds'),
@@ -284,6 +298,12 @@ class CStoreScreen extends StatelessWidget {
                     space: 'sales',
                   ),
 
+                  CTxnItemsListView(
+                    space: 'receipts',
+                  ),
+                  CTxnItemsListView(
+                    space: 'invoices',
+                  ),
                   CItemsListView(
                     space: 'refunds',
                   ),

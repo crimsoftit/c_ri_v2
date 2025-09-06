@@ -4,13 +4,13 @@ import 'package:c_ri/common/widgets/products/cart/positioned_cart_counter_widget
 import 'package:c_ri/common/widgets/search_bar/animated_search_bar.dart';
 import 'package:c_ri/common/widgets/shimmers/shimmer_effects.dart';
 import 'package:c_ri/common/widgets/tab_views/store_items_tabs.dart';
-import 'package:c_ri/features/personalization/controllers/user_controller.dart';
 import 'package:c_ri/features/personalization/screens/no_data/no_data_screen.dart';
 import 'package:c_ri/features/store/controllers/cart_controller.dart';
 import 'package:c_ri/features/store/controllers/checkout_controller.dart';
 import 'package:c_ri/features/store/controllers/inv_controller.dart';
 import 'package:c_ri/features/store/controllers/txns_controller.dart';
 import 'package:c_ri/features/store/controllers/search_bar_controller.dart';
+import 'package:c_ri/features/store/screens/store_items_tings/widgets/txn_items.dart';
 import 'package:c_ri/utils/constants/colors.dart';
 import 'package:c_ri/utils/constants/img_strings.dart';
 import 'package:c_ri/utils/constants/sizes.dart';
@@ -33,13 +33,13 @@ class CTxnsScreen extends StatelessWidget {
     final isDarkTheme = CHelperFunctions.isDarkMode(context);
     final searchController = Get.put(CSearchBarController());
     final txnsController = Get.put(CTxnsController());
-    final userController = Get.put(CUserController());
+    //final userController = Get.put(CUserController());
 
     Get.put(CInventoryController());
     txnsController.fetchTxns();
 
-    final currency =
-        CHelperFunctions.formatCurrency(userController.user.value.currencyCode);
+    // final currency =
+    //     CHelperFunctions.formatCurrency(userController.user.value.currencyCode);
 
     return DefaultTabController(
       length: 2,
@@ -194,196 +194,8 @@ class CTxnsScreen extends StatelessWidget {
                     );
                   }
 
-                  return SizedBox(
-                    height: CHelperFunctions.screenHeight() * 0.72,
-                    child: ListView.builder(
-                      shrinkWrap: true,
-                      scrollDirection: Axis.vertical,
-                      itemCount: txnsController.txns.length,
-                      itemBuilder: (context, index) {
-                        return Card(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(
-                              CSizes.borderRadiusSm,
-                            ),
-                            side: BorderSide(
-                              color: CColors.rBrown,
-                              width: 0.7,
-                            ),
-                          ),
-                          color: CColors.lightGrey,
-                          elevation: 0.3,
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(
-                              CSizes.borderRadiusSm,
-                            ),
-                            child: SingleChildScrollView(
-                              //physics: BouncingScrollPhysics(),
-                              physics: ClampingScrollPhysics(),
-                              child: Theme(
-                                data: Theme.of(context).copyWith(
-                                  dividerColor: Colors.transparent,
-                                ),
-                                child: ExpansionTile(
-                                  childrenPadding: EdgeInsets.all(8.0).copyWith(
-                                    top: 0,
-                                  ),
-                                  title: Row(
-                                    children: [
-                                      Expanded(
-                                        flex: 6,
-                                        child: Text(
-                                          'reciept #: ${txnsController.txns[index].txnId}',
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .labelMedium!
-                                              .apply(
-                                                color: CColors.rBrown,
-                                              ),
-                                        ),
-                                      ),
-                                      Expanded(
-                                        flex: 2,
-                                        child: Text(
-                                          '${userController.user.value.currencyCode}.${txnsController.txns[index].totalAmount}',
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .labelMedium!
-                                              .apply(
-                                                color: CColors.rBrown,
-                                              ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  onExpansionChanged: (isExpanded) {
-                                    txnsController.receiptItems.clear();
-                                    if (isExpanded) {
-                                      if (txnsController.receiptItems.isEmpty) {
-                                        txnsController.fetchTxnItems(
-                                            txnsController.txns[index].txnId);
-                                      }
-                                    }
-                                    // if (isExpanded) {
-                                    //   if (txnsController.receiptItems.isEmpty) {
-                                    //     txnsController.fetchTxnItems(
-                                    //         txnsController.txns[index].txnId);
-                                    //   }
-                                    // } else {
-                                    //   txnsController.receiptItems.clear();
-                                    // }
-                                  },
-                                  children: [
-                                    Text(
-                                      'receipt items',
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .labelMedium!
-                                          .apply(
-                                            color: CColors.rBrown,
-                                          ),
-                                    ),
-                                    Divider(
-                                      // color: isDarkTheme
-                                      //     ? CColors.grey
-                                      //    : CColors.rBrown,
-                                      color: CColors.grey,
-                                    ),
-                                    ListView.builder(
-                                      shrinkWrap: true,
-                                      physics: ClampingScrollPhysics(),
-                                      scrollDirection: Axis.vertical,
-                                      itemCount:
-                                          txnsController.receiptItems.length,
-                                      itemBuilder: (context, index) {
-                                        return ExpansionTile(
-                                          title: Text(
-                                            '${txnsController.receiptItems[index].productName} ${txnsController.receiptItems[index].quantity} items @ $currency.${(txnsController.receiptItems[index].quantity * txnsController.receiptItems[index].unitSellingPrice)} usp:${txnsController.receiptItems[index].unitSellingPrice}',
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .labelMedium!
-                                                .apply(
-                                                  color: CColors.rBrown,
-                                                ),
-                                            overflow: TextOverflow.ellipsis,
-                                            maxLines: 2,
-                                          ),
-                                          onExpansionChanged: (isExpanded) {
-                                            // txnsController.receiptItems.clear();
-                                            // if (isExpanded) {
-                                            //   txnsController.fetchTxnItems(
-                                            //       txnsController
-                                            //           .txns[index].txnId);
-                                            // }
-                                          },
-                                          children: [
-                                            Row(
-                                              children: [
-                                                IconButton(
-                                                  onPressed: () {
-                                                    Get.toNamed(
-                                                      '/sales/sold_item_details',
-                                                      arguments: txnsController
-                                                          .receiptItems[index]
-                                                          .soldItemId,
-                                                    );
-                                                  },
-                                                  icon: const Icon(
-                                                    Iconsax.information,
-                                                    size: CSizes.iconSm,
-                                                    color: CColors.rBrown,
-                                                  ),
-                                                ),
-                                                const SizedBox(
-                                                  width: CSizes
-                                                      .spaceBtnInputFields,
-                                                ),
-                                                TextButton.icon(
-                                                  icon: const Icon(
-                                                    Iconsax.undo,
-                                                    size: CSizes.iconSm,
-                                                    color: CColors.rBrown,
-                                                  ),
-                                                  label: Text(
-                                                    'refund',
-                                                    style: Theme.of(context)
-                                                        .textTheme
-                                                        .labelMedium!
-                                                        .apply(
-                                                            color: Colors.red),
-                                                  ),
-                                                  style: TextButton.styleFrom(
-                                                    padding: EdgeInsets.zero,
-                                                    minimumSize: Size(
-                                                      30,
-                                                      20,
-                                                    ),
-                                                    alignment:
-                                                        Alignment.centerLeft,
-                                                  ),
-                                                  onPressed: () {
-                                                    txnsController
-                                                        .refundItemActionModal(
-                                                            context,
-                                                            txnsController
-                                                                    .receiptItems[
-                                                                index]);
-                                                  },
-                                                ),
-                                              ],
-                                            ),
-                                          ],
-                                        );
-                                      },
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
-                        );
-                      },
-                    ),
+                  return CTxnItemsListView(
+                    space: 'receipts',
                   );
                 },
               ),

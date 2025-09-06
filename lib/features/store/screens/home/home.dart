@@ -119,7 +119,7 @@ class HomeScreen extends StatelessWidget {
                                 width: 150.0,
                                 child: OutlinedButton.icon(
                                   icon: Icon(
-                                    Iconsax.add,
+                                    Iconsax.tag,
                                     color: CColors.white,
                                   ),
                                   label: Text(

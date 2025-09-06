@@ -14,13 +14,17 @@ class CTabBar extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     //final isDarkTheme = CHelperFunctions.isDarkMode(context);
     return TabBar(
-      tabAlignment: TabAlignment.start,
-      isScrollable: true,
       indicatorColor: CColors.rBrown,
+      isScrollable: true,
+      labelColor: CColors.rBrown,
+      // padding: const EdgeInsets.only(
+      //   left: 5.0,
+      // ),
+      tabAlignment: TabAlignment.start,
+      tabs: tabs,
+
       unselectedLabelColor: CColors.darkGrey,
       // labelColor: isDarkTheme ? CColors.white : CColors.rBrown,
-      labelColor: CColors.rBrown,
-      tabs: tabs,
     );
   }
 

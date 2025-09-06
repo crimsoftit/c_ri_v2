@@ -70,6 +70,7 @@ class CInventoryController extends GetxController {
   final syncIsLoading = false.obs;
 
   final searchController = Get.put(CSearchBarController());
+
   final userController = Get.put(CUserController());
 
   @override

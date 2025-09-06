@@ -61,14 +61,18 @@ class CTxnsController extends GetxController {
 
   DbHelper dbHelper = DbHelper.instance;
 
+  final RxList<CTxnsModel> invoices = <CTxnsModel>[].obs;
+  final RxList<CTxnsModel> foundInvoices = <CTxnsModel>[].obs;
+
   final RxList<CTxnsModel> sales = <CTxnsModel>[].obs;
   final RxList<CTxnsModel> foundSales = <CTxnsModel>[].obs;
-
   final RxList<CTxnsModel> txns = <CTxnsModel>[].obs;
   final RxList<CTxnsModel> foundTxns = <CTxnsModel>[].obs;
   RxList<CTxnsModel> receiptItems = <CTxnsModel>[].obs;
   final RxList<CTxnsModel> refunds = <CTxnsModel>[].obs;
   final RxList<CTxnsModel> foundRefunds = <CTxnsModel>[].obs;
+
+  final RxList<CTxnsModel> receipts = <CTxnsModel>[].obs;
 
   final RxList<CTxnsModel> allGsheetTxnsData = <CTxnsModel>[].obs;
   final RxList<CTxnsModel> unsyncedTxnAppends = <CTxnsModel>[].obs;
@@ -132,11 +136,11 @@ class CTxnsController extends GetxController {
       foundRefunds.clear();
       await dbHelper.openDb();
 
-      // fetch
+      // fetch sales from local db
       final soldItems =
           await dbHelper.fetchAllSoldItems(userController.user.value.email);
 
-      // assign txns to sales list
+      // assign sold items to sales list
       sales.assignAll(soldItems);
 
       // assign values for unsynced txn appends
@@ -196,10 +200,22 @@ class CTxnsController extends GetxController {
       final transactions = await dbHelper
           .fetchSoldItemsGroupedByTxnId(userController.user.value.email);
 
-      // assign txns to soldItemsList
+      // assign transactions to txns list
       txns.assignAll(transactions);
 
       foundTxns.value = txns;
+
+      // assign complete txns to receipts list
+      final completeTxns = txns
+          .where((txn) => txn.txnStatus.toLowerCase().contains('complete'))
+          .toList();
+      receipts.assignAll(completeTxns);
+
+      // assign credit sales to invoices list
+      final creditSales = txns
+          .where((txn) => txn.txnStatus.toLowerCase().contains('invoiced'))
+          .toList();
+      invoices.assignAll(creditSales);
 
       txnsFetched.value = true;
 
