@@ -6,7 +6,6 @@ import 'package:c_ri/utils/helpers/helper_functions.dart';
 import 'package:c_ri/utils/popups/snackbars.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:iconsax/iconsax.dart';
 
 class CTxnItemsListView extends StatelessWidget {
   const CTxnItemsListView({
@@ -86,15 +85,15 @@ class CTxnItemsListView extends StatelessWidget {
               }
               totalAmount = itemQty * usp;
               return Card(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(
-                    CSizes.borderRadiusSm,
-                  ),
-                  side: BorderSide(
-                    color: CColors.rBrown,
-                    width: 0.7,
-                  ),
-                ),
+                // shape: RoundedRectangleBorder(
+                //   borderRadius: BorderRadius.circular(
+                //     CSizes.borderRadiusSm,
+                //   ),
+                //   side: BorderSide(
+                //     color: CColors.rBrown,
+                //     width: 0.7,
+                //   ),
+                // ),
                 color: CColors.lightGrey,
                 elevation: 0.3,
                 child: ClipRRect(
@@ -110,14 +109,19 @@ class CTxnItemsListView extends StatelessWidget {
                       ),
                       child: ExpansionTile(
                         childrenPadding: EdgeInsets.all(8.0).copyWith(
+                          bottom: 0,
+                          left: 14.0,
                           top: 0,
                         ),
+                        // tilePadding: const EdgeInsets.all(
+                        //   10.0,
+                        // ),
                         title: Row(
                           children: [
                             Expanded(
                               flex: 6,
                               child: Text(
-                                'reciept #$txnId',
+                                'TXN #$txnId',
                                 style: Theme.of(context)
                                     .textTheme
                                     .labelMedium!
@@ -157,105 +161,86 @@ class CTxnItemsListView extends StatelessWidget {
                           // }
                         },
                         children: [
-                          Text(
-                            'receipt items',
-                            style:
-                                Theme.of(context).textTheme.labelMedium!.apply(
-                                      color: CColors.rBrown,
-                                    ),
-                          ),
-                          Divider(
-                            // color: isDarkTheme
-                            //     ? CColors.grey
-                            //    : CColors.rBrown,
-                            color: CColors.grey,
-                          ),
-                          ListView.builder(
-                            shrinkWrap: true,
-                            physics: ClampingScrollPhysics(),
-                            scrollDirection: Axis.vertical,
-                            itemCount: txnsController.receiptItems.length,
-                            itemBuilder: (context, index) {
-                              return ExpansionTile(
-                                title: Text(
-                                  '${txnsController.receiptItems[index].productName} ${txnsController.receiptItems[index].quantity} items @ $currency.${(txnsController.receiptItems[index].quantity * txnsController.receiptItems[index].unitSellingPrice)} usp:${txnsController.receiptItems[index].unitSellingPrice}',
+                          Row(
+                            children: [
+                              Expanded(
+                                flex: 1,
+                                child: Text(
+                                  'item(s):',
                                   style: Theme.of(context)
                                       .textTheme
                                       .labelMedium!
                                       .apply(
-                                        color: CColors.rBrown,
+                                        color: CColors.darkerGrey,
+                                        //fontStyle: FontStyle.italic,
                                       ),
-                                  overflow: TextOverflow.ellipsis,
-                                  maxLines: 2,
                                 ),
-                                onExpansionChanged: (isExpanded) {
-                                  // txnsController.receiptItems.clear();
-                                  // if (isExpanded) {
-                                  //   txnsController.fetchTxnItems(
-                                  //       txnsController
-                                  //           .txns[index].txnId);
-                                  // }
-                                },
-                                children: [
-                                  Row(
-                                    children: [
-                                      IconButton(
-                                        onPressed: () {
-                                          Get.toNamed(
-                                            '/sales/sold_item_details',
-                                            arguments: txnsController
-                                                .receiptItems[index].soldItemId,
-                                          );
-                                        },
-                                        icon: const Icon(
-                                          Iconsax.information,
-                                          size: CSizes.iconSm,
-                                          color: CColors.rBrown,
-                                        ),
-                                      ),
-                                      const SizedBox(
-                                        width: CSizes.spaceBtnInputFields,
-                                      ),
-                                      TextButton.icon(
-                                        icon: const Icon(
-                                          Iconsax.undo,
-                                          size: CSizes.iconSm,
-                                          color: CColors.rBrown,
-                                        ),
-                                        label: Text(
-                                          'refund',
+                              ),
+                              Expanded(
+                                flex: 4,
+                                child: ListView.builder(
+                                  shrinkWrap: true,
+                                  physics: ClampingScrollPhysics(),
+                                  scrollDirection: Axis.vertical,
+                                  itemCount: txnsController.receiptItems.length,
+                                  itemBuilder: (context, index) {
+                                    return Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          '${txnsController.receiptItems[index].productName.toUpperCase()} (${txnsController.receiptItems[index].quantity} item(s) @ $currency.${(txnsController.receiptItems[index].quantity * txnsController.receiptItems[index].unitSellingPrice)})',
                                           style: Theme.of(context)
                                               .textTheme
                                               .labelMedium!
-                                              .apply(color: Colors.red),
+                                              .apply(
+                                                color: CColors.rBrown,
+                                              ),
+                                          overflow: TextOverflow.ellipsis,
+                                          maxLines: 2,
                                         ),
-                                        style: TextButton.styleFrom(
-                                          padding: EdgeInsets.zero,
-                                          minimumSize: Size(
-                                            30,
-                                            20,
-                                          ),
-                                          alignment: Alignment.centerLeft,
-                                        ),
-                                        onPressed: () {
-                                          txnsController.refundItemActionModal(
-                                              context,
-                                              txnsController
-                                                  .receiptItems[index]);
-                                        },
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              );
-                            },
+                                      ],
+                                    );
+                                  },
+                                ),
+                              ),
+                            ],
                           ),
+                          // Divider(
+                          //   // color: isDarkTheme
+                          //   //     ? CColors.grey
+                          //   //    : CColors.rBrown,
+                          //   color: CColors.grey,
+                          // ),
+
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               if (customerName != '' || customerContacts != '')
-                                Text(
-                                  'sold to: $customerName $customerContacts',
+                                Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Expanded(
+                                      flex: 1,
+                                      child: Text(
+                                        'sold to:',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .labelMedium!
+                                            .apply(
+                                              color: CColors.darkerGrey,
+                                              //fontStyle: FontStyle.italic,
+                                            ),
+                                      ),
+                                    ),
+                                    Expanded(
+                                      flex: 4,
+                                      child: Text(
+                                        '$customerName $customerContacts',
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               Row(
                                 children: [

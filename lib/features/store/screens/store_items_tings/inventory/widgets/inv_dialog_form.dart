@@ -4,6 +4,7 @@ import 'package:c_ri/features/store/models/inv_model.dart';
 import 'package:c_ri/utils/constants/colors.dart';
 import 'package:c_ri/utils/constants/sizes.dart';
 import 'package:c_ri/utils/helpers/helper_functions.dart';
+import 'package:c_ri/utils/popups/snackbars.dart';
 import 'package:c_ri/utils/validators/validation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -417,12 +418,17 @@ class AddUpdateInventoryForm extends StatelessWidget {
                               }
                             }
 
-                            invController
-                                .addOrUpdateInventoryItem(inventoryItem);
+                            // invController
+                            //     .addOrUpdateInventoryItem(inventoryItem);
 
                             if (await invController
                                 .addOrUpdateInventoryItem(inventoryItem)) {
                               Navigator.pop(Get.overlayContext!, true);
+                            } else {
+                              CPopupSnackBar.errorSnackBar(
+                                title: 'error adding/updating inventory item ',
+                              );
+                              return;
                             }
                           },
                         );

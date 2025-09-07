@@ -12,7 +12,7 @@ class CExpansionTile extends StatelessWidget {
     required this.titleTxt,
     required this.subTitleTxt1Item1,
     required this.subTitleTxt1Item2,
-    required this.subTitleTxt2Item1,
+    this.subTitleTxt2Item1,
     required this.subTitleTxt2Item2,
     required this.subTitleTxt3Item1,
     required this.subTitleTxt3Item2,
@@ -36,7 +36,7 @@ class CExpansionTile extends StatelessWidget {
   final String titleTxt;
   final String subTitleTxt1Item1;
   final String subTitleTxt1Item2;
-  final String subTitleTxt2Item1;
+  final String? subTitleTxt2Item1;
   final String subTitleTxt2Item2;
   final String subTitleTxt3Item1;
   final String subTitleTxt3Item2;

@@ -21,7 +21,7 @@ class CSyncController extends GetxController {
   Future<bool> processSync() async {
     try {
       processingSync.value = true;
-      await invController.cloudSyncInventory();
+      //await invController.cloudSyncInventory();
       //await invController.cloudSyncInventory();
 
       if (await invController.cloudSyncInventory()) {

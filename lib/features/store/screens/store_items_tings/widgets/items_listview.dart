@@ -119,7 +119,7 @@ class CItemsListView extends StatelessWidget {
                 var txnAmount = 0.0;
                 var txnModifiedDate = '';
                 var txnStatus = '';
-                var unitSellingPrice = 0.0;
+                //var unitSellingPrice = 0.0;
 
                 switch (space) {
                   case "refunds":
@@ -165,9 +165,9 @@ class CItemsListView extends StatelessWidget {
                         ? salesController.foundRefunds[index].txnStatus
                         : salesController.refunds[index].txnStatus;
 
-                    unitSellingPrice = salesController.foundRefunds.isNotEmpty
-                        ? salesController.foundRefunds[index].unitSellingPrice
-                        : salesController.refunds[index].unitSellingPrice;
+                    // unitSellingPrice = salesController.foundRefunds.isNotEmpty
+                    //     ? salesController.foundRefunds[index].unitSellingPrice
+                    //     : salesController.refunds[index].unitSellingPrice;
                     break;
                   case "sales":
                     avatarTxt = salesController.foundSales.isNotEmpty
@@ -212,9 +212,9 @@ class CItemsListView extends StatelessWidget {
                         ? salesController.foundSales[index].txnStatus
                         : salesController.sales[index].txnStatus;
 
-                    unitSellingPrice = salesController.foundSales.isNotEmpty
-                        ? salesController.foundSales[index].unitSellingPrice
-                        : salesController.sales[index].unitSellingPrice;
+                  // unitSellingPrice = salesController.foundSales.isNotEmpty
+                  //     ? salesController.foundSales[index].unitSellingPrice
+                  //     : salesController.sales[index].unitSellingPrice;
                   default:
                     avatarTxt = '';
                     itemIsSynced = 0;
@@ -226,7 +226,7 @@ class CItemsListView extends StatelessWidget {
                     txnAmount = 0.0;
                     txnModifiedDate = '';
                     txnStatus = '';
-                    unitSellingPrice = 0.0;
+                    //unitSellingPrice = 0.0;
                     CPopupSnackBar.errorSnackBar(
                       title: 'invalid tab space',
                     );
@@ -247,8 +247,8 @@ class CItemsListView extends StatelessWidget {
                             't.Amount: $userCurrencyCode.$txnAmount ',
                         subTitleTxt1Item2:
                             '($qtySold sold, $qtyRefunded refunded)',
-                        subTitleTxt2Item1:
-                            'usp: $userCurrencyCode.$unitSellingPrice',
+                        // subTitleTxt2Item1:
+                        //     'usp: $userCurrencyCode.$unitSellingPrice',
                         subTitleTxt2Item2: '',
                         subTitleTxt3Item1: txnModifiedDate,
                         subTitleTxt3Item2: 'product id: $itemProductId',

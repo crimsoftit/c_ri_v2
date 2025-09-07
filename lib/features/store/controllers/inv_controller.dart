@@ -35,7 +35,8 @@ class CInventoryController extends GetxController {
   final RxList<CInvDelsModel> dItems = <CInvDelsModel>[].obs;
   final RxList<CInvDelsModel> pendingUpdates = <CInvDelsModel>[].obs;
   final RxList<CInventoryModel> allGSheetData = <CInventoryModel>[].obs;
-  final RxList<CInventoryModel> topSoldItems = <CInventoryModel>[].obs;
+  //final RxList<CInventoryModel> topSoldItems = <CInventoryModel>[].obs;
+  final RxList<CInventoryModel> topSellers = <CInventoryModel>[].obs;
   final RxList<CInventoryModel> unSyncedAppends = <CInventoryModel>[].obs;
   final RxList<CInventoryModel> unSyncedUpdates = <CInventoryModel>[].obs;
   final RxList<CInventoryModel> userGSheetData = <CInventoryModel>[].obs;
@@ -79,9 +80,9 @@ class CInventoryController extends GetxController {
     fetchUserInventoryItems();
     fetchInvDels();
     fetchInvUpdates();
+    //fetchTopSellers();
 
     await initInvSync();
-    fetchTopSellers();
 
     //txtNameController.addListener(printLatestFieldValue);
 
@@ -136,6 +137,13 @@ class CInventoryController extends GetxController {
 
       // assign inventory items
       inventoryItems.assignAll(fetchedItems);
+
+      // fetch top sellers
+
+      var soldItems =
+          inventoryItems.where((soldItem) => soldItem.qtySold >= 1).toList();
+      soldItems.sort((a, b) => b.qtySold.compareTo(a.qtySold));
+      topSellers.assignAll(soldItems);
 
       if (searchController.showSearchField.isTrue &&
           searchController.txtSearchField.text == '') {
@@ -1061,7 +1069,7 @@ class CInventoryController extends GetxController {
           await dbHelper.fetchTopSellers(userController.user.value.email);
 
       // assign top sold items to a list
-      topSoldItems.assignAll(topSellers);
+      topSellers.assignAll(topSellers);
 
       // stop loader
       isLoading.value = false;

@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:c_ri/features/personalization/controllers/user_controller.dart';
+import 'package:c_ri/features/store/controllers/inv_controller.dart';
 import 'package:c_ri/features/store/controllers/txns_controller.dart';
 import 'package:c_ri/utils/constants/colors.dart';
 import 'package:c_ri/utils/helpers/helper_functions.dart';
@@ -15,6 +16,7 @@ class CDashboardController extends GetxController {
   static CDashboardController get instance => Get.find();
 
   /// -- variables --
+  final invController = Get.put(CInventoryController());
   final RxDouble weeklySalesHighestAmount = 0.0.obs;
   final txnsController = Get.put(CTxnsController());
   final RxList<double> weeklySales = <double>[].obs;
@@ -26,6 +28,7 @@ class CDashboardController extends GetxController {
       (result) async {
         if (result.isNotEmpty) {
           calculateWeeklySales();
+          //invController.fetchTopSellers();
         }
       },
     );

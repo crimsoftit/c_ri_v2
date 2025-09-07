@@ -99,7 +99,7 @@ class HomeScreenRaw extends StatelessWidget {
                               SizedBox(
                                 height: 100.0,
                                 child: ListView.separated(
-                                  itemCount: invController.topSoldItems.length,
+                                  itemCount: invController.topSellers.length,
                                   shrinkWrap: true,
                                   scrollDirection: Axis.horizontal,
                                   separatorBuilder: (_, __) {
@@ -113,7 +113,7 @@ class HomeScreenRaw extends StatelessWidget {
                                         Get.toNamed(
                                           '/inventory/item_details/',
                                           arguments: invController
-                                              .topSoldItems[index].productId,
+                                              .topSellers[index].productId,
                                         );
                                       },
                                       child: Column(
@@ -134,7 +134,7 @@ class HomeScreenRaw extends StatelessWidget {
                                             child: Center(
                                               child: CCircleAvatar(
                                                 avatarInitial: invController
-                                                    .topSoldItems[index].name[0]
+                                                    .topSellers[index].name[0]
                                                     .toUpperCase(),
                                                 bgColor: CColors.white,
                                                 txtColor: CColors.rBrown,
@@ -149,7 +149,7 @@ class HomeScreenRaw extends StatelessWidget {
                                               children: [
                                                 Text(
                                                   invController
-                                                      .topSoldItems[index].name,
+                                                      .topSellers[index].name,
                                                   style: Theme.of(context)
                                                       .textTheme
                                                       .labelMedium!
@@ -162,7 +162,7 @@ class HomeScreenRaw extends StatelessWidget {
                                                   maxLines: 1,
                                                 ),
                                                 Text(
-                                                  '${invController.topSoldItems[index].qtySold} sold',
+                                                  '${invController.topSellers[index].qtySold} sold',
                                                   style: Theme.of(context)
                                                       .textTheme
                                                       .labelMedium!
