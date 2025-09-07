@@ -15,6 +15,8 @@ import 'package:iconsax/iconsax.dart';
 class CInvDetails extends StatelessWidget {
   const CInvDetails({super.key});
 
+  /// TODO: include txn status (invoiced, complete)
+
   @override
   Widget build(BuildContext context) {
     AddUpdateItemDialog dialog = AddUpdateItemDialog();

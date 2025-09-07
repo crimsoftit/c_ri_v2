@@ -27,6 +27,7 @@ class CProductCardVertical extends StatelessWidget {
     this.itemAvatar,
     this.lowStockNotifierLimit,
     this.onAvatarIconTap,
+    this.onDoubleTapAction,
     this.onTapAction,
     this.qtyAvailable,
     this.qtyRefunded,
@@ -50,7 +51,10 @@ class CProductCardVertical extends StatelessWidget {
       usp;
   final String itemName, pCode;
 
-  final VoidCallback? onTapAction, deleteAction, onAvatarIconTap;
+  final VoidCallback? deleteAction,
+      onAvatarIconTap,
+      onDoubleTapAction,
+      onTapAction;
 
   @override
   Widget build(BuildContext context) {
@@ -59,7 +63,8 @@ class CProductCardVertical extends StatelessWidget {
     final syncController = Get.put(CSyncController());
 
     return GestureDetector(
-      onDoubleTap: onTapAction,
+      onDoubleTap: onDoubleTapAction,
+      onTap: onTapAction,
       child: Container(
         width: 170,
         //height: 200.0,

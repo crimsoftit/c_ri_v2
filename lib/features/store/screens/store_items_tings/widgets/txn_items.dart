@@ -51,39 +51,38 @@ class CTxnItemsListView extends StatelessWidget {
             itemBuilder: (context, index) {
               var customerContacts = '';
               var customerName = '';
-              var itemQty = 0;
+              //var itemQty = 0;
 
               var txnId = 0;
               var totalAmount = 0.0;
-              var usp = 0.0;
+              //var usp = 0.0;
 
               switch (space) {
                 case 'receipts':
                   customerContacts =
                       txnsController.receipts[index].customerContacts;
                   customerName = txnsController.receipts[index].customerName;
-                  itemQty = txnsController.receipts[index].quantity;
+                  //itemQty = txnsController.receipts[index].quantity;
                   txnId = txnsController.receipts[index].txnId;
-                  usp = txnsController.receipts[index].unitSellingPrice;
-                  //totalAmount = itemQty * usp;
+                  //usp = txnsController.receipts[index].unitSellingPrice;
+                  totalAmount = txnsController.receipts[index].totalAmount;
+
                   break;
                 case 'invoices':
                   customerContacts =
                       txnsController.invoices[index].customerContacts;
                   customerName = txnsController.invoices[index].customerName;
-                  itemQty = txnsController.invoices[index].quantity;
+                  //itemQty = txnsController.invoices[index].quantity;
                   txnId = txnsController.invoices[index].txnId;
-                  usp = txnsController.invoices[index].unitSellingPrice;
-
+                  //usp = txnsController.invoices[index].unitSellingPrice;
+                  totalAmount = txnsController.invoices[index].totalAmount;
                   break;
                 default:
-                  itemQty = 0;
+                  //itemQty = 0;
                   txnId = 0;
                   totalAmount = 0.0;
-                  usp = 0.0;
-                  totalAmount = 0.0;
+                //usp = 0.0;
               }
-              totalAmount = itemQty * usp;
               return Card(
                 // shape: RoundedRectangleBorder(
                 //   borderRadius: BorderRadius.circular(
@@ -116,32 +115,93 @@ class CTxnItemsListView extends StatelessWidget {
                         // tilePadding: const EdgeInsets.all(
                         //   10.0,
                         // ),
-                        title: Row(
+                        initiallyExpanded: false,
+                        showTrailingIcon: space == 'invoices' ? false : true,
+                        title: Column(
                           children: [
-                            Expanded(
-                              flex: 6,
-                              child: Text(
-                                'TXN #$txnId',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .labelMedium!
-                                    .apply(
-                                      color: CColors.rBrown,
-                                    ),
-                              ),
+                            Row(
+                              children: [
+                                Expanded(
+                                  flex: 6,
+                                  child: Text(
+                                    'TXN #$txnId',
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .labelMedium!
+                                        .apply(
+                                          color: CColors.rBrown,
+                                          fontWeightDelta: 2,
+                                        ),
+                                  ),
+                                ),
+                                Expanded(
+                                  flex: 2,
+                                  child: Text(
+                                    '$currency.$totalAmount',
+                                    //'${userController.user.value.currencyCode}.$totalAmount',
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .labelMedium!
+                                        .apply(
+                                          color: CColors.rBrown,
+                                          fontWeightDelta: 2,
+                                        ),
+                                  ),
+                                ),
+                              ],
                             ),
-                            Expanded(
-                              flex: 2,
-                              child: Text(
-                                '${userController.user.value.currencyCode}.$totalAmount',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .labelMedium!
-                                    .apply(
-                                      color: CColors.rBrown,
-                                    ),
-                              ),
+                            SizedBox(
+                              height: CSizes.spaceBtnInputFields / 3,
                             ),
+                            if (customerName != '' || customerContacts != '')
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Expanded(
+                                    flex: 2,
+                                    child: Text(
+                                      'sold to:',
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .labelMedium!
+                                          .apply(
+                                            color: CColors.rBrown,
+                                            //fontStyle: FontStyle.italic,
+                                          ),
+                                    ),
+                                  ),
+                                  Expanded(
+                                    flex: 6,
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          'name: $customerName',
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .labelMedium!
+                                              .apply(
+                                                color: CColors.darkerGrey,
+                                                //fontStyle: FontStyle.italic,
+                                              ),
+                                        ),
+                                        Text(
+                                          'contacts: ${customerContacts.isEmpty ? "N/A" : customerContacts}',
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .labelMedium!
+                                              .apply(
+                                                color: CColors.darkerGrey,
+                                                //fontStyle: FontStyle.italic,
+                                              ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
                           ],
                         ),
                         onExpansionChanged: (isExpanded) {
@@ -151,14 +211,6 @@ class CTxnItemsListView extends StatelessWidget {
                               txnsController.fetchTxnItems(txnId);
                             }
                           }
-                          // if (isExpanded) {
-                          //   if (txnsController.receiptItems.isEmpty) {
-                          //     txnsController.fetchTxnItems(
-                          //         txnsController.txns[index].txnId);
-                          //   }
-                          // } else {
-                          //   txnsController.receiptItems.clear();
-                          // }
                         },
                         children: [
                           Row(
@@ -178,11 +230,7 @@ class CTxnItemsListView extends StatelessWidget {
                               ),
                               Expanded(
                                 flex: 4,
-                                child: ListView.builder(
-                                  shrinkWrap: true,
-                                  physics: ClampingScrollPhysics(),
-                                  scrollDirection: Axis.vertical,
-                                  itemCount: txnsController.receiptItems.length,
+                                child: ListView.separated(
                                   itemBuilder: (context, index) {
                                     return Column(
                                       crossAxisAlignment:
@@ -202,46 +250,51 @@ class CTxnItemsListView extends StatelessWidget {
                                       ],
                                     );
                                   },
+                                  itemCount: txnsController.receiptItems.length,
+                                  physics: ClampingScrollPhysics(),
+                                  scrollDirection: Axis.vertical,
+                                  separatorBuilder: (_, __) {
+                                    return SizedBox(
+                                      height: CSizes.spaceBtnItems / 4,
+                                    );
+                                  },
+                                  shrinkWrap: true,
                                 ),
+                                // ListView.builder(
+                                //   shrinkWrap: true,
+                                //   physics: ClampingScrollPhysics(),
+                                //   scrollDirection: Axis.vertical,
+                                //   itemCount: txnsController.receiptItems.length,
+                                //   itemBuilder: (context, index) {
+                                //     return Column(
+                                //       crossAxisAlignment:
+                                //           CrossAxisAlignment.start,
+                                //       children: [
+                                //         Text(
+                                //           '${txnsController.receiptItems[index].productName.toUpperCase()} (${txnsController.receiptItems[index].quantity} item(s) @ $currency.${(txnsController.receiptItems[index].quantity * txnsController.receiptItems[index].unitSellingPrice)})',
+                                //           style: Theme.of(context)
+                                //               .textTheme
+                                //               .labelMedium!
+                                //               .apply(
+                                //                 color: CColors.rBrown,
+                                //               ),
+                                //           overflow: TextOverflow.ellipsis,
+                                //           maxLines: 2,
+                                //         ),
+                                //       ],
+                                //     );
+                                //   },
+                                // ),
                               ),
                             ],
                           ),
-                          // Divider(
-                          //   // color: isDarkTheme
-                          //   //     ? CColors.grey
-                          //   //    : CColors.rBrown,
-                          //   color: CColors.grey,
+                          // SizedBox(
+                          //   height: CSizes.spaceBtnInputFields / 4,
                           // ),
 
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              if (customerName != '' || customerContacts != '')
-                                Row(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Expanded(
-                                      flex: 1,
-                                      child: Text(
-                                        'sold to:',
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .labelMedium!
-                                            .apply(
-                                              color: CColors.darkerGrey,
-                                              //fontStyle: FontStyle.italic,
-                                            ),
-                                      ),
-                                    ),
-                                    Expanded(
-                                      flex: 4,
-                                      child: Text(
-                                        '$customerName $customerContacts',
-                                      ),
-                                    ),
-                                  ],
-                                ),
                               Row(
                                 children: [
                                   OutlinedButton(

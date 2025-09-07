@@ -1,6 +1,8 @@
 import 'dart:core';
 
 class CSizes {
+  // -- appBar height
+  static const appBarHeight = 56.0;
   // -- padding & margin colors
   static const xs = 4.0;
   static const sm = 8.0;
@@ -25,9 +27,6 @@ class CSizes {
   static const btnWidth = 120.0;
   static const btnElevation = 4.0;
 
-  // -- appBar height
-  static const appBarHeight = 56.0;
-
   // -- image sizes
   static const imgThumbSize = 80.0;
 
@@ -42,20 +41,20 @@ class CSizes {
   static const borderRadiusLg = 12.0;
 
   // -- product item dimensions
-  static const pImgSize = 120.0;
-  static const pImgRadius = 16.0;
   static const pItemHeight = 160.0;
+  static const pImgRadius = 16.0;
+  static const pImgSize = 120.0;
 
   // -- input field sizes
   static const inputFieldRadius = 12.0;
   static const spaceBtnInputFields = 16.0;
 
   // -- card sizes
+  static const cardElevation = 2.0;
   static const cardRadiusLg = 16.0;
   static const cardRadiusMd = 12.0;
   static const cardRadiusSm = 10.0;
   static const cardRadiusXs = 6.0;
-  static const cardElevation = 2.0;
 
   // -- image carousel height --
   static const imgCarouselHeight = 36.0;

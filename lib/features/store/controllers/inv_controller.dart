@@ -139,11 +139,10 @@ class CInventoryController extends GetxController {
       inventoryItems.assignAll(fetchedItems);
 
       // fetch top sellers
-
-      var soldItems =
+      var soldInvItems =
           inventoryItems.where((soldItem) => soldItem.qtySold >= 1).toList();
-      soldItems.sort((a, b) => b.qtySold.compareTo(a.qtySold));
-      topSellers.assignAll(soldItems);
+      soldInvItems.sort((a, b) => b.qtySold.compareTo(a.qtySold));
+      topSellers.assignAll(soldInvItems);
 
       if (searchController.showSearchField.isTrue &&
           searchController.txtSearchField.text == '') {

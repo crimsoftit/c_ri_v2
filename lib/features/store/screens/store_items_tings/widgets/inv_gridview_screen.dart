@@ -10,6 +10,7 @@ import 'package:c_ri/features/store/screens/store_items_tings/inventory/widgets/
 import 'package:c_ri/utils/constants/img_strings.dart';
 import 'package:c_ri/utils/constants/sizes.dart';
 import 'package:c_ri/utils/helpers/helper_functions.dart';
+import 'package:c_ri/utils/popups/snackbars.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -343,10 +344,16 @@ class CInvGridviewScreen extends StatelessWidget {
                   //     },
                   //   );
                   // },
-                  onTapAction: () {
+                  onDoubleTapAction: () {
                     Get.toNamed(
                       '/inventory/item_details/',
                       arguments: invController.inventoryItems[index].productId,
+                    );
+                  },
+                  onTapAction: () {
+                    CPopupSnackBar.customToast(
+                      message: 'double tap on item to see details!!',
+                      forInternetConnectivityStatus: false,
                     );
                   },
                   pCode: sku,

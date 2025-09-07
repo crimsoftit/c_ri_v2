@@ -350,7 +350,7 @@ class CInvGridviewScreenRaw extends StatelessWidget {
                   //     },
                   //   );
                   // },
-                  onTapAction: () {
+                  onDoubleTapAction: () {
                     Get.toNamed(
                       '/inventory/item_details/',
                       arguments: invController.inventoryItems[index].productId,

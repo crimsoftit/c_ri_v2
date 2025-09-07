@@ -750,6 +750,7 @@ class CCheckoutController extends GetxController {
     );
   }
 
+  /// -- TODO: update stock count when item is sold o credit
   onCheckoutBtnPressed() {
     if (selectedPaymentMethod.value.platformName == 'cash') {
       if (amtIssuedFieldController.text == '') {
