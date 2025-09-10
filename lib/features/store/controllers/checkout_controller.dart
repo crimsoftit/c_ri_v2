@@ -171,7 +171,7 @@ class CCheckoutController extends GetxController {
             0.00,
             selectedPaymentMethod.value.platformName,
             customerNameFieldController.text.trim(),
-            '',
+            customerContactsFieldController.text.trim(),
             locationController.uAddress.value != ''
                 ? locationController.uAddress.value
                 : userController.user.value.userAddress,
@@ -565,6 +565,7 @@ class CCheckoutController extends GetxController {
   resetSalesFields() {
     amtIssuedFieldController.text = '';
     customerNameFieldController.text = '';
+    customerContactsFieldController.text = '';
     customerBal.value = 0.0;
     customerContactsFieldController.text = '';
     customerBalField.text == '';
@@ -792,7 +793,7 @@ class CCheckoutController extends GetxController {
         CPopupSnackBar.warningSnackBar(
           title: 'customer details required!',
           message:
-              'please provide customer\'s name for ${selectedPaymentMethod.value.platformName} payment verification',
+              'please provide customer\'s name and (or) contacts for ${selectedPaymentMethod.value.platformName} payment verification',
         );
         return;
       }
@@ -808,6 +809,79 @@ class CCheckoutController extends GetxController {
         txnType = 'complete';
     }
     processTxn(txnType);
+  }
+
+  confirmInvoicePaymentDialog(int txnId) {
+    Get.defaultDialog(
+      contentPadding: const EdgeInsets.all(CSizes.md),
+      title: 'complete transaction?',
+      middleText: 'are you certain payment is complete?',
+      confirm: ElevatedButton(
+        onPressed: () async {
+          // -- check internet connectivity
+          //final isConnected = await CNetworkManager.instance.isConnected();
+          //txnsController.receiptItems.clear();
+          if (txnsController.receiptItems.isEmpty) {
+            if (kDebugMode) {
+              print('receipt items cleared!!');
+              CPopupSnackBar.customToast(
+                message: 'receipt items cleared!!',
+                forInternetConnectivityStatus: false,
+              );
+            }
+            txnsController.fetchTxnItems(txnId);
+          }
+
+          for (var item in txnsController.receiptItems) {
+            var txnStatus = 'complete';
+            var lastModified =
+                DateFormat('yyyy-MM-dd @ kk:mm').format(clock.now());
+
+            await dbHelper.updateMultipleFieldsWithTransactionId(
+                item.txnId, lastModified, txnStatus);
+          }
+          txnsController.fetchTxns();
+          Navigator.of(Get.overlayContext!).pop();
+        },
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Colors.red,
+          side: const BorderSide(
+            color: Colors.red,
+          ),
+        ),
+        child: const Padding(
+          padding: EdgeInsets.symmetric(
+            horizontal: CSizes.lg,
+          ),
+          child: Text('confirm'),
+        ),
+      ),
+      cancel: OutlinedButton(
+        onPressed: () {
+          //fetchUserInventoryItems();
+          Navigator.of(Get.overlayContext!).pop();
+        },
+        child: const Text('cancel'),
+      ),
+    );
+  }
+
+  /// -- update all txn items bearing the txn id --
+  Future<bool> updateTxnItemsTxnStatus(
+      String lastModified, String txnStatus, int txnId) async {
+    try {
+      dbHelper.updateTxnItemsTxnStatus(lastModified, txnStatus, txnId);
+      return true;
+    } catch (e) {
+      if (kDebugMode) {
+        print(e.toString());
+        throw CPopupSnackBar.errorSnackBar(
+          title: 'Oh Snap! error updating invoiced items!',
+          message: e.toString(),
+        );
+      }
+      return false;
+    }
   }
 
   @override

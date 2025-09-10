@@ -529,4 +529,66 @@ class DbHelper extends GetxController {
   }
 
   /// -- update data on txns table after a refund --
+  Future<int> updateTxnItemsTxnStatus(
+      String lastModified, String txnStatus, int txnId) async {
+    try {
+      // Get a reference to the database.
+      final db = _db;
+
+      int updateResult = await db!.rawUpdate(
+        '''
+          UPDATE $txnsTable 
+          SET lastModified = ?, txnStatus = ? 
+          WHERE txnId = ?
+        ''',
+        [lastModified, txnStatus, txnId],
+      );
+
+      // if (kDebugMode) {
+      //   CPopupSnackBar.customToast(
+      //     message: '$updateResult',
+      //     forInternetConnectivityStatus: false,
+      //   );
+      // }
+
+      return updateResult;
+    } catch (e) {
+      if (kDebugMode) {
+        print(e.toString());
+        CPopupSnackBar.errorSnackBar(
+          title: 'txn sync error!',
+          message: 'error updating txns SYNC LOCALLY: $e',
+        );
+      }
+
+      throw e.toString();
+    }
+  }
+
+  Future<void> updateMultipleFieldsWithTransactionId(
+      int transactionId, String date, String txnStatus) async {
+    // Get a reference to the database.
+    final db = _db;
+
+    await db!.transaction((txn) async {
+      // Update multiple fields for all records where the transaction_id matches the provided ID
+      // The 'where' clause uses the transaction_id column and 'whereArgs' to safely pass the value
+      int count = await txn.update(
+        'txns', // Replace with your actual table name
+        {
+          'lastModified': date, // Replace with your actual field names
+          'txnStatus': txnStatus,
+          // Add more fields as needed
+        },
+        where:
+            'txnId = ?', // Replace 'transaction_id' with your actual column name
+        whereArgs: [transactionId], // Pass the transaction ID as a parameter
+      );
+
+      // The transaction is committed if no error is thrown. 'count' will indicate how many rows were updated.
+      if (kDebugMode) {
+        print('Updated $count rows with transaction ID: $transactionId');
+      }
+    });
+  }
 }

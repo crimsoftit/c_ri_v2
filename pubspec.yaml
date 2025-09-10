@@ -52,6 +52,9 @@ dependencies:
   #flutter_mpesa_package: any
 
 
+  expansion_tile_list: ^2.0.0
+
+
   # -- firebase packages
   firebase_app_check: any
   firebase_core: any

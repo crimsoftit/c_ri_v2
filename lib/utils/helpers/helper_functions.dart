@@ -54,7 +54,7 @@ class CHelperFunctions {
     );
   }
 
-  static void showAlert(String title, String message) {
+  static void showAlert(String title, String message, VoidCallback okAction) {
     showDialog(
       context: Get.context!,
       builder: (BuildContext context) {
@@ -63,8 +63,13 @@ class CHelperFunctions {
           content: Text(message),
           actions: [
             TextButton(
+              //onPressed: () => Navigator.of(context).pop(),
+              onPressed: okAction,
+              child: const Text('confirm'),
+            ),
+            TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: const Text('ok'),
+              child: const Text('cancel'),
             ),
           ],
         );

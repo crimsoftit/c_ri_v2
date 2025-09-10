@@ -1,11 +1,15 @@
+import 'package:c_ri/common/widgets/divider/c_divider.dart';
 import 'package:c_ri/features/personalization/controllers/user_controller.dart';
+import 'package:c_ri/features/store/controllers/checkout_controller.dart';
 import 'package:c_ri/features/store/controllers/txns_controller.dart';
 import 'package:c_ri/utils/constants/colors.dart';
 import 'package:c_ri/utils/constants/sizes.dart';
 import 'package:c_ri/utils/helpers/helper_functions.dart';
+import 'package:c_ri/utils/helpers/network_manager.dart';
 import 'package:c_ri/utils/popups/snackbars.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:iconsax/iconsax.dart';
 
 class CTxnItemsListView extends StatelessWidget {
   const CTxnItemsListView({
@@ -17,6 +21,8 @@ class CTxnItemsListView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final checkoutController = Get.put(CCheckoutController());
+    //final isDarkTheme = CHelperFunctions.isDarkMode(context);
     final txnsController = Get.put(CTxnsController());
     final userController = Get.put(CUserController());
     final currency =
@@ -24,11 +30,6 @@ class CTxnItemsListView extends StatelessWidget {
 
     return Obx(
       () {
-        if (!txnsController.isLoading.value &&
-            txnsController.receipts.isEmpty) {
-          txnsController.fetchTxns();
-        }
-
         var itemsCount = 0;
         switch (space) {
           case 'receipts':
@@ -42,6 +43,13 @@ class CTxnItemsListView extends StatelessWidget {
               title: 'invalid tab space',
             );
         }
+        if (!txnsController.isLoading.value &&
+            txnsController.receipts.isNotEmpty) {
+          txnsController.fetchTxns();
+        }
+        // if (!txnsController.isLoading.value && itemsCount == 0) {
+        //   txnsController.fetchTxns();
+        // }
         return SizedBox(
           height: CHelperFunctions.screenHeight() * 0.72,
           child: ListView.builder(
@@ -213,6 +221,9 @@ class CTxnItemsListView extends StatelessWidget {
                           }
                         },
                         children: [
+                          CDivider(
+                            startIndent: 0,
+                          ),
                           Row(
                             children: [
                               Expanded(
@@ -292,21 +303,45 @@ class CTxnItemsListView extends StatelessWidget {
                           //   height: CSizes.spaceBtnInputFields / 4,
                           // ),
 
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                children: [
-                                  OutlinedButton(
-                                    onPressed: () {},
-                                    child: Text(
-                                      'complete txn',
-                                    ),
+                          if (space == 'invoices')
+                            Container(
+                              alignment: Alignment.centerRight,
+                              child: SizedBox(
+                                width: CHelperFunctions.screenWidth() * 0.45,
+                                child: TextButton.icon(
+                                  onPressed: () {
+                                    if (txnsController
+                                        .receiptItems.isNotEmpty) {
+                                      checkoutController
+                                          .confirmInvoicePaymentDialog(txnId);
+                                    }
+                                  },
+                                  icon: Icon(
+                                    Iconsax.empty_wallet_tick,
+                                    color: CColors.white,
                                   ),
-                                ],
+                                  label: Text(
+                                    'complete txn',
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .labelMedium!
+                                        .apply(
+                                          color: CColors.white,
+                                          fontSizeFactor: 1.2,
+                                        ),
+                                  ),
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: CNetworkManager
+                                            .instance.hasConnection.value
+                                        ? CColors.rBrown
+                                        : CColors.black,
+                                    foregroundColor: CColors
+                                        .white, // foreground (text) color
+                                    // background color
+                                  ),
+                                ),
                               ),
-                            ],
-                          ),
+                            ),
                         ],
                       ),
                     ),
