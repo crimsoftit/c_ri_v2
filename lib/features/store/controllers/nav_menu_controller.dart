@@ -21,7 +21,7 @@ class CNavMenuController extends GetxController {
     const CUserSettingsScreen(),
 
     //const SettingsScreenRaw(),
-    const ProfileScreen(),
+    const CProfileScreen(),
     const CNotificationsScreen(),
   ];
 }

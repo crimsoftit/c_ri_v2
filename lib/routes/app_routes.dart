@@ -88,7 +88,7 @@ class CAppRoutes {
     ),
     GetPage(
       name: CRoutes.userProfile,
-      page: () => const ProfileScreen(),
+      page: () => const CProfileScreen(),
     ),
     GetPage(
       name: CRoutes.signup,

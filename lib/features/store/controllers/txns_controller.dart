@@ -68,7 +68,7 @@ class CTxnsController extends GetxController {
   final RxList<CTxnsModel> foundSales = <CTxnsModel>[].obs;
   final RxList<CTxnsModel> txns = <CTxnsModel>[].obs;
   final RxList<CTxnsModel> foundTxns = <CTxnsModel>[].obs;
-  RxList<CTxnsModel> receiptItems = <CTxnsModel>[].obs;
+  RxList<CTxnsModel> transactionItems = <CTxnsModel>[].obs;
   final RxList<CTxnsModel> refunds = <CTxnsModel>[].obs;
   final RxList<CTxnsModel> foundRefunds = <CTxnsModel>[].obs;
 
@@ -245,7 +245,7 @@ class CTxnsController extends GetxController {
       txnItemsLoading.value = true;
       isLoading.value = true;
 
-      receiptItems.clear();
+      transactionItems.clear();
       fetchTxns().then(
         (_) {
           if (txns.isNotEmpty &&
@@ -257,12 +257,12 @@ class CTxnsController extends GetxController {
                     soldItem.txnId.toString().contains(txnId.toString()))
                 .toList();
 
-            receiptItems.assignAll(txnItems);
+            transactionItems.assignAll(txnItems);
           } else {
             // stop loader
             txnItemsLoading.value = false;
             isLoading.value = false;
-            receiptItems.clear();
+            transactionItems.clear();
             return CPopupSnackBar.warningSnackBar(
               title: 'items not found',
               message: 'items NOT found for this txn',
@@ -274,11 +274,11 @@ class CTxnsController extends GetxController {
       txnItemsLoading.value = false;
       isLoading.value = false;
 
-      return receiptItems;
+      return transactionItems;
     } catch (e) {
       txnItemsLoading.value = false;
       isLoading.value = false;
-      receiptItems.clear();
+      transactionItems.clear();
       if (kDebugMode) {
         print(e.toString());
         CPopupSnackBar.errorSnackBar(

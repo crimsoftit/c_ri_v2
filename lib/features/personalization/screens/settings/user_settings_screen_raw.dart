@@ -33,7 +33,7 @@ class SettingsScreenRaw extends StatelessWidget {
                   // user profile card
                   CUserProfileTile(
                     onEditBtnPressed: () {
-                      Get.to(const ProfileScreen());
+                      Get.to(const CProfileScreen());
                     },
                   ),
                   const SizedBox(

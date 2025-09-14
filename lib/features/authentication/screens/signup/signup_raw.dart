@@ -1,4 +1,5 @@
 import 'package:c_ri/common/widgets/login_signup/form_divider.dart';
+import 'package:c_ri/common/widgets/login_signup/social_buttons.dart';
 import 'package:c_ri/features/authentication/screens/login/login.dart';
 import 'package:c_ri/features/authentication/screens/signup/widgets/signup_form.dart';
 import 'package:c_ri/utils/constants/colors.dart';
@@ -75,7 +76,7 @@ class SignupScreenRaw extends StatelessWidget {
               ),
 
               // -- footer --
-              //const CSocialButtons(),
+              const CSocialButtons(),
             ],
           ),
         ),

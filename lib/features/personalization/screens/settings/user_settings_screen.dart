@@ -74,7 +74,7 @@ class CUserSettingsScreen extends StatelessWidget {
         backgroundColor: CColors.rBrown.withValues(alpha: 0.2),
         body: SingleChildScrollView(
           child: Padding(
-            padding: const EdgeInsets.only(left: 20.0, right: 15.0, top: 10.0),
+            padding: const EdgeInsets.only(left: 20.0, right: 15.0, top: 10.0,),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [

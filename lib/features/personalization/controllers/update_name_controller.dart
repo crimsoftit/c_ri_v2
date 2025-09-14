@@ -68,7 +68,7 @@ class CUpdateNameController extends GetxController {
           title: 'ngrats!', message: 'your name was updated successfully.');
 
       // -- go back to profile screen
-      Get.off(() => const ProfileScreen());
+      Get.off(() => const CProfileScreen());
     } catch (e) {
       CFullScreenLoader.stopLoading();
       CPopupSnackBar.errorSnackBar(

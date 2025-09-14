@@ -14,7 +14,7 @@ import 'package:c_ri/features/store/screens/store_items_tings/checkout/widgets/c
 import 'package:c_ri/features/store/screens/store_items_tings/inventory/widgets/inv_dialog.dart';
 import 'package:c_ri/features/store/screens/store_items_tings/widgets/inv_gridview_screen.dart';
 import 'package:c_ri/features/store/screens/store_items_tings/widgets/items_listview.dart';
-import 'package:c_ri/features/store/screens/store_items_tings/widgets/txn_items.dart';
+import 'package:c_ri/features/store/screens/store_items_tings/widgets/txn_items_screen.dart';
 import 'package:c_ri/utils/constants/colors.dart';
 import 'package:c_ri/utils/constants/sizes.dart';
 import 'package:c_ri/utils/helpers/helper_functions.dart';
@@ -34,14 +34,14 @@ class CStoreScreen extends StatelessWidget {
     final isConnectedToInternet = CNetworkManager.instance.hasConnection.value;
     final isDarkTheme = CHelperFunctions.isDarkMode(context);
     final syncController = Get.put(CSyncController());
-    //final txnsController = Get.put(CTxnsController());
+    final txnsController = Get.put(CTxnsController());
 
     AddUpdateItemDialog dialog = AddUpdateItemDialog();
 
     final searchController = Get.put(CSearchBarController());
 
-    //txnsController.fetchTxns();
-    Get.put(CTxnsController());
+    txnsController.fetchTxns();
+    //Get.put(CTxnsController());
 
     // if (!invController.isLoading.value &&
     //     !syncController.processingSync.value &&
@@ -298,9 +298,17 @@ class CStoreScreen extends StatelessWidget {
                     space: 'sales',
                   ),
 
+                  // CExpansionListTileWidget(
+                  //   space: 'receipts',
+                  // ),
+
+                  // CExpansionListTileWidget(
+                  //   space: 'invoices',
+                  // ),
                   CTxnItemsListView(
                     space: 'receipts',
                   ),
+
                   CTxnItemsListView(
                     space: 'invoices',
                   ),

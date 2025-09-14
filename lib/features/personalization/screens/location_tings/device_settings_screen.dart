@@ -171,9 +171,9 @@ class _CLocationSettingsScreenState extends State<CDeviceSettingsScreen> {
                         return Column(
                           children: [
                             Visibility(
-                              visible: true,
+                              visible: false,
                               child: Text(
-                                'Location Service: ${PermissionProvider.locationServiceIsOn ? "On" : "Off"}\n${snapshot.data}',
+                                'location service: ${PermissionProvider.locationServiceIsOn ? "On" : "Off"}\n${snapshot.data}',
                                 // style: const TextStyle(fontSize: 24),
                                 style: Theme.of(context)
                                     .textTheme
@@ -255,7 +255,7 @@ class _CLocationSettingsScreenState extends State<CDeviceSettingsScreen> {
                                 mainAxisSize: MainAxisSize.min,
                                 children: <Widget>[
                                   Visibility(
-                                    visible: true,
+                                    visible: false,
                                     child: Column(
                                       children: [
                                         Text(

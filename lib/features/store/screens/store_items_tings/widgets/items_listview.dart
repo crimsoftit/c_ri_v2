@@ -247,8 +247,7 @@ class CItemsListView extends StatelessWidget {
                             't.Amount: $userCurrencyCode.$txnAmount ',
                         subTitleTxt1Item2:
                             '($qtySold sold, $qtyRefunded refunded)',
-                        // subTitleTxt2Item1:
-                        //     'usp: $userCurrencyCode.$unitSellingPrice',
+                        //subTitleTxt2Item1: '',
                         subTitleTxt2Item2: '',
                         subTitleTxt3Item1: txnModifiedDate,
                         subTitleTxt3Item2: 'product id: $itemProductId',

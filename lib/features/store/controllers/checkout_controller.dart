@@ -821,7 +821,7 @@ class CCheckoutController extends GetxController {
           // -- check internet connectivity
           //final isConnected = await CNetworkManager.instance.isConnected();
           //txnsController.receiptItems.clear();
-          if (txnsController.receiptItems.isEmpty) {
+          if (txnsController.transactionItems.isEmpty) {
             if (kDebugMode) {
               print('receipt items cleared!!');
               CPopupSnackBar.customToast(
@@ -832,7 +832,7 @@ class CCheckoutController extends GetxController {
             txnsController.fetchTxnItems(txnId);
           }
 
-          for (var item in txnsController.receiptItems) {
+          for (var item in txnsController.transactionItems) {
             var txnStatus = 'complete';
             var lastModified =
                 DateFormat('yyyy-MM-dd @ kk:mm').format(clock.now());

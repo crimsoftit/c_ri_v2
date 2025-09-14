@@ -19,6 +19,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 
+/// -- TODO: set widget for a freshly registered account -with no sales --
+
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
@@ -90,12 +92,12 @@ class HomeScreen extends StatelessWidget {
                 ),
                 child: Obx(
                   () {
-                    if (invController.isLoading.value) {
-                      return CHorizontalProductShimmer();
-                    }
                     if (invController.inventoryItems.isEmpty &&
                         !invController.isLoading.value) {
                       invController.fetchUserInventoryItems();
+                    }
+                    if (invController.isLoading.value) {
+                      return CHorizontalProductShimmer();
                     }
 
                     /// -- top sellers --
