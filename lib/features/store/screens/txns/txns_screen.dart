@@ -1,7 +1,5 @@
 import 'package:c_ri/features/personalization/controllers/user_controller.dart';
-import 'package:c_ri/features/store/controllers/expansion_panel_list_controller.dart';
 import 'package:c_ri/features/store/controllers/txns_controller.dart';
-import 'package:c_ri/features/store/models/expansion_panel_model.dart';
 import 'package:c_ri/utils/constants/colors.dart';
 import 'package:c_ri/utils/constants/sizes.dart';
 import 'package:c_ri/utils/helpers/helper_functions.dart';
@@ -10,14 +8,9 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class CTxnsScreen extends StatefulWidget {
+class CTxnsScreen extends StatelessWidget {
   const CTxnsScreen({super.key});
 
-  @override
-  State<CTxnsScreen> createState() => _CTxnsScreenState();
-}
-
-class _CTxnsScreenState extends State<CTxnsScreen> {
   @override
   Widget build(BuildContext context) {
     final txnsController = Get.put(CTxnsController());

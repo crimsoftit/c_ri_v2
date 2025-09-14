@@ -22,6 +22,7 @@ class CTxnItemsListViewRaw extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final checkoutController = Get.put(CCheckoutController());
+    //final expansionTileListontroller = ExpansionTileListController();
     //final isDarkTheme = CHelperFunctions.isDarkMode(context);
     final txnsController = Get.put(CTxnsController());
     final userController = Get.put(CUserController());
@@ -47,9 +48,7 @@ class CTxnItemsListViewRaw extends StatelessWidget {
             txnsController.receipts.isEmpty) {
           txnsController.fetchTxns();
         }
-        // if (!txnsController.isLoading.value && itemsCount == 0) {
-        //   txnsController.fetchTxns();
-        // }
+
         return SizedBox(
           height: CHelperFunctions.screenHeight() * 0.72,
           child: ListView.builder(
@@ -92,260 +91,245 @@ class CTxnItemsListViewRaw extends StatelessWidget {
                 //usp = 0.0;
               }
               return Card(
-                // shape: RoundedRectangleBorder(
-                //   borderRadius: BorderRadius.circular(
-                //     CSizes.borderRadiusSm,
-                //   ),
-                //   side: BorderSide(
-                //     color: CColors.rBrown,
-                //     width: 0.7,
-                //   ),
-                // ),
                 color: CColors.lightGrey,
                 elevation: 0.3,
+                key: PageStorageKey(txnId), // Ensures state persistence
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(
                     CSizes.borderRadiusSm,
                   ),
-                  child: SingleChildScrollView(
-                    //physics: BouncingScrollPhysics(),
-                    physics: ClampingScrollPhysics(),
-                    child: Theme(
-                      data: Theme.of(context).copyWith(
-                        dividerColor: Colors.transparent,
-                      ),
-                      child: ExpansionTile(
-                        childrenPadding: EdgeInsets.all(8.0).copyWith(
-                          bottom: 0,
-                          left: 14.0,
-                          top: 0,
-                        ),
-                        // tilePadding: const EdgeInsets.all(
-                        //   10.0,
-                        // ),
-                        initiallyExpanded: false,
-                        showTrailingIcon: space == 'invoices' ? false : true,
-                        title: Column(
+                  child: ExpansionTile(
+                    childrenPadding: EdgeInsets.all(8.0).copyWith(
+                      bottom: 0,
+                      left: 14.0,
+                      top: 0,
+                    ),
+                    key: PageStorageKey(txnId), // Ensures state persistence
+                    onExpansionChanged: (isExpanded) {
+                      txnsController.transactionItems.clear();
+                      if (isExpanded) {
+                        if (txnsController.transactionItems.isEmpty) {
+                          txnsController.fetchTxnItems(txnId);
+                        }
+                      }
+                    },
+                    showTrailingIcon: space == 'invoices' ? false : true,
+                    title: Column(
+                      children: [
+                        Row(
                           children: [
-                            Row(
-                              children: [
-                                Expanded(
-                                  flex: 6,
-                                  child: Text(
-                                    'TXN #$txnId',
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .labelMedium!
-                                        .apply(
-                                          color: CColors.rBrown,
-                                          fontWeightDelta: 2,
-                                        ),
-                                  ),
-                                ),
-                                Expanded(
-                                  flex: 2,
-                                  child: Text(
-                                    '$currency.$totalAmount',
-                                    //'${userController.user.value.currencyCode}.$totalAmount',
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .labelMedium!
-                                        .apply(
-                                          color: CColors.rBrown,
-                                          fontWeightDelta: 2,
-                                        ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            SizedBox(
-                              height: CSizes.spaceBtnInputFields / 3,
-                            ),
-                            if (customerName != '' || customerContacts != '')
-                              Row(
-                                crossAxisAlignment: CrossAxisAlignment.end,
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Expanded(
-                                    flex: 2,
-                                    child: Text(
-                                      'sold to:',
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .labelMedium!
-                                          .apply(
-                                            color: CColors.rBrown,
-                                            //fontStyle: FontStyle.italic,
-                                          ),
+                            Expanded(
+                              flex: 6,
+                              child: Text(
+                                'TXN #$txnId',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .labelMedium!
+                                    .apply(
+                                      color: CColors.rBrown,
+                                      fontWeightDelta: 2,
                                     ),
-                                  ),
-                                  Expanded(
-                                    flex: 6,
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          'name: $customerName',
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .labelMedium!
-                                              .apply(
-                                                color: CColors.darkerGrey,
-                                                //fontStyle: FontStyle.italic,
-                                              ),
-                                        ),
-                                        Text(
-                                          'contacts: ${customerContacts.isEmpty ? "N/A" : customerContacts}',
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .labelMedium!
-                                              .apply(
-                                                color: CColors.darkerGrey,
-                                                //fontStyle: FontStyle.italic,
-                                              ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
                               ),
+                            ),
+                            Expanded(
+                              flex: 2,
+                              child: Text(
+                                '$currency.$totalAmount',
+                                //'${userController.user.value.currencyCode}.$totalAmount',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .labelMedium!
+                                    .apply(
+                                      color: CColors.rBrown,
+                                      fontWeightDelta: 2,
+                                    ),
+                              ),
+                            ),
                           ],
                         ),
-                        onExpansionChanged: (isExpanded) {
-                          txnsController.transactionItems.clear();
-                          if (isExpanded) {
-                            if (txnsController.transactionItems.isEmpty) {
-                              txnsController.fetchTxnItems(txnId);
-                            }
-                          }
-                        },
-                        children: [
-                          CDivider(
-                            startIndent: 0,
-                          ),
+                        SizedBox(
+                          height: CSizes.spaceBtnInputFields / 3,
+                        ),
+                        if (customerName != '' || customerContacts != '')
                           Row(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            mainAxisSize: MainAxisSize.min,
                             children: [
                               Expanded(
-                                flex: 1,
+                                flex: 2,
                                 child: Text(
-                                  'item(s):',
+                                  'sold to:',
                                   style: Theme.of(context)
                                       .textTheme
                                       .labelMedium!
                                       .apply(
-                                        color: CColors.darkerGrey,
+                                        color: CColors.rBrown,
                                         //fontStyle: FontStyle.italic,
                                       ),
                                 ),
                               ),
                               Expanded(
-                                flex: 4,
-                                child: ListView.separated(
-                                  itemBuilder: (context, index) {
-                                    return Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          '${txnsController.transactionItems[index].productName.toUpperCase()} (${txnsController.transactionItems[index].quantity} item(s) @ $currency.${txnsController.transactionItems[index].unitSellingPrice})',
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .labelMedium!
-                                              .apply(
-                                                color: CColors.rBrown,
-                                              ),
-                                          overflow: TextOverflow.ellipsis,
-                                          maxLines: 2,
-                                        ),
-                                      ],
-                                    );
-                                  },
-                                  itemCount:
-                                      txnsController.transactionItems.length,
-                                  physics: ClampingScrollPhysics(),
-                                  scrollDirection: Axis.vertical,
-                                  separatorBuilder: (_, __) {
-                                    return SizedBox(
-                                      height: CSizes.spaceBtnItems / 4,
-                                    );
-                                  },
-                                  shrinkWrap: true,
+                                flex: 6,
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      'name: $customerName',
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .labelMedium!
+                                          .apply(
+                                            color: CColors.darkerGrey,
+                                            //fontStyle: FontStyle.italic,
+                                          ),
+                                    ),
+                                    Text(
+                                      'contacts: ${customerContacts.isEmpty ? "N/A" : customerContacts}',
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .labelMedium!
+                                          .apply(
+                                            color: CColors.darkerGrey,
+                                            //fontStyle: FontStyle.italic,
+                                          ),
+                                    ),
+                                  ],
                                 ),
-                                // ListView.builder(
-                                //   shrinkWrap: true,
-                                //   physics: ClampingScrollPhysics(),
-                                //   scrollDirection: Axis.vertical,
-                                //   itemCount: txnsController.receiptItems.length,
-                                //   itemBuilder: (context, index) {
-                                //     return Column(
-                                //       crossAxisAlignment:
-                                //           CrossAxisAlignment.start,
-                                //       children: [
-                                //         Text(
-                                //           '${txnsController.receiptItems[index].productName.toUpperCase()} (${txnsController.receiptItems[index].quantity} item(s) @ $currency.${(txnsController.receiptItems[index].quantity * txnsController.receiptItems[index].unitSellingPrice)})',
-                                //           style: Theme.of(context)
-                                //               .textTheme
-                                //               .labelMedium!
-                                //               .apply(
-                                //                 color: CColors.rBrown,
-                                //               ),
-                                //           overflow: TextOverflow.ellipsis,
-                                //           maxLines: 2,
-                                //         ),
-                                //       ],
-                                //     );
-                                //   },
-                                // ),
                               ),
                             ],
                           ),
-                          // SizedBox(
-                          //   height: CSizes.spaceBtnInputFields / 4,
-                          // ),
-
-                          if (space == 'invoices')
-                            Container(
-                              alignment: Alignment.centerRight,
-                              child: SizedBox(
-                                width: CHelperFunctions.screenWidth() * 0.45,
-                                child: TextButton.icon(
-                                  onPressed: () {
-                                    if (txnsController
-                                        .transactionItems.isNotEmpty) {
-                                      checkoutController
-                                          .confirmInvoicePaymentDialog(txnId);
-                                    }
-                                  },
-                                  icon: Icon(
-                                    Iconsax.empty_wallet_tick,
-                                    color: CColors.white,
+                      ],
+                    ),
+                    children: [
+                      CDivider(
+                        startIndent: 0,
+                      ),
+                      Row(
+                        children: [
+                          Expanded(
+                            flex: 1,
+                            child: Text(
+                              'item(s):',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .labelMedium!
+                                  .apply(
+                                    color: CColors.darkerGrey,
+                                    //fontStyle: FontStyle.italic,
                                   ),
-                                  label: Text(
-                                    'complete txn',
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .labelMedium!
-                                        .apply(
-                                          color: CColors.white,
-                                          fontSizeFactor: 1.2,
-                                        ),
-                                  ),
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: CNetworkManager
-                                            .instance.hasConnection.value
-                                        ? CColors.rBrown
-                                        : CColors.black,
-                                    foregroundColor: CColors
-                                        .white, // foreground (text) color
-                                    // background color
-                                  ),
-                                ),
-                              ),
                             ),
+                          ),
+                          Expanded(
+                            flex: 4,
+                            child: ListView.separated(
+                              key: PageStorageKey(
+                                  txnId), // Ensures state persistence,
+                              itemBuilder: (context, index) {
+                                return Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      '${txnsController.transactionItems[index].productName.toUpperCase()} (${txnsController.transactionItems[index].quantity} item(s) @ $currency.${txnsController.transactionItems[index].unitSellingPrice})',
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .labelMedium!
+                                          .apply(
+                                            color: CColors.rBrown,
+                                          ),
+                                      overflow: TextOverflow.ellipsis,
+                                      maxLines: 2,
+                                    ),
+                                  ],
+                                );
+                              },
+                              itemCount: txnsController.transactionItems.length,
+                              physics: ClampingScrollPhysics(),
+                              scrollDirection: Axis.vertical,
+                              separatorBuilder: (_, __) {
+                                return SizedBox(
+                                  height: CSizes.spaceBtnItems / 4,
+                                );
+                              },
+                              shrinkWrap: true,
+                            ),
+                            // ListView.builder(
+                            //   shrinkWrap: true,
+                            //   physics: ClampingScrollPhysics(),
+                            //   scrollDirection: Axis.vertical,
+                            //   itemCount: txnsController.receiptItems.length,
+                            //   itemBuilder: (context, index) {
+                            //     return Column(
+                            //       crossAxisAlignment:
+                            //           CrossAxisAlignment.start,
+                            //       children: [
+                            //         Text(
+                            //           '${txnsController.receiptItems[index].productName.toUpperCase()} (${txnsController.receiptItems[index].quantity} item(s) @ $currency.${(txnsController.receiptItems[index].quantity * txnsController.receiptItems[index].unitSellingPrice)})',
+                            //           style: Theme.of(context)
+                            //               .textTheme
+                            //               .labelMedium!
+                            //               .apply(
+                            //                 color: CColors.rBrown,
+                            //               ),
+                            //           overflow: TextOverflow.ellipsis,
+                            //           maxLines: 2,
+                            //         ),
+                            //       ],
+                            //     );
+                            //   },
+                            // ),
+                          ),
                         ],
                       ),
-                    ),
+                      // SizedBox(
+                      //   height: CSizes.spaceBtnInputFields / 4,
+                      // ),
+
+                      if (space == 'invoices')
+                        Container(
+                          alignment: Alignment.centerRight,
+                          child: SizedBox(
+                            width: CHelperFunctions.screenWidth() * 0.45,
+                            child: TextButton.icon(
+                              onPressed: () {
+                                if (txnsController
+                                    .transactionItems.isNotEmpty) {
+                                  checkoutController
+                                      .confirmInvoicePaymentDialog(txnId);
+                                }
+                              },
+                              icon: Icon(
+                                Iconsax.empty_wallet_tick,
+                                color: CColors.white,
+                              ),
+                              label: Text(
+                                'complete txn',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .labelMedium!
+                                    .apply(
+                                      color: CColors.white,
+                                      fontSizeFactor: 1.2,
+                                    ),
+                              ),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor:
+                                    CNetworkManager.instance.hasConnection.value
+                                        ? CColors.rBrown
+                                        : CColors.black,
+                                foregroundColor:
+                                    CColors.white, // foreground (text) color
+                                // background color
+                              ),
+                            ),
+                          ),
+                        ),
+                      // Text(
+                      //   'manu 1',
+                      // ),
+                      // Text(
+                      //   'manu 2',
+                      // ),
+                    ],
                   ),
                 ),
               );

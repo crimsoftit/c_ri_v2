@@ -25,9 +25,9 @@ class CSyncController extends GetxController {
       //await invController.cloudSyncInventory();
 
       if (await invController.cloudSyncInventory()) {
-        await txnsController.addSalesDataToCloud().then(
+        await txnsController.addUpdateSalesDataToCloud().then(
           (_) async {
-            if (await txnsController.addSalesDataToCloud()) {
+            if (await txnsController.addUpdateSalesDataToCloud()) {
               if (invController.syncIsLoading.value &&
                   txnsController.txnsSyncIsLoading.value) {
                 processingSync.value = true;

@@ -833,14 +833,16 @@ class CCheckoutController extends GetxController {
           }
 
           for (var item in txnsController.transactionItems) {
-            var txnStatus = 'complete';
             var lastModified =
                 DateFormat('yyyy-MM-dd @ kk:mm').format(clock.now());
+            var syncAction = item.isSynced == 0 ? 'append' : 'update';
+            var txnStatus = 'complete';
 
             await dbHelper.updateMultipleFieldsWithTransactionId(
-                item.txnId, lastModified, txnStatus);
+                item.txnId, lastModified, syncAction, txnStatus);
           }
           txnsController.fetchTxns();
+          txnsController.fetchSoldItems();
           Navigator.of(Get.overlayContext!).pop();
         },
         style: ElevatedButton.styleFrom(
@@ -864,24 +866,6 @@ class CCheckoutController extends GetxController {
         child: const Text('cancel'),
       ),
     );
-  }
-
-  /// -- update all txn items bearing the txn id --
-  Future<bool> updateTxnItemsTxnStatus(
-      String lastModified, String txnStatus, int txnId) async {
-    try {
-      dbHelper.updateTxnItemsTxnStatus(lastModified, txnStatus, txnId);
-      return true;
-    } catch (e) {
-      if (kDebugMode) {
-        print(e.toString());
-        throw CPopupSnackBar.errorSnackBar(
-          title: 'Oh Snap! error updating invoiced items!',
-          message: e.toString(),
-        );
-      }
-      return false;
-    }
   }
 
   @override

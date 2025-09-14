@@ -1,0 +1,375 @@
+import 'package:c_ri/common/widgets/divider/c_divider.dart';
+import 'package:c_ri/features/personalization/controllers/user_controller.dart';
+import 'package:c_ri/features/personalization/screens/no_data/no_data_screen.dart';
+import 'package:c_ri/features/store/controllers/checkout_controller.dart';
+import 'package:c_ri/features/store/controllers/search_bar_controller.dart';
+import 'package:c_ri/features/store/controllers/txns_controller.dart';
+import 'package:c_ri/utils/constants/colors.dart';
+import 'package:c_ri/utils/constants/img_strings.dart';
+import 'package:c_ri/utils/constants/sizes.dart';
+import 'package:c_ri/utils/helpers/helper_functions.dart';
+import 'package:c_ri/utils/helpers/network_manager.dart';
+import 'package:c_ri/utils/popups/snackbars.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:iconsax/iconsax.dart';
+
+class CTxnItemsListView extends StatelessWidget {
+  const CTxnItemsListView({
+    super.key,
+    required this.space,
+  });
+
+  final String space;
+
+  @override
+  Widget build(BuildContext context) {
+    final checkoutController = Get.put(CCheckoutController());
+    final isDarkTheme = CHelperFunctions.isDarkMode(context);
+    final searchController = Get.put(CSearchBarController());
+    final txnsController = Get.put(CTxnsController());
+    final userController = Get.put(CUserController());
+    final userCurrency =
+        CHelperFunctions.formatCurrency(userController.user.value.currencyCode);
+
+    return SingleChildScrollView(
+      child: Obx(
+        () {
+          List demItems;
+          switch (space) {
+            case 'receipts':
+              demItems = txnsController.receipts;
+              break;
+            case 'invoices':
+              demItems = txnsController.invoices;
+            default:
+              demItems = [];
+              CPopupSnackBar.errorSnackBar(
+                title: 'invalid tab space',
+              );
+          }
+
+          if (!txnsController.isLoading.value &&
+              txnsController.receipts.isEmpty) {
+            txnsController.fetchTxns();
+          }
+
+          if (!searchController.showSearchField.value && demItems.isEmpty) {
+            return const Center(
+              child: NoDataScreen(
+                lottieImage: CImages.noDataLottie,
+                txt: 'No data found!',
+              ),
+            );
+          }
+
+          return Padding(
+            padding: const EdgeInsets.only(
+              left: 2.0,
+              right: 2.0,
+            ),
+            child: Card(
+              color: isDarkTheme
+                  ? CColors.rBrown.withValues(alpha: 0.3)
+                  : CColors.lightGrey,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(
+                  CSizes.borderRadiusLg,
+                ),
+                child: ExpansionPanelList.radio(
+                  animationDuration: const Duration(milliseconds: 600),
+                  elevation: 3,
+                  expandedHeaderPadding: EdgeInsets.all(
+                    2.0,
+                  ),
+                  expansionCallback: (panelIndex, isExpanded) {
+                    if (isExpanded) {
+                      txnsController.transactionItems.clear();
+                      if (txnsController.transactionItems.isEmpty) {
+                        txnsController
+                            .fetchTxnItems(demItems[panelIndex].txnId);
+                      }
+                      // Perform an action when the panel is expanded
+                      if (kDebugMode) {
+                        print('Panel at index $panelIndex is now expanded');
+                        // CPopupSnackBar.customToast(
+                        //   message: '${txnsController.receipts[panelIndex].txnId}',
+                        //   forInternetConnectivityStatus: false,
+                        // );
+                      }
+                      // Add your custom logic here
+                    } else {
+                      // Perform an action when the panel is collapsed
+                      if (kDebugMode) {
+                        print('Panel at index $panelIndex is now collapsed');
+                      }
+                      // Add your custom logic here
+                    }
+                  },
+                  materialGapSize: 3.0,
+                  children: demItems
+                      .map(
+                        (item) => ExpansionPanelRadio(
+                          backgroundColor: isDarkTheme
+                              ? CColors.rBrown.withValues(alpha: 0.3)
+                              : CColors.lightGrey,
+                          value: item.txnId,
+                          canTapOnHeader: true,
+                          headerBuilder: (_, isExpanded) {
+                            return ListTile(
+                              // padding: const EdgeInsets.symmetric(
+                              //   vertical: 2.0,
+                              //   horizontal: 10.0,
+                              // ),
+                              title: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        'TXN #${item.txnId}',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .labelMedium!
+                                            .apply(
+                                              color: isDarkTheme
+                                                  ? CColors.white
+                                                  : CColors.rBrown,
+                                              fontWeightDelta: 2,
+                                            ),
+                                      ),
+                                      Text(
+                                        '$userCurrency.${item.totalAmount}',
+                                        //'${userController.user.value.currencyCode}.$totalAmount',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .labelMedium!
+                                            .apply(
+                                              color: isDarkTheme
+                                                  ? CColors.softGrey
+                                                  : CColors.rBrown,
+                                              fontWeightDelta: 1,
+                                            ),
+                                      ),
+                                    ],
+                                  ),
+
+                                  // Row(
+                                  //   mainAxisAlignment:
+                                  //       MainAxisAlignment.spaceBetween,
+                                  //   children: [
+                                  //     Text(
+                                  //       'txn amount:',
+                                  //       //'${userController.user.value.currencyCode}.$totalAmount',
+                                  //       style: Theme.of(context)
+                                  //           .textTheme
+                                  //           .labelMedium!
+                                  //           .apply(
+                                  //             color: isDarkTheme
+                                  //                 ? CColors.softGrey
+                                  //                 : CColors.rBrown,
+                                  //             fontWeightDelta: -1,
+                                  //           ),
+                                  //     ),
+
+                                  //   ],
+                                  // ),
+                                  if (item.customerName != '' ||
+                                      item.customerContacts != '')
+                                    Column(
+                                      children: [
+                                        const SizedBox(
+                                          height:
+                                              CSizes.spaceBtnInputFields / 4,
+                                        ),
+                                        Row(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          //mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Text(
+                                              'sold to:',
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .labelMedium!
+                                                  .apply(
+                                                    color: isDarkTheme
+                                                        ? CColors.darkGrey
+                                                        : CColors.rBrown,
+                                                    //fontStyle: FontStyle.italic,
+                                                  ),
+                                            ),
+                                            Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.end,
+                                              children: [
+                                                Text(
+                                                  'name: ${item.customerName}',
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .labelMedium!
+                                                      .apply(
+                                                        color: isDarkTheme
+                                                            ? CColors.darkGrey
+                                                            : CColors.rBrown,
+                                                        //fontStyle: FontStyle.italic,
+                                                      ),
+                                                ),
+                                                Text(
+                                                  'contacts: ${item.customerContacts.isEmpty ? "N/A" : item.customerContacts}',
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .labelMedium!
+                                                      .apply(
+                                                        color: isDarkTheme
+                                                            ? CColors.darkGrey
+                                                            : CColors.rBrown,
+                                                        //fontStyle: FontStyle.italic,
+                                                      ),
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                ],
+                              ),
+                            );
+                          },
+                          body: Padding(
+                            padding: const EdgeInsets.only(
+                              bottom: 4.0,
+                              left: 16.0,
+                              right: 8.0,
+                            ),
+                            child: Column(
+                              children: [
+                                CDivider(
+                                  color: isDarkTheme
+                                      ? CColors.softGrey
+                                      : CColors.rBrown,
+                                  startIndent: 0,
+                                ),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                  children: [
+                                    Expanded(
+                                      flex: 2,
+                                      child: Text(
+                                        'item(s):',
+                                        //'${userController.user.value.currencyCode}.$totalAmount',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .labelMedium!
+                                            .apply(
+                                              color: isDarkTheme
+                                                  ? CColors.softGrey
+                                                  : CColors.rBrown,
+                                              fontWeightDelta: -1,
+                                            ),
+                                      ),
+                                    ),
+                                    Expanded(
+                                      flex: 5,
+                                      child: ListView.separated(
+                                        itemBuilder: (context, index) {
+                                          return Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                '${txnsController.transactionItems[index].productName.toUpperCase()} (${txnsController.transactionItems[index].quantity} item(s) @ $userCurrency.${txnsController.transactionItems[index].unitSellingPrice})',
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .labelMedium!
+                                                    .apply(
+                                                      color: isDarkTheme
+                                                          ? CColors.softGrey
+                                                          : CColors.rBrown,
+                                                    ),
+                                                overflow: TextOverflow.ellipsis,
+                                                maxLines: 2,
+                                              ),
+                                            ],
+                                          );
+                                        },
+                                        itemCount: txnsController
+                                            .transactionItems.length,
+                                        physics: ClampingScrollPhysics(),
+                                        separatorBuilder: (_, __) {
+                                          return SizedBox(
+                                            height: CSizes.spaceBtnItems / 4,
+                                          );
+                                        },
+                                        scrollDirection: Axis.vertical,
+                                        shrinkWrap: true,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                if (space == 'invoices')
+                                  Container(
+                                    alignment: Alignment.centerRight,
+                                    child: SizedBox(
+                                      width:
+                                          CHelperFunctions.screenWidth() * 0.45,
+                                      child: TextButton.icon(
+                                        onPressed: () {
+                                          if (txnsController
+                                              .transactionItems.isNotEmpty) {
+                                            checkoutController
+                                                .confirmInvoicePaymentDialog(
+                                                    item.txnId);
+                                          }
+                                        },
+                                        icon: Icon(
+                                          Iconsax.empty_wallet_tick,
+                                          color: CColors.white,
+                                        ),
+                                        label: Text(
+                                          'complete txn',
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .labelMedium!
+                                              .apply(
+                                                color: CColors.white,
+                                                fontSizeFactor: 1.2,
+                                              ),
+                                        ),
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: CNetworkManager
+                                                  .instance.hasConnection.value
+                                              ? CColors.rBrown
+                                              : CColors.black,
+                                          foregroundColor: CColors.white,
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(
+                                              15.0,
+                                            ), // Set the desired radius here
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      )
+                      .toList(),
+                ),
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+}

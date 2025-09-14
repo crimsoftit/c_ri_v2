@@ -14,7 +14,7 @@ import 'package:c_ri/features/store/screens/store_items_tings/checkout/widgets/c
 import 'package:c_ri/features/store/screens/store_items_tings/inventory/widgets/inv_dialog.dart';
 import 'package:c_ri/features/store/screens/store_items_tings/widgets/inv_gridview_screen.dart';
 import 'package:c_ri/features/store/screens/store_items_tings/widgets/items_listview.dart';
-import 'package:c_ri/features/store/screens/store_items_tings/widgets/txn_items_screen.dart';
+import 'package:c_ri/features/store/screens/store_items_tings/widgets/txn_items.dart';
 import 'package:c_ri/utils/constants/colors.dart';
 import 'package:c_ri/utils/constants/sizes.dart';
 import 'package:c_ri/utils/helpers/helper_functions.dart';
@@ -197,32 +197,39 @@ class CStoreScreen extends StatelessWidget {
                                           )
                                         : FloatingActionButton(
                                             elevation: 0, // -- removes shadow
-                                            onPressed: invController
-                                                        .unSyncedAppends
-                                                        .isEmpty &&
-                                                    invController
-                                                        .unSyncedUpdates.isEmpty
-                                                ? null
-                                                : () async {
-                                                    // -- check internet connectivity --
-                                                    final internetIsConnected =
-                                                        await CNetworkManager
-                                                            .instance
-                                                            .isConnected();
+                                            onPressed:
+                                                invController.unSyncedAppends
+                                                            .isEmpty &&
+                                                        invController
+                                                            .unSyncedUpdates
+                                                            .isEmpty &&
+                                                        txnsController
+                                                            .unsyncedTxnAppends
+                                                            .isEmpty &&
+                                                        txnsController
+                                                            .unsyncedTxnUpdates
+                                                            .isEmpty
+                                                    ? null
+                                                    : () async {
+                                                        // -- check internet connectivity --
+                                                        final internetIsConnected =
+                                                            await CNetworkManager
+                                                                .instance
+                                                                .isConnected();
 
-                                                    if (internetIsConnected) {
-                                                      syncController
-                                                          .processSync();
-                                                    } else {
-                                                      CPopupSnackBar
-                                                          .customToast(
-                                                        message:
-                                                            'internet connection required for cloud sync!',
-                                                        forInternetConnectivityStatus:
-                                                            true,
-                                                      );
-                                                    }
-                                                  },
+                                                        if (internetIsConnected) {
+                                                          syncController
+                                                              .processSync();
+                                                        } else {
+                                                          CPopupSnackBar
+                                                              .customToast(
+                                                            message:
+                                                                'internet connection required for cloud sync!',
+                                                            forInternetConnectivityStatus:
+                                                                true,
+                                                          );
+                                                        }
+                                                      },
                                             backgroundColor:
                                                 CColors.transparent,
                                             foregroundColor:
@@ -233,8 +240,13 @@ class CStoreScreen extends StatelessWidget {
                                             child: Icon(
                                               invController.unSyncedAppends
                                                           .isEmpty &&
-                                                      invController
-                                                          .unSyncedUpdates
+                                                      invController.unSyncedUpdates
+                                                          .isEmpty &&
+                                                      txnsController
+                                                          .unsyncedTxnAppends
+                                                          .isEmpty &&
+                                                      txnsController
+                                                          .unsyncedTxnUpdates
                                                           .isEmpty
                                                   ? Iconsax.cloud_add
                                                   : Iconsax.cloud_change,

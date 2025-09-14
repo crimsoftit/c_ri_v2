@@ -551,7 +551,7 @@ class CTxnsController extends GetxController {
   }
 
   /// -- add unsynced txns to the cloud --
-  Future<bool> addSalesDataToCloud() async {
+  Future<bool> addUpdateSalesDataToCloud() async {
     try {
       isLoading.value = true;
       txnsSyncIsLoading.value = true;
@@ -1127,60 +1127,6 @@ class CTxnsController extends GetxController {
       print('refundQty: ${refundQty.value} \n');
       print('------------------\n');
       print('bottomSheet closed');
-    }
-  }
-
-  /// -- update stock count and qtySold on refund --
-  Future<bool> updateTxnDataOnRefundMaybeObsolet(CTxnsModel receiptItem) async {
-    try {
-      final currency = CHelperFunctions.formatCurrency(
-          userController.user.value.currencyCode);
-
-      // -- update stock count & total sales for this inventory item --
-      // inventoryItem.quantity += refundQty.value;
-      // inventoryItem.qtyRefunded += refundQty.value;
-      // inventoryItem.qtySold -= refundQty.value;
-      // inventoryItem.lastModified =
-      //     DateFormat('yyyy-MM-dd @ kk:mm').format(clock.now());
-      // inventoryItem.syncAction =
-      //     inventoryItem.isSynced == 1 ? 'update' : 'append';
-
-      //dbHelper.updateInventoryItem(inventoryItem, inventoryItem.productId!);
-
-      // -- update sync status/action for this inventory item --
-
-      // await dbHelper.updateInvOfflineSyncAfterStockUpdate(
-      //     sAction, inventoryItem.productId!);
-
-      // -- update txn data for this receipt item --
-      // receiptItem.quantity -= refundQty.value;
-      // receiptItem.qtyRefunded += refundQty.value;
-      // receiptItem.totalAmount -= refundQty.value * receiptItem.unitSellingPrice;
-      // receiptItem.lastModified =
-      //     DateFormat('yyyy-MM-dd @ kk:mm').format(clock.now());
-      // receiptItem.syncAction = receiptItem.isSynced == 0 ? 'append' : 'update';
-
-      // dbHelper
-      //     .updateReceiptItem(receiptItem, receiptItem.soldItemId!)
-      //     .then((_) {
-      //   fetchSoldItems();
-      // });
-
-      updatesOnRefundDone.value = true;
-      CPopupSnackBar.successSnackBar(
-        title: 'success',
-        message:
-            'refund of ${receiptItem.productName} (${refundQty.value} item(s)@$currency.${(receiptItem.unitSellingPrice * refundQty.value)}) SUCCESSFUL!!',
-      );
-
-      return true;
-    } catch (e) {
-      updatesOnRefundDone.value = false;
-      CPopupSnackBar.errorSnackBar(
-        title: 'Oh Snap! refund inventory updates failed',
-        message: e.toString(),
-      );
-      return false;
     }
   }
 
