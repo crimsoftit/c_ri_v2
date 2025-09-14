@@ -1,8 +1,11 @@
 import 'package:c_ri/common/widgets/divider/c_divider.dart';
+import 'package:c_ri/common/widgets/shimmers/vert_items_shimmer.dart';
 import 'package:c_ri/features/personalization/controllers/user_controller.dart';
 import 'package:c_ri/features/personalization/screens/no_data/no_data_screen.dart';
 import 'package:c_ri/features/store/controllers/checkout_controller.dart';
+import 'package:c_ri/features/store/controllers/inv_controller.dart';
 import 'package:c_ri/features/store/controllers/search_bar_controller.dart';
+import 'package:c_ri/features/store/controllers/sync_controller.dart';
 import 'package:c_ri/features/store/controllers/txns_controller.dart';
 import 'package:c_ri/utils/constants/colors.dart';
 import 'package:c_ri/utils/constants/img_strings.dart';
@@ -27,7 +30,9 @@ class CTxnItemsListView extends StatelessWidget {
   Widget build(BuildContext context) {
     final checkoutController = Get.put(CCheckoutController());
     final isDarkTheme = CHelperFunctions.isDarkMode(context);
+    final invController = Get.put(CInventoryController());
     final searchController = Get.put(CSearchBarController());
+    final syncController = Get.put(CSyncController());
     final txnsController = Get.put(CTxnsController());
     final userController = Get.put(CUserController());
     final userCurrency =
@@ -61,6 +66,13 @@ class CTxnItemsListView extends StatelessWidget {
                 lottieImage: CImages.noDataLottie,
                 txt: 'No data found!',
               ),
+            );
+          }
+
+          if (invController.isLoading.value ||
+              syncController.processingSync.value) {
+            return const CVerticalProductShimmer(
+              itemCount: 5,
             );
           }
 

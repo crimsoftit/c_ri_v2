@@ -66,21 +66,9 @@ class CInvGridviewScreen extends StatelessWidget {
           return const NoSearchResultsScreen();
         }
 
-        // if (syncController.processingSync.value) {
-        //   return CGridLayoutShimmer(itemCount: 5);
-        // }
-
         if (invController.inventoryItems.isEmpty) {
           return noDataWidget;
         }
-        // run loader --
-        // if ((invController.isLoading.value ||
-        //         syncController.processingSync.value) &&
-        //     invController.inventoryItems.isNotEmpty) {
-        //   return const CVerticalProductShimmer(
-        //     itemCount: 7,
-        //   );
-        // }
 
         return ListView(
           padding: const EdgeInsets.only(
@@ -89,60 +77,6 @@ class CInvGridviewScreen extends StatelessWidget {
           ),
           shrinkWrap: true,
           children: [
-            // SizedBox(
-            //   height: syncController.processingSync.value ? 41.0 : 0,
-            //   width: syncController.processingSync.value
-            //       ? CHelperFunctions.screenWidth() * .4
-            //       : 45.0,
-            //   child: invController.unSyncedAppends.isEmpty &&
-            //           invController.unSyncedUpdates.isEmpty
-            //       ? null
-            //       : syncController.processingSync.value
-            //           ? CShimmerEffect(
-            //               width: 40.0,
-            //               height: 40.0,
-            //               radius: 100.0,
-            //             )
-            //           : TextButton.icon(
-            //               icon: const Icon(
-            //                 Iconsax.cloud_change,
-            //                 size: CSizes.iconSm,
-            //                 color: CColors.white,
-            //               ),
-            //               label: Text(
-            //                 'sync to cloud',
-            //                 style:
-            //                     Theme.of(context).textTheme.labelMedium!.apply(
-            //                           color: isDarkTheme
-            //                               ? CColors.white
-            //                               : CColors.rBrown,
-            //                         ),
-            //               ),
-            //               style: ElevatedButton.styleFrom(
-            //                 elevation: 0.2,
-            //                 foregroundColor:
-            //                     CColors.white, // foreground (text) color
-            //                 backgroundColor: isDarkTheme
-            //                     ? CColors.rBrown.withValues(alpha: 0.25)
-            //                     : CColors.transparent, // background color
-            //               ),
-            //               onPressed: () async {
-            //                 // -- check internet connectivity --
-            //                 final internetIsConnected =
-            //                     await CNetworkManager.instance.isConnected();
-
-            //                 if (internetIsConnected) {
-            //                   syncController.processSync();
-            //                 } else {
-            //                   CPopupSnackBar.customToast(
-            //                     message:
-            //                         'internet connection required for cloud sync!',
-            //                     forInternetConnectivityStatus: true,
-            //                   );
-            //                 }
-            //               },
-            //             ),
-            // ),
             GridView.builder(
               itemCount: searchController.showSearchField.value
                   ? invController.foundInventoryItems.length
@@ -308,42 +242,6 @@ class CInvGridviewScreen extends StatelessWidget {
                             },
                           );
                         },
-                  // onEditBtnTapped: () {
-                  //   invController.itemExists.value = true;
-                  //   showDialog(
-                  //     context: context,
-                  //     useRootNavigator: true,
-                  //     builder: (BuildContext context) {
-                  //       invController.currentItemId.value = productId;
-                  //       return dialog.buildDialog(
-                  //         context,
-                  //         CInventoryModel.withID(
-                  //           invController.currentItemId.value,
-                  //           userController.user.value.id,
-                  //           userController.user.value.email,
-                  //           userController.user.value.fullName,
-                  //           sku,
-                  //           pName,
-                  //           isFavorite,
-                  //           qtyAvailable,
-                  //           qtySold,
-                  //           qtyRefunded,
-                  //           bp,
-                  //           unitBp,
-                  //           usp,
-                  //           lowStockNotifierLimit,
-                  //           supplierName,
-                  //           supplierContacts,
-                  //           dateAdded,
-                  //           lastModified,
-                  //           isSynced,
-                  //           syncAction,
-                  //         ),
-                  //         false,
-                  //       );
-                  //     },
-                  //   );
-                  // },
                   onDoubleTapAction: () {
                     Get.toNamed(
                       '/inventory/item_details/',

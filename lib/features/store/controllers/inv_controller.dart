@@ -35,7 +35,6 @@ class CInventoryController extends GetxController {
   final RxList<CInvDelsModel> dItems = <CInvDelsModel>[].obs;
   final RxList<CInvDelsModel> pendingUpdates = <CInvDelsModel>[].obs;
   final RxList<CInventoryModel> allGSheetData = <CInventoryModel>[].obs;
-  //final RxList<CInventoryModel> topSoldItems = <CInventoryModel>[].obs;
   final RxList<CInventoryModel> topSellers = <CInventoryModel>[].obs;
   final RxList<CInventoryModel> unSyncedAppends = <CInventoryModel>[].obs;
   final RxList<CInventoryModel> unSyncedUpdates = <CInventoryModel>[].obs;

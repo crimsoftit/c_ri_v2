@@ -111,34 +111,6 @@ class CCheckoutScreen extends StatelessWidget {
               },
             ),
           ),
-          // title: Padding(
-          //   // padding: const EdgeInsets.only(top: 10.0, bottom: 8.0, left: 0,),
-          //   padding: const EdgeInsets.only(
-          //     top: 10.0,
-          //     left: 0,
-          //   ),
-          //   //child: const CTypeAheadSearchField(),
-          //   child: Obx(
-          //     () {
-          //       //final screenWidth = CHelperFunctions.screenWidth();
-          //       return searchBarController.showAnimatedTypeAheadField.value
-          //           ? CAnimatedTypeaheadField(
-          //               boxColor: CColors.white,
-          //             )
-          //           : Row(
-          //               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          //               children: [
-          //                 SizedBox(
-          //                   width: CHelperFunctions.screenWidth() * 0.62,
-          //                 ),
-          //                 CAnimatedTypeaheadField(
-          //                   boxColor: CColors.transparent,
-          //                 ),
-          //               ],
-          //             );
-          //     },
-          //   ),
-          // ),
         ),
         backgroundColor: CColors.rBrown.withValues(alpha: 0.2),
         body: SingleChildScrollView(
@@ -661,11 +633,7 @@ class CCheckoutScreen extends StatelessWidget {
                                                   width: CHelperFunctions
                                                           .screenWidth() *
                                                       0.5,
-                                                  bgColor: isDarkTheme
-                                                      ? CColors.rBrown
-                                                          .withValues(
-                                                              alpha: 0.3)
-                                                      : CColors.white,
+                                                  bgColor: CColors.transparent,
                                                   child: Column(
                                                     children: [
                                                       //TextFormField(),
