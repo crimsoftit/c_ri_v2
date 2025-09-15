@@ -80,8 +80,6 @@ class CTxnsController extends GetxController {
   final RxList<CTxnsModel> unsyncedTxnUpdates = <CTxnsModel>[].obs;
   final RxList<CTxnsModel> userGsheetTxnsData = <CTxnsModel>[].obs;
 
-  RxList txnDets = [].obs;
-
   final RxString sellItemScanResults = ''.obs;
   final RxString selectedPaymentMethod = 'Cash'.obs;
   final RxString stockUnavailableErrorMsg = ''.obs;
@@ -221,13 +219,6 @@ class CTxnsController extends GetxController {
           .toList();
       invoices.assignAll(creditSales);
 
-      // TODO: tutarudi kucheza na invoices pia hapa
-      // if (searchController.showSearchField.value &&
-      //     searchController.txtSearchField.text == '' &&
-      //     (foundReceipts.isEmpty)) {
-      //   foundReceipts.assignAll(receipts);
-      //   foundInvoices.assignAll(creditSales);
-      // }
       if (searchController.showSearchField.value &&
           searchController.txtSearchField.text == '') {
         foundReceipts.assignAll(receipts);
@@ -262,7 +253,6 @@ class CTxnsController extends GetxController {
       txnItemsLoading.value = true;
       isLoading.value = true;
 
-      //transactionItems.clear();
       fetchTxns().then(
         (_) {
           if (txns.isNotEmpty && soldItemsFetched.value && txnsFetched.value) {
@@ -322,7 +312,6 @@ class CTxnsController extends GetxController {
       // -- set inventory item details to fields --
       if (sellItemScanResults.value != '' &&
           sellItemScanResults.value != '-1') {
-        //fetchForSaleItemByCode(sellItemScanResults.value);
         await fetchSoldItems();
         await fetchForSaleItemByCode(barcodeScanRes);
       }
@@ -418,7 +407,7 @@ class CTxnsController extends GetxController {
   // -- search store --
   searchSales(String value) async {
     try {
-      // / -- TODO: ability to search dates --
+      // / -- TODO: ability to search txns based on dates, customer details --
       await fetchTxns();
 
       /// -- search all sold items --
@@ -556,10 +545,6 @@ class CTxnsController extends GetxController {
     } else {
       showAmountIssuedField.value = false;
     }
-
-    // CPopupSnackBar.customToast(
-    //   message: selectedPaymentMethod.value,
-    // );
   }
 
   /// -- set sale details --
@@ -1060,15 +1045,7 @@ class CTxnsController extends GetxController {
                                       refundDataUpdated.value = true;
                                     },
                                   );
-                                  // updateTxnDataOnRefund(txnItem);
-                                  // if (await updateTxnDataOnRefund(txnItem)) {
-                                  //   if (kDebugMode) {
-                                  //     print("** ========== **\n");
-                                  //     print(
-                                  //         "*** inventory refund updates successful ***");
-                                  //     print("** ========== **\n");
-                                  //   }
-                                  // }
+
                                   Navigator.of(Get.overlayContext!).pop(true);
                                 });
                               } else {

@@ -528,30 +528,70 @@ class DbHelper extends GetxController {
     }
   }
 
-  Future<void> updateMultipleFieldsWithTransactionId(int transactionId,
-      String date, String syncAction, String txnStatus) async {
-    // Get a reference to the database.
-    final db = _db;
+  // Future<void> updateMultipleFieldsWithTransactionId(int transactionId,
+  //     String date, String syncAction, String txnStatus) async {
+  //   // Get a reference to the database.
+  //   final db = _db;
 
-    await db!.transaction((txn) async {
-      // Update multiple fields for all records where the transaction_id matches the provided ID
-      // The 'where' clause uses the transaction_id column and 'whereArgs' to safely pass the value
-      int count = await txn.update(
-        'txns',
-        {
-          'lastModified': date,
-          'syncAction': syncAction,
-          'txnStatus': txnStatus,
+  //   await db!.transaction((txn) async {
+  //     // Update multiple fields for all records where the transaction_id matches the provided ID
+  //     // The 'where' clause uses the transaction_id column and 'whereArgs' to safely pass the value
+  //     int count = await txn.update(
+  //       'txns',
+  //       {
+  //         'lastModified': date,
+  //         'syncAction': syncAction,
+  //         'txnStatus': txnStatus,
+  //       },
+  //       where:
+  //           'txnId = ?', // Replace 'transaction_id' with your actual column name
+  //       whereArgs: [transactionId], // Pass the transaction ID as a parameter
+  //     );
+
+  //     // The transaction is committed if no error is thrown. 'count' will indicate how many rows were updated.
+  //     if (kDebugMode) {
+  //       print('Updated $count rows with transaction ID: $transactionId');
+  //     }
+  //   });
+  // }
+  Future<bool> updateMultipleFieldsWithTransactionId(int transactionId,
+      String date, String syncAction, String txnStatus) async {
+    try {
+      // Get a reference to the database.
+      final db = _db;
+
+      await db!.transaction(
+        (txn) async {
+          // Update multiple fields for all records where the transaction_id matches the provided ID
+          // The 'where' clause uses the transaction_id column and 'whereArgs' to safely pass the value
+          int count = await txn.update(
+            'txns',
+            {
+              'lastModified': date,
+              'syncAction': syncAction,
+              'txnStatus': txnStatus,
+            },
+            where:
+                'txnId = ?', // Replace 'transaction_id' with your actual column name
+            whereArgs: [
+              transactionId
+            ], // Pass the transaction ID as a parameter
+          );
+
+          // The transaction is committed if no error is thrown. 'count' will indicate how many rows were updated.
+          if (kDebugMode) {
+            print('Updated $count rows with transaction ID: $transactionId');
+          }
         },
-        where:
-            'txnId = ?', // Replace 'transaction_id' with your actual column name
-        whereArgs: [transactionId], // Pass the transaction ID as a parameter
       );
 
-      // The transaction is committed if no error is thrown. 'count' will indicate how many rows were updated.
-      if (kDebugMode) {
-        print('Updated $count rows with transaction ID: $transactionId');
-      }
-    });
+      return true;
+    } catch (e) {
+      CPopupSnackBar.errorSnackBar(
+        title: 'error updating txn details',
+        message: e.toString(),
+      );
+      return false;
+    }
   }
 }

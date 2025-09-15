@@ -1,4 +1,5 @@
 import 'package:barcode_scan2/barcode_scan2.dart';
+import 'package:c_ri/api/sheets/store_sheets_api.dart';
 import 'package:c_ri/common/widgets/custom_shapes/containers/rounded_container.dart';
 import 'package:c_ri/common/widgets/success_screen/txn_success.dart';
 import 'package:c_ri/common/widgets/txt_widgets/c_section_headings.dart';
@@ -818,6 +819,7 @@ class CCheckoutController extends GetxController {
   }
 
   confirmInvoicePaymentDialog(int txnId) {
+    // TODO: confirm if seller is sure to sell on credit
     Get.defaultDialog(
       contentPadding: const EdgeInsets.all(CSizes.md),
       title: 'complete transaction?',
@@ -838,18 +840,41 @@ class CCheckoutController extends GetxController {
             txnsController.fetchTxnItems(txnId);
           }
 
+          // final internetIsConnected =
+          //     await CNetworkManager.instance.isConnected();
+          var syncAction = '';
+
           for (var item in txnsController.transactionItems) {
             var lastModified =
                 DateFormat('yyyy-MM-dd @ kk:mm').format(clock.now());
-            var syncAction = item.isSynced == 0 ? 'append' : 'update';
+            ;
+            syncAction = item.isSynced == 0 ? 'append' : 'update';
+
             var txnStatus = 'complete';
 
             await dbHelper.updateMultipleFieldsWithTransactionId(
                 item.txnId, lastModified, syncAction, txnStatus);
+
+            if (await dbHelper.updateMultipleFieldsWithTransactionId(
+                item.txnId, lastModified, syncAction, txnStatus)) {
+              txnsController.fetchTxns();
+              txnsController.fetchSoldItems();
+              Navigator.of(Get.overlayContext!).pop();
+            }
+
+            // if (internetIsConnected) {
+
+            //   item.syncAction = syncAction;
+            //   item.txnStatus = txnStatus;
+
+            // } else {
+
+            //   CPopupSnackBar.customToast(
+            //     message: 'internet required for cloud sync!!',
+            //     forInternetConnectivityStatus: false,
+            //   );
+            // }
           }
-          txnsController.fetchTxns();
-          txnsController.fetchSoldItems();
-          Navigator.of(Get.overlayContext!).pop();
         },
         style: ElevatedButton.styleFrom(
           backgroundColor: Colors.red,
@@ -872,6 +897,19 @@ class CCheckoutController extends GetxController {
         child: const Text('cancel'),
       ),
     );
+  }
+
+  Future updateTxnItemCloudData(int txnId, CTxnsModel itemModel) async {
+    try {
+      await StoreSheetsApi.updateCloudTxnItems(txnId, itemModel.toMap());
+    } catch (e) {
+      CPopupSnackBar.errorSnackBar(
+        title: 'error updating txn #$txnId\'s cloud data',
+        message: e.toString(),
+      );
+
+      throw e.toString();
+    }
   }
 
   @override

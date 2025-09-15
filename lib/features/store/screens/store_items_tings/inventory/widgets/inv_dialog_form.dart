@@ -23,6 +23,8 @@ class AddUpdateInventoryForm extends StatelessWidget {
   final TextStyle? textStyle;
   final CInventoryModel inventoryItem;
 
+  /// -- TODO: check for txnId double entry before updating/saving data (form validation)
+
   @override
   Widget build(BuildContext context) {
     //AddUpdateItemDialog dialog = AddUpdateItemDialog();

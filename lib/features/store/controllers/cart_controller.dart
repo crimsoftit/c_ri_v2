@@ -354,7 +354,6 @@ class CCartController extends GetxController {
       controller.dispose();
     }
     qtyFieldControllers.clear();
-    qtyFieldControllers.close();
 
     if (kDebugMode) {
       print("----------\n\n TextEditingControllers DISPOSED \n\n ----------");

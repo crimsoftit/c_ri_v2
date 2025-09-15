@@ -90,15 +90,15 @@ class CExpansionTile extends StatelessWidget {
                     //fontStyle: FontStyle.italic,
                   ),
             ),
-            // Text(
-            //   '$subTitleTxt2Item1 $subTitleTxt2Item2',
-            //   style: Theme.of(context).textTheme.labelMedium!.apply(
-            //         color: isDarkTheme
-            //             ? CColors.white
-            //             : CColors.rBrown.withValues(alpha: 0.8),
-            //         //fontStyle: FontStyle.italic,
-            //       ),
-            // ),
+            Text(
+              '$subTitleTxt2Item1 $subTitleTxt2Item2',
+              style: Theme.of(context).textTheme.labelMedium!.apply(
+                    color: isDarkTheme
+                        ? CColors.white
+                        : CColors.rBrown.withValues(alpha: 0.8),
+                    //fontStyle: FontStyle.italic,
+                  ),
+            ),
             Text(
               '$subTitleTxt3Item1 $subTitleTxt3Item2',
               style: Theme.of(context).textTheme.labelSmall!.apply(

@@ -296,4 +296,23 @@ class StoreSheetsApi extends GetxController {
       throw e.toString();
     }
   }
+
+  /// -- update txn item --
+  static Future updateCloudTxnItems(
+      int txnId, Map<String, dynamic> txnItemModel) async {
+    try {
+      if (txnsSheet == null) return false;
+      return txnsSheet!.values.map.insertRowByKey(txnId, txnItemModel);
+    } catch (e) {
+      if (kDebugMode) {
+        print(e.toString());
+        CPopupSnackBar.errorSnackBar(
+          title: 'error updating receipt item\'s cloud data',
+          message: e.toString(),
+        );
+      }
+
+      throw e.toString();
+    }
+  }
 }

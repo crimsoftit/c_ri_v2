@@ -39,6 +39,8 @@ class CTxnItemsListView extends StatelessWidget {
     final userCurrency =
         CHelperFunctions.formatCurrency(userController.user.value.currencyCode);
 
+    /// -- TODO: implement loader while fetching txn items --
+
     return SingleChildScrollView(
       child: Obx(
         () {
