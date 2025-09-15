@@ -52,7 +52,12 @@ class CTxnItemsListView extends StatelessWidget {
                   : txnsController.receipts);
               break;
             case 'invoices':
-              demItems.assignAll(txnsController.invoices);
+              demItems.assignAll(searchController.showSearchField.value &&
+                      searchController.txtSearchField.text != '' &&
+                      !txnsController.isLoading.value
+                  ? txnsController.foundInvoices
+                  : txnsController.invoices);
+              //demItems.assignAll(txnsController.invoices);
               break;
             default:
               demItems.clear();
@@ -102,30 +107,26 @@ class CTxnItemsListView extends StatelessWidget {
                   CSizes.borderRadiusLg,
                 ),
                 child: ExpansionPanelList.radio(
-                  animationDuration: const Duration(milliseconds: 600),
+                  animationDuration: const Duration(milliseconds: 400),
                   elevation: 3,
                   expandedHeaderPadding: EdgeInsets.all(
                     2.0,
                   ),
+                  expandIconColor: CNetworkManager.instance.hasConnection.value
+                      ? CColors.rBrown
+                      : CColors.darkGrey,
                   expansionCallback: (panelIndex, isExpanded) {
                     if (isExpanded && !txnsController.isLoading.value) {
-                      // if (txnsController.transactionItems.isEmpty &&
-                      //     !txnsController.isLoading.value) {
-                      //   txnsController
-                      //       .fetchTxnItems(demItems[panelIndex].txnId);
-                      // }
                       txnsController.fetchTxnItems(demItems[panelIndex].txnId);
                       // Perform an action when the panel is expanded
                       if (kDebugMode) {
                         print('Panel at index $panelIndex is now expanded');
                       }
-                      // Add your custom logic here
                     } else {
                       // Perform an action when the panel is collapsed
                       if (kDebugMode) {
                         print('Panel at index $panelIndex is now collapsed');
                       }
-                      // Add your custom logic here
                     }
                   },
                   materialGapSize: 3.0,
@@ -133,7 +134,9 @@ class CTxnItemsListView extends StatelessWidget {
                       .map(
                         (item) => ExpansionPanelRadio(
                           backgroundColor: isDarkTheme
-                              ? CColors.rBrown.withValues(alpha: 0.3)
+                              ? CColors.rBrown.withValues(
+                                  alpha: 0.3,
+                                )
                               : CColors.lightGrey,
                           value: item.txnId,
                           canTapOnHeader: true,
@@ -142,7 +145,8 @@ class CTxnItemsListView extends StatelessWidget {
                               contentPadding: const EdgeInsets.symmetric(
                                 horizontal: 10.0,
                                 vertical: 8.0,
-                              ), // Adjust padding here
+                              ),
+                              //selectedColor:  Colors.amber,
                               title: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
@@ -164,7 +168,6 @@ class CTxnItemsListView extends StatelessWidget {
                                       ),
                                       Text(
                                         '$userCurrency.${item.totalAmount}',
-                                        //'${userController.user.value.currencyCode}.$totalAmount',
                                         style: Theme.of(context)
                                             .textTheme
                                             .labelMedium!
@@ -177,88 +180,64 @@ class CTxnItemsListView extends StatelessWidget {
                                       ),
                                     ],
                                   ),
-
-                                  // Row(
-                                  //   mainAxisAlignment:
-                                  //       MainAxisAlignment.spaceBetween,
-                                  //   children: [
-                                  //     Text(
-                                  //       'txn amount:',
-                                  //       //'${userController.user.value.currencyCode}.$totalAmount',
-                                  //       style: Theme.of(context)
-                                  //           .textTheme
-                                  //           .labelMedium!
-                                  //           .apply(
-                                  //             color: isDarkTheme
-                                  //                 ? CColors.softGrey
-                                  //                 : CColors.rBrown,
-                                  //             fontWeightDelta: -1,
-                                  //           ),
-                                  //     ),
-
-                                  //   ],
-                                  // ),
-                                  if (item.customerName != '' ||
-                                      item.customerContacts != '')
-                                    Column(
-                                      children: [
-                                        const SizedBox(
-                                          height:
-                                              CSizes.spaceBtnInputFields / 4,
-                                        ),
-                                        Row(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.center,
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          //mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            Text(
-                                              'sold to:',
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .labelMedium!
-                                                  .apply(
-                                                    color: isDarkTheme
-                                                        ? CColors.darkGrey
-                                                        : CColors.rBrown,
-                                                    //fontStyle: FontStyle.italic,
-                                                  ),
-                                            ),
-                                            Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.end,
-                                              children: [
-                                                Text(
-                                                  'name: ${item.customerName}',
-                                                  style: Theme.of(context)
-                                                      .textTheme
-                                                      .labelMedium!
-                                                      .apply(
-                                                        color: isDarkTheme
-                                                            ? CColors.darkGrey
-                                                            : CColors.rBrown,
-                                                        //fontStyle: FontStyle.italic,
-                                                      ),
+                                  Column(
+                                    children: [
+                                      const SizedBox(
+                                        height: CSizes.spaceBtnInputFields / 4,
+                                      ),
+                                      Row(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        //mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Text(
+                                            'sold to:',
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .labelMedium!
+                                                .apply(
+                                                  color: isDarkTheme
+                                                      ? CColors.darkGrey
+                                                      : CColors.rBrown,
+                                                  //fontStyle: FontStyle.italic,
                                                 ),
-                                                Text(
-                                                  'contacts: ${item.customerContacts.isEmpty ? "N/A" : item.customerContacts}',
-                                                  style: Theme.of(context)
-                                                      .textTheme
-                                                      .labelMedium!
-                                                      .apply(
-                                                        color: isDarkTheme
-                                                            ? CColors.darkGrey
-                                                            : CColors.rBrown,
-                                                        //fontStyle: FontStyle.italic,
-                                                      ),
-                                                ),
-                                              ],
-                                            ),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
+                                          ),
+                                          Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.end,
+                                            children: [
+                                              Text(
+                                                'name: ${item.customerName.isEmpty ? 'N/A' : item.customerName}',
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .labelMedium!
+                                                    .apply(
+                                                      color: isDarkTheme
+                                                          ? CColors.darkGrey
+                                                          : CColors.rBrown,
+                                                      //fontStyle: FontStyle.italic,
+                                                    ),
+                                              ),
+                                              Text(
+                                                'contacts: ${item.customerContacts.isEmpty ? "N/A" : item.customerContacts}',
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .labelMedium!
+                                                    .apply(
+                                                      color: isDarkTheme
+                                                          ? CColors.darkGrey
+                                                          : CColors.rBrown,
+                                                      //fontStyle: FontStyle.italic,
+                                                    ),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
                                 ],
                               ),
                             );

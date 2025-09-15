@@ -60,9 +60,13 @@ class CExpandedSearchField extends StatelessWidget {
                 ),
 
                 // hintText: 'search $hintTxt',
-                hintText: 'search store',
+
+                hintText: 'search store (inventory, txns, dates, etc.)',
                 hintStyle: TextStyle(
-                  color: CColors.rBrown.withValues(alpha: 0.6),
+                  color: CColors.rBrown.withValues(
+                    alpha: 0.6,
+                  ),
+                  //fontSize: 12.0,
                 ),
                 border: InputBorder.none,
                 focusedBorder: InputBorder.none,

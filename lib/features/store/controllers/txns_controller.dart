@@ -61,7 +61,7 @@ class CTxnsController extends GetxController {
 
   DbHelper dbHelper = DbHelper.instance;
 
-  //final RxList<CTxnsModel> foundInvoices = <CTxnsModel>[].obs;
+  final RxList<CTxnsModel> foundInvoices = <CTxnsModel>[].obs;
   final RxList<CTxnsModel> invoices = <CTxnsModel>[].obs;
 
   final RxList<CTxnsModel> sales = <CTxnsModel>[].obs;
@@ -135,8 +135,6 @@ class CTxnsController extends GetxController {
       isLoading.value = true;
       foundSales.clear();
       foundRefunds.clear();
-      //foundInvoices.clear();
-      //foundReceipts.clear();
       await dbHelper.openDb();
 
       // fetch sales from local db
@@ -194,8 +192,6 @@ class CTxnsController extends GetxController {
   /// -- fetch txns from sqflite db --
   Future<List<CTxnsModel>> fetchTxns() async {
     try {
-      //foundInvoices.clear();
-      //foundReceipts.clear();
       // start loader while txns are fetched
       isLoading.value = true;
       await dbHelper.openDb();
@@ -226,11 +222,16 @@ class CTxnsController extends GetxController {
       invoices.assignAll(creditSales);
 
       // TODO: tutarudi kucheza na invoices pia hapa
+      // if (searchController.showSearchField.value &&
+      //     searchController.txtSearchField.text == '' &&
+      //     (foundReceipts.isEmpty)) {
+      //   foundReceipts.assignAll(receipts);
+      //   foundInvoices.assignAll(creditSales);
+      // }
       if (searchController.showSearchField.value &&
-          searchController.txtSearchField.text == '' &&
-          foundReceipts.isEmpty) {
+          searchController.txtSearchField.text == '') {
         foundReceipts.assignAll(receipts);
-        //foundInvoices.assignAll(creditSales);
+        foundInvoices.assignAll(creditSales);
       }
 
       txnsFetched.value = true;
@@ -414,9 +415,10 @@ class CTxnsController extends GetxController {
     }
   }
 
+  // -- search store --
   searchSales(String value) async {
     try {
-      //fetchSoldItems();
+      // / -- TODO: ability to search dates --
       await fetchTxns();
 
       /// -- search all sold items --
@@ -442,17 +444,17 @@ class CTxnsController extends GetxController {
       /// -- search refunded items --
       var refundsFound = refunds
           .where((refundedItem) =>
-              refundedItem.productName
-                  .toLowerCase()
-                  .contains(value.toLowerCase()) ||
-              refundedItem.txnId
-                  .toString()
-                  .toLowerCase()
-                  .contains(value.toLowerCase()) ||
               refundedItem.productCode
                   .toLowerCase()
                   .contains(value.toLowerCase()) ||
               refundedItem.productId
+                  .toString()
+                  .toLowerCase()
+                  .contains(value.toLowerCase()) ||
+              refundedItem.productName
+                  .toLowerCase()
+                  .contains(value.toLowerCase()) ||
+              refundedItem.txnId
                   .toString()
                   .toLowerCase()
                   .contains(value.toLowerCase()))
@@ -462,6 +464,13 @@ class CTxnsController extends GetxController {
       /// -- search receipt items(complete txns) --
       var receiptsFound = receipts
           .where((completeTxn) =>
+              completeTxn.productCode
+                  .toLowerCase()
+                  .contains(value.toLowerCase()) ||
+              completeTxn.productId
+                  .toString()
+                  .toLowerCase()
+                  .contains(value.toLowerCase()) ||
               completeTxn.productName
                   .toLowerCase()
                   .contains(value.toLowerCase()) ||
@@ -471,6 +480,22 @@ class CTxnsController extends GetxController {
                   .contains(value.toLowerCase()))
           .toList();
       foundReceipts.assignAll(receiptsFound);
+
+      /// -- search itemssold on credit (invoices) --
+      var invoicesFound = invoices
+          .where((invoice) =>
+              invoice.productCode.toLowerCase().contains(value.toLowerCase()) ||
+              invoice.productId
+                  .toString()
+                  .toLowerCase()
+                  .contains(value.toLowerCase()) ||
+              invoice.productName.toLowerCase().contains(value.toLowerCase()) ||
+              invoice.txnId
+                  .toString()
+                  .toLowerCase()
+                  .contains(value.toLowerCase()))
+          .toList();
+      foundInvoices.assignAll(invoicesFound);
     } catch (e) {
       CPopupSnackBar.errorSnackBar(
         title: 'error searching sales',

@@ -35,6 +35,10 @@ class CCartController extends GetxController {
   @override
   void onInit() async {
     cartItemsLoading.value = false;
+    qtyFieldControllers.clear();
+
+    cartItems.clear();
+
     await fetchCartItems();
 
     super.onInit();

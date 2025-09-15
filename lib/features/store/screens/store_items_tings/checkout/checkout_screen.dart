@@ -545,9 +545,6 @@ class CCheckoutScreen extends StatelessWidget {
                                                         : CColors.rBrown,
                                                   ),
                                                 ),
-                                                // SizedBox(
-                                                //   width: 10.0,
-                                                // ),
                                               ],
                                             ),
                                           ],
@@ -557,10 +554,10 @@ class CCheckoutScreen extends StatelessWidget {
                                   ),
                                 ),
                               ),
-                              //Divider(),
                               SizedBox(
                                 height: CSizes.defaultSpace / 4,
                               ),
+
                               // -- billing section --
                               CRoundedContainer(
                                 padding: const EdgeInsets.all(CSizes.md / 4),
@@ -665,84 +662,12 @@ class CCheckoutScreen extends StatelessWidget {
                                                         labelTxt:
                                                             'customer contacts',
                                                       ),
-                                                      // IntlPhoneField(
-                                                      //   controller:
-                                                      //       checkoutController
-                                                      //           .customerContactsFieldController,
-                                                      //   initialCountryCode:
-                                                      //       'KE',
-                                                      //   //focusNode: focusNode,
-                                                      //   dropdownTextStyle:
-                                                      //       const TextStyle(
-                                                      //     fontSize: 12,
-                                                      //     fontFamily: 'Poppins',
-                                                      //     height: 0.8,
-                                                      //   ),
-                                                      //   decoration:
-                                                      //       const InputDecoration(
-                                                      //     counterText: '',
-                                                      //     label: Text(
-                                                      //         'Phone number'),
-                                                      //     focusedBorder:
-                                                      //         OutlineInputBorder(
-                                                      //       borderSide:
-                                                      //           BorderSide(
-                                                      //         width: 2.0,
-                                                      //         color: CColors
-                                                      //             .rBrown,
-                                                      //       ),
-                                                      //     ),
-                                                      //   ),
-                                                      //   style: const TextStyle(
-                                                      //     fontSize: 10,
-                                                      //     fontFamily: 'Poppins',
-                                                      //     height: 0.8,
-                                                      //   ),
-                                                      //   keyboardType:
-                                                      //       TextInputType.phone,
-                                                      //   languageCode: "en",
-                                                      //   onChanged: (phone) {
-                                                      //     //signupController.completePhoneNo.value = phone.completeNumber;
-                                                      //   },
-                                                      //   onCountryChanged:
-                                                      //       (country) {
-                                                      //     if (kDebugMode) {
-                                                      //       print(
-                                                      //           'country changed to: ${country.dialCode}');
-                                                      //     }
-                                                      //   },
-                                                      //   validator: (value) => CValidator
-                                                      //       .validatePhoneNumber(
-                                                      //           value
-                                                      //               .toString()),
-                                                      // ),
                                                     ],
                                                   ),
                                                 ),
                                               ],
                                             ),
                                     ),
-                                    // addresses
-                                    //CBillingAddressSection(),
-                                    // Visibility(
-                                    //   visible: true,
-                                    //   child: Column(
-                                    //     children: [
-                                    //       Text(
-                                    //         'latitude: ${locationController.userLocation.value!.latitude}',
-                                    //         overflow: TextOverflow.ellipsis,
-                                    //       ),
-                                    //       Text(
-                                    //         'longitude: ${locationController.userLocation.value!.longitude}',
-                                    //         overflow: TextOverflow.ellipsis,
-                                    //       ),
-                                    //       Text(
-                                    //         'user Address: ${locationController.uAddress.value}',
-                                    //         overflow: TextOverflow.ellipsis,
-                                    //       ),
-                                    //     ],
-                                    //   ),
-                                    // ),
                                   ],
                                 ),
                               ),
@@ -761,16 +686,6 @@ class CCheckoutScreen extends StatelessWidget {
           ),
         ),
 
-        // floatingActionButton: Obx(
-        //   () {
-        //     return CCheckoutScanFAB(
-        //       bgColor: CNetworkManager.instance.hasConnection.value
-        //           ? CColors.rBrown
-        //           : CColors.black,
-        //     );
-        //   },
-        // ),
-
         /// -- bottom navigation bar --
         bottomNavigationBar: Obx(
           () {
@@ -784,23 +699,6 @@ class CCheckoutScreen extends StatelessWidget {
                   width: CHelperFunctions.screenWidth() * 0.98,
                   child: ElevatedButton.icon(
                     onPressed: () {
-                      // if ((checkoutController.amtIssuedFieldController.text
-                      //                 .trim() ==
-                      //             '' &&
-                      //         checkoutController.selectedPaymentMethod.value
-                      //                 .platformName ==
-                      //             'cash') ||
-                      //     (double.parse(checkoutController
-                      //                 .amtIssuedFieldController.text
-                      //                 .trim()) <
-                      //             cartController.totalCartPrice.value) &&
-                      //         checkoutController.selectedPaymentMethod.value
-                      //                 .platformName ==
-                      //             'cash') {
-                      //   checkoutController.triggerCheckoutActionModal(context);
-                      // } else {
-                      //   checkoutController.onCheckoutBtnPressed();
-                      // }
                       checkoutController.onCheckoutBtnPressed();
                     },
                     label: SizedBox(
@@ -836,56 +734,6 @@ class CCheckoutScreen extends StatelessWidget {
                     ),
                   ),
                 ),
-                // TODO: IMPLEMENT ABILITY TO SUSPEND TXN USING THIS BUTTON BELOW
-                // Row(
-                //   children: [
-
-                //     const SizedBox(
-                //       width: CSizes.spaceBtnInputFields,
-                //     ),
-
-                //     /// -- button to mark txn as pending --
-                //     SizedBox(
-                //       width: CHelperFunctions.screenWidth() * 0.45,
-                //       child: ElevatedButton.icon(
-                //         onPressed: () {
-                //           //checkoutController.suspendTxn();
-                //         },
-                //         label: SizedBox(
-                //           height: 34.1,
-                //           child: Column(
-                //             crossAxisAlignment: CrossAxisAlignment.center,
-                //             mainAxisAlignment: MainAxisAlignment.end,
-                //             children: [
-                //               Text(
-                //                 'SUSPEND',
-                //                 style:
-                //                     Theme.of(context).textTheme.bodyMedium!.apply(
-                //                           color: CColors.white,
-                //                           fontSizeFactor: 0.88,
-                //                           fontWeightDelta: 1,
-                //                         ),
-                //               ),
-                //               Text(
-                //                 '$currencySymbol.${cartController.totalCartPrice.value.toStringAsFixed(2)}',
-                //                 style:
-                //                     Theme.of(context).textTheme.bodyMedium!.apply(
-                //                           color: CColors.white,
-                //                           fontSizeFactor: 1.10,
-                //                           fontWeightDelta: 2,
-                //                         ),
-                //               ),
-                //             ],
-                //           ),
-                //         ),
-                //         icon: Icon(
-                //           Iconsax.money_time,
-                //           color: CColors.white,
-                //         ),
-                //       ),
-                //     ),
-                //   ],
-                // ),
               );
             } else {
               CPopupSnackBar.errorSnackBar(

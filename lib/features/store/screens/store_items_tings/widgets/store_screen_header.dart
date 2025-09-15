@@ -77,49 +77,100 @@ class CStoreScreenHeader extends StatelessWidget {
                   ),
 
                   /// -- sync control btn --
-                  syncController.processingSync.value
-                      ? CShimmerEffect(
-                          width: 40.0,
-                          height: 40.0,
-                          radius: 40.0,
-                        )
-                      : FloatingActionButton(
-                          elevation: 0, // -- removes shadow
-                          onPressed: invController.unSyncedAppends.isEmpty &&
-                                  invController.unSyncedUpdates.isEmpty &&
-                                  txnsController.unsyncedTxnAppends.isEmpty &&
-                                  txnsController.unsyncedTxnUpdates.isEmpty
-                              ? null
-                              : () async {
-                                  // -- check internet connectivity --
-                                  final internetIsConnected =
-                                      await CNetworkManager.instance
-                                          .isConnected();
+                  // syncController.processingSync.value
+                  //     ? CShimmerEffect(
+                  //         width: 40.0,
+                  //         height: 40.0,
+                  //         radius: 40.0,
+                  //       )
+                  //     : FloatingActionButton(
+                  //         elevation: 0, // -- removes shadow
+                  //         onPressed: invController.unSyncedAppends.isEmpty &&
+                  //                 invController.unSyncedUpdates.isEmpty &&
+                  //                 txnsController.unsyncedTxnAppends.isEmpty &&
+                  //                 txnsController.unsyncedTxnUpdates.isEmpty
+                  //             ? null
+                  //             : () async {
+                  //                 // -- check internet connectivity --
+                  //                 final internetIsConnected =
+                  //                     await CNetworkManager.instance
+                  //                         .isConnected();
 
-                                  if (internetIsConnected) {
-                                    syncController.processSync();
-                                  } else {
-                                    CPopupSnackBar.customToast(
-                                      message:
-                                          'internet connection required for cloud sync!',
-                                      forInternetConnectivityStatus: true,
-                                    );
-                                  }
-                                },
-                          backgroundColor: CColors.transparent,
-                          foregroundColor: isConnectedToInternet
+                  //                 if (internetIsConnected) {
+                  //                   syncController.processSync();
+                  //                 } else {
+                  //                   CPopupSnackBar.customToast(
+                  //                     message:
+                  //                         'internet connection required for cloud sync!',
+                  //                     forInternetConnectivityStatus: true,
+                  //                   );
+                  //                 }
+                  //               },
+                  //         backgroundColor: CColors.transparent,
+                  //         foregroundColor: isConnectedToInternet
+                  //             ? CColors.rBrown
+                  //             : CColors.darkGrey,
+                  //         heroTag: 'sync',
+                  //         child: Icon(
+                  //           invController.unSyncedAppends.isEmpty &&
+                  //                   invController.unSyncedUpdates.isEmpty &&
+                  //                   txnsController.unsyncedTxnAppends.isEmpty &&
+                  //                   txnsController.unsyncedTxnUpdates.isEmpty
+                  //               ? Iconsax.cloud_add
+                  //               : Iconsax.cloud_change,
+                  //         ),
+                  //       ),
+
+                  invController.unSyncedAppends.isEmpty &&
+                          invController.unSyncedUpdates.isEmpty &&
+                          txnsController.unsyncedTxnAppends.isEmpty &&
+                          txnsController.unsyncedTxnUpdates.isEmpty
+                      ? Icon(
+                          Iconsax.cloud_add,
+                          color: isConnectedToInternet
                               ? CColors.rBrown
                               : CColors.darkGrey,
-                          heroTag: 'sync',
-                          child: Icon(
-                            invController.unSyncedAppends.isEmpty &&
-                                    invController.unSyncedUpdates.isEmpty &&
-                                    txnsController.unsyncedTxnAppends.isEmpty &&
-                                    txnsController.unsyncedTxnUpdates.isEmpty
-                                ? Iconsax.cloud_add
-                                : Iconsax.cloud_change,
-                          ),
-                        ),
+                        )
+                      : syncController.processingSync.value
+                          ? CShimmerEffect(
+                              width: 40.0,
+                              height: 40.0,
+                              radius: 40.0,
+                            )
+                          : FloatingActionButton(
+                              elevation: 0, // -- removes shadow
+                              onPressed: invController
+                                          .unSyncedAppends.isEmpty &&
+                                      invController.unSyncedUpdates.isEmpty &&
+                                      txnsController
+                                          .unsyncedTxnAppends.isEmpty &&
+                                      txnsController.unsyncedTxnUpdates.isEmpty
+                                  ? null
+                                  : () async {
+                                      // -- check internet connectivity --
+                                      final internetIsConnected =
+                                          await CNetworkManager.instance
+                                              .isConnected();
+
+                                      if (internetIsConnected) {
+                                        syncController.processSync();
+                                      } else {
+                                        CPopupSnackBar.customToast(
+                                          message:
+                                              'internet connection required for cloud sync!',
+                                          forInternetConnectivityStatus: true,
+                                        );
+                                      }
+                                    },
+                              backgroundColor: CColors.transparent,
+                              foregroundColor: isConnectedToInternet
+                                  ? CColors.rBrown
+                                  : CColors.darkGrey,
+                              heroTag: 'sync',
+                              child: Icon(
+                                Iconsax.cloud_change,
+                              ),
+                            ),
 
                   // -- scan item for checkout btn --
                   CCheckoutScanFAB(

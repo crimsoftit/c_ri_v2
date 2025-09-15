@@ -599,6 +599,7 @@ class CCheckoutController extends GetxController {
 
   refreshData() {
     final cartController = Get.put(CCartController());
+
     txnsController.fetchSoldItems();
     customerBal.value = 0.0;
 
@@ -608,6 +609,11 @@ class CCheckoutController extends GetxController {
 
     resetSalesFields();
 
+    cartController.qtyFieldControllers.clear();
+    if (cartController.qtyFieldControllers.isNotEmpty) {
+      cartController.qtyFieldControllers.close();
+    }
+    cartController.qtyFieldControllers.close();
     navController.selectedIndex.value = 1;
 
     Get.offAll(() => NavMenu());

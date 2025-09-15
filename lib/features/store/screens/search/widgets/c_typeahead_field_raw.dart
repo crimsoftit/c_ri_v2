@@ -82,7 +82,7 @@ class CTypeAheadSearchFieldRaw extends StatelessWidget {
                 color: CColors.rBrown.withValues(alpha: 0.6),
                 fontStyle: FontStyle.normal,
               ),
-              hintText: 'search store',
+              hintText: 'search store (inventory, txns, dates, etc.)',
               labelStyle: TextStyle(
                 color: CColors.rBrown.withValues(alpha: 0.6),
                 fontStyle: FontStyle.italic,
