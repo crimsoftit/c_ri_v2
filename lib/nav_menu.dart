@@ -84,10 +84,10 @@ class NavMenu extends StatelessWidget {
               //   icon: Icon(Iconsax.empty_wallet_time),
               //   label: 'sales_raw',
               // ),
-              NavigationDestination(
-                icon: Icon(Iconsax.wallet_check),
-                label: 'txns',
-              ),
+              // NavigationDestination(
+              //   icon: Icon(Iconsax.wallet_check),
+              //   label: 'txns',
+              // ),
 
               NavigationDestination(
                 icon: Icon(Iconsax.setting),

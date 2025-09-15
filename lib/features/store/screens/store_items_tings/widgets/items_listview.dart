@@ -108,6 +108,8 @@ class CItemsListView extends StatelessWidget {
               scrollDirection: Axis.vertical,
               itemCount: itemsCount,
               itemBuilder: (context, index) {
+                var txnId = 0;
+
                 var avatarTxt = '';
                 var itemIsSynced = 0;
                 var itemName = '';
@@ -119,10 +121,14 @@ class CItemsListView extends StatelessWidget {
                 var txnAmount = 0.0;
                 var txnModifiedDate = '';
                 var txnStatus = '';
-                //var unitSellingPrice = 0.0;
+                var unitSellingPrice = 0.0;
 
                 switch (space) {
                   case "refunds":
+                    txnId = salesController.foundRefunds.isNotEmpty
+                        ? salesController.foundRefunds[index].txnId
+                        : salesController.refunds[index].txnId;
+
                     avatarTxt = salesController.foundRefunds.isNotEmpty
                         ? salesController.foundRefunds[index].productName[0]
                             .toUpperCase()
@@ -165,11 +171,15 @@ class CItemsListView extends StatelessWidget {
                         ? salesController.foundRefunds[index].txnStatus
                         : salesController.refunds[index].txnStatus;
 
-                    // unitSellingPrice = salesController.foundRefunds.isNotEmpty
-                    //     ? salesController.foundRefunds[index].unitSellingPrice
-                    //     : salesController.refunds[index].unitSellingPrice;
+                    unitSellingPrice = salesController.foundRefunds.isNotEmpty
+                        ? salesController.foundRefunds[index].unitSellingPrice
+                        : salesController.refunds[index].unitSellingPrice;
                     break;
                   case "sales":
+                    txnId = salesController.foundSales.isNotEmpty
+                        ? salesController.foundSales[index].txnId
+                        : salesController.sales[index].txnId;
+
                     avatarTxt = salesController.foundSales.isNotEmpty
                         ? salesController.foundSales[index].productName[0]
                             .toUpperCase()
@@ -212,10 +222,11 @@ class CItemsListView extends StatelessWidget {
                         ? salesController.foundSales[index].txnStatus
                         : salesController.sales[index].txnStatus;
 
-                  // unitSellingPrice = salesController.foundSales.isNotEmpty
-                  //     ? salesController.foundSales[index].unitSellingPrice
-                  //     : salesController.sales[index].unitSellingPrice;
+                    unitSellingPrice = salesController.foundSales.isNotEmpty
+                        ? salesController.foundSales[index].unitSellingPrice
+                        : salesController.sales[index].unitSellingPrice;
                   default:
+                    txnId = 0;
                     avatarTxt = '';
                     itemIsSynced = 0;
                     itemsCount = 0;
@@ -226,7 +237,7 @@ class CItemsListView extends StatelessWidget {
                     txnAmount = 0.0;
                     txnModifiedDate = '';
                     txnStatus = '';
-                    //unitSellingPrice = 0.0;
+                    unitSellingPrice = 0.0;
                     CPopupSnackBar.errorSnackBar(
                       title: 'invalid tab space',
                     );
@@ -247,8 +258,8 @@ class CItemsListView extends StatelessWidget {
                             't.Amount: $userCurrencyCode.$txnAmount ',
                         subTitleTxt1Item2:
                             '($qtySold sold, $qtyRefunded refunded)',
-                        //subTitleTxt2Item1: '',
-                        subTitleTxt2Item2: '',
+                        subTitleTxt2Item1: '@$unitSellingPrice',
+                        subTitleTxt2Item2: 'txn #$txnId',
                         subTitleTxt3Item1: txnModifiedDate,
                         subTitleTxt3Item2: 'product id: $itemProductId',
                         syncAction: 'syncAction: $syncAction',

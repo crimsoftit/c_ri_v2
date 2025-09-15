@@ -61,8 +61,8 @@ class CTxnsController extends GetxController {
 
   DbHelper dbHelper = DbHelper.instance;
 
+  //final RxList<CTxnsModel> foundInvoices = <CTxnsModel>[].obs;
   final RxList<CTxnsModel> invoices = <CTxnsModel>[].obs;
-  final RxList<CTxnsModel> foundInvoices = <CTxnsModel>[].obs;
 
   final RxList<CTxnsModel> sales = <CTxnsModel>[].obs;
   final RxList<CTxnsModel> foundSales = <CTxnsModel>[].obs;
@@ -73,6 +73,7 @@ class CTxnsController extends GetxController {
   final RxList<CTxnsModel> foundRefunds = <CTxnsModel>[].obs;
 
   final RxList<CTxnsModel> receipts = <CTxnsModel>[].obs;
+  final RxList<CTxnsModel> foundReceipts = <CTxnsModel>[].obs;
 
   final RxList<CTxnsModel> allGsheetTxnsData = <CTxnsModel>[].obs;
   final RxList<CTxnsModel> unsyncedTxnAppends = <CTxnsModel>[].obs;
@@ -134,6 +135,8 @@ class CTxnsController extends GetxController {
       isLoading.value = true;
       foundSales.clear();
       foundRefunds.clear();
+      //foundInvoices.clear();
+      foundReceipts.clear();
       await dbHelper.openDb();
 
       // fetch sales from local db
@@ -162,7 +165,7 @@ class CTxnsController extends GetxController {
           sales.where((refundedItem) => refundedItem.qtyRefunded >= 1).toList();
       refunds.assignAll(refundedItems);
 
-      if (searchController.showSearchField.isTrue &&
+      if (searchController.showSearchField.value &&
           searchController.txtSearchField.text == '') {
         foundSales.assignAll(soldItems);
         foundRefunds.assignAll(refundedItems);
@@ -188,9 +191,11 @@ class CTxnsController extends GetxController {
     }
   }
 
-  /// -- fetch sold items from sqflite db --
+  /// -- fetch txns from sqflite db --
   Future<List<CTxnsModel>> fetchTxns() async {
     try {
+      //foundInvoices.clear();
+      //foundReceipts.clear();
       // start loader while txns are fetched
       isLoading.value = true;
       await dbHelper.openDb();
@@ -203,7 +208,10 @@ class CTxnsController extends GetxController {
       // assign transactions to txns list
       txns.assignAll(transactions);
 
-      foundTxns.value = txns;
+      if (searchController.showSearchField.value &&
+          searchController.txtSearchField.text == '') {
+        foundTxns.assignAll(transactions);
+      }
 
       // assign complete txns to receipts list
       final completeTxns = txns
@@ -216,6 +224,16 @@ class CTxnsController extends GetxController {
           .where((txn) => txn.txnStatus.toLowerCase().contains('invoiced'))
           .toList();
       invoices.assignAll(creditSales);
+
+      // TODO: tutarudi kucheza na invoices pia hapa
+      if (searchController.showSearchField.value &&
+          searchController.txtSearchField.text == '' &&
+          foundReceipts.isEmpty) {
+        foundReceipts.assignAll(receipts);
+        //foundInvoices.assignAll(creditSales);
+      } else {
+        foundReceipts.clear();
+      }
 
       txnsFetched.value = true;
 
@@ -248,11 +266,9 @@ class CTxnsController extends GetxController {
       transactionItems.clear();
       fetchTxns().then(
         (_) {
-          if (txns.isNotEmpty &&
-              sales.isNotEmpty &&
-              soldItemsFetched.value &&
-              txnsFetched.value) {
-            var txnItems = sales
+          if (txns.isNotEmpty && soldItemsFetched.value && txnsFetched.value) {
+            var listToSearchFrom = foundTxns.isNotEmpty ? foundTxns : txns;
+            var txnItems = listToSearchFrom
                 .where((soldItem) =>
                     soldItem.txnId.toString().contains(txnId.toString()))
                 .toList();
@@ -400,9 +416,12 @@ class CTxnsController extends GetxController {
     }
   }
 
-  searchSales(String value) {
+  searchSales(String value) async {
     try {
-      fetchSoldItems();
+      //fetchSoldItems();
+      await fetchTxns();
+
+      /// -- search all sold items --
       var salesFound = sales
           .where((soldItem) =>
               soldItem.productName
@@ -421,6 +440,8 @@ class CTxnsController extends GetxController {
                   .contains(value.toLowerCase()))
           .toList();
       foundSales.assignAll(salesFound);
+
+      /// -- search refunded items --
       var refundsFound = refunds
           .where((refundedItem) =>
               refundedItem.productName
@@ -439,6 +460,19 @@ class CTxnsController extends GetxController {
                   .contains(value.toLowerCase()))
           .toList();
       foundRefunds.assignAll(refundsFound);
+
+      /// -- search receipt items(complete txns) --
+      var receiptsFound = receipts
+          .where((completeTxn) =>
+              completeTxn.productName
+                  .toLowerCase()
+                  .contains(value.toLowerCase()) ||
+              completeTxn.txnId
+                  .toString()
+                  .toLowerCase()
+                  .contains(value.toLowerCase()))
+          .toList();
+      foundReceipts.assignAll(receiptsFound);
     } catch (e) {
       CPopupSnackBar.errorSnackBar(
         title: 'error searching sales',

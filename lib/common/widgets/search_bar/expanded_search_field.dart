@@ -21,7 +21,7 @@ class CExpandedSearchField extends StatelessWidget {
   Widget build(BuildContext context) {
     final searchController = Get.put(CSearchBarController());
     final invController = Get.put(CInventoryController());
-    final salesController = Get.put(CTxnsController());
+    final txnsController = Get.put(CTxnsController());
 
     return Row(
       children: [
@@ -36,11 +36,11 @@ class CExpandedSearchField extends StatelessWidget {
               autofocus: true,
               onChanged: (value) {
                 invController.searchInventory(value);
-                salesController.searchSales(value);
+                txnsController.searchSales(value);
               },
               onFieldSubmitted: (value) {
                 invController.searchInventory(value);
-                salesController.searchSales(value);
+                txnsController.searchSales(value);
               },
               style: TextStyle(
                 color: txtColor,
@@ -85,7 +85,8 @@ class CExpandedSearchField extends StatelessWidget {
             onTap: () {
               searchController.toggleSearchFieldVisibility();
               invController.fetchUserInventoryItems();
-              salesController.fetchSoldItems();
+              //txnsController.fetchSoldItems();
+              txnsController.fetchTxns();
             },
             child: Padding(
               padding: const EdgeInsets.all(10.0),

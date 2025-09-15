@@ -7,6 +7,7 @@ import 'package:c_ri/features/store/controllers/inv_controller.dart';
 import 'package:c_ri/features/store/controllers/search_bar_controller.dart';
 import 'package:c_ri/features/store/controllers/sync_controller.dart';
 import 'package:c_ri/features/store/controllers/txns_controller.dart';
+import 'package:c_ri/features/store/screens/search/widgets/no_results_screen.dart';
 import 'package:c_ri/utils/constants/colors.dart';
 import 'package:c_ri/utils/constants/img_strings.dart';
 import 'package:c_ri/utils/constants/sizes.dart';
@@ -41,15 +42,19 @@ class CTxnItemsListView extends StatelessWidget {
     return SingleChildScrollView(
       child: Obx(
         () {
-          List demItems;
+          var demItems = [];
           switch (space) {
             case 'receipts':
-              demItems = txnsController.receipts;
+              demItems.assignAll(searchController.showSearchField.value &&
+                      searchController.txtSearchField.text != ''
+                  ? txnsController.foundReceipts
+                  : txnsController.receipts);
               break;
             case 'invoices':
-              demItems = txnsController.invoices;
+              demItems.assignAll(txnsController.invoices);
+              break;
             default:
-              demItems = [];
+              demItems.clear();
               CPopupSnackBar.errorSnackBar(
                 title: 'invalid tab space',
               );
@@ -58,6 +63,12 @@ class CTxnItemsListView extends StatelessWidget {
           if (!txnsController.isLoading.value &&
               txnsController.receipts.isEmpty) {
             txnsController.fetchTxns();
+          }
+
+          if (searchController.showSearchField.value &&
+              demItems.isEmpty &&
+              !txnsController.isLoading.value) {
+            return const NoSearchResultsScreen();
           }
 
           if (!searchController.showSearchField.value && demItems.isEmpty) {
@@ -97,7 +108,6 @@ class CTxnItemsListView extends StatelessWidget {
                   ),
                   expansionCallback: (panelIndex, isExpanded) {
                     if (isExpanded) {
-                      txnsController.transactionItems.clear();
                       if (txnsController.transactionItems.isEmpty) {
                         txnsController
                             .fetchTxnItems(demItems[panelIndex].txnId);
@@ -130,10 +140,10 @@ class CTxnItemsListView extends StatelessWidget {
                           canTapOnHeader: true,
                           headerBuilder: (_, isExpanded) {
                             return ListTile(
-                              // padding: const EdgeInsets.symmetric(
-                              //   vertical: 2.0,
-                              //   horizontal: 10.0,
-                              // ),
+                              contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 10.0,
+                                vertical: 8.0,
+                              ), // Adjust padding here
                               title: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
