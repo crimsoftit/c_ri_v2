@@ -136,7 +136,7 @@ class CTxnsController extends GetxController {
       foundSales.clear();
       foundRefunds.clear();
       //foundInvoices.clear();
-      foundReceipts.clear();
+      //foundReceipts.clear();
       await dbHelper.openDb();
 
       // fetch sales from local db
@@ -231,8 +231,6 @@ class CTxnsController extends GetxController {
           foundReceipts.isEmpty) {
         foundReceipts.assignAll(receipts);
         //foundInvoices.assignAll(creditSales);
-      } else {
-        foundReceipts.clear();
       }
 
       txnsFetched.value = true;
@@ -263,7 +261,7 @@ class CTxnsController extends GetxController {
       txnItemsLoading.value = true;
       isLoading.value = true;
 
-      transactionItems.clear();
+      //transactionItems.clear();
       fetchTxns().then(
         (_) {
           if (txns.isNotEmpty && soldItemsFetched.value && txnsFetched.value) {

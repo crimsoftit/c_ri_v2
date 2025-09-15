@@ -46,7 +46,8 @@ class CTxnItemsListView extends StatelessWidget {
           switch (space) {
             case 'receipts':
               demItems.assignAll(searchController.showSearchField.value &&
-                      searchController.txtSearchField.text != ''
+                      searchController.txtSearchField.text != '' &&
+                      !txnsController.isLoading.value
                   ? txnsController.foundReceipts
                   : txnsController.receipts);
               break;
@@ -66,8 +67,8 @@ class CTxnItemsListView extends StatelessWidget {
           }
 
           if (searchController.showSearchField.value &&
-              demItems.isEmpty &&
-              !txnsController.isLoading.value) {
+              !txnsController.isLoading.value &&
+              demItems.isEmpty) {
             return const NoSearchResultsScreen();
           }
 
@@ -107,18 +108,16 @@ class CTxnItemsListView extends StatelessWidget {
                     2.0,
                   ),
                   expansionCallback: (panelIndex, isExpanded) {
-                    if (isExpanded) {
-                      if (txnsController.transactionItems.isEmpty) {
-                        txnsController
-                            .fetchTxnItems(demItems[panelIndex].txnId);
-                      }
+                    if (isExpanded && !txnsController.isLoading.value) {
+                      // if (txnsController.transactionItems.isEmpty &&
+                      //     !txnsController.isLoading.value) {
+                      //   txnsController
+                      //       .fetchTxnItems(demItems[panelIndex].txnId);
+                      // }
+                      txnsController.fetchTxnItems(demItems[panelIndex].txnId);
                       // Perform an action when the panel is expanded
                       if (kDebugMode) {
                         print('Panel at index $panelIndex is now expanded');
-                        // CPopupSnackBar.customToast(
-                        //   message: '${txnsController.receipts[panelIndex].txnId}',
-                        //   forInternetConnectivityStatus: false,
-                        // );
                       }
                       // Add your custom logic here
                     } else {
