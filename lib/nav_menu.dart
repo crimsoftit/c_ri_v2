@@ -35,7 +35,9 @@ class NavMenu extends StatelessWidget {
         }
 
         if (cartController.cartItems.isEmpty &&
-            !cartController.cartItemsLoading.value) {
+            !cartController.cartItemsLoading.value &&
+            !invController.isLoading.value &&
+            navController.selectedIndex.value != 4) {
           cartController.fetchCartItems();
         }
 
@@ -100,7 +102,7 @@ class NavMenu extends StatelessWidget {
               ),
               NavigationDestination(
                 icon: Icon(Iconsax.notification),
-                label: 'calls',
+                label: 'alerts',
               ),
             ],
           ),

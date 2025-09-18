@@ -818,6 +818,35 @@ class CCheckoutController extends GetxController {
     processTxn(txnType);
   }
 
+  // confirmPaymentDeferment () {
+  //   Get.defaultDialog(
+  //     contentPadding: const EdgeInsets.all(CSizes.sm),
+  //     title: 'sell on credit?',
+  //     // middleText:
+  //     //     'Are you certain you want to refund ${soldItem.productName} for $userCurrency.${soldItem.unitSellingPrice * soldItem.quantity}? This action can\'t be undone!',
+  //     middleText: 'Are you certain you want to sell these?',
+  //     confirm: ElevatedButton(
+  //       onPressed: () async {},
+  //       style: ElevatedButton.styleFrom(
+  //         backgroundColor: Colors.red,
+  //         side: const BorderSide(
+  //           color: Colors.red,
+  //         ),
+  //       ),
+  //       child: const Padding(
+  //         padding: EdgeInsets.symmetric(horizontal: CSizes.sm),
+  //         child: Text('confirm refund'),
+  //       ),
+  //     ),
+  //     cancel: OutlinedButton(
+  //       onPressed: () {
+  //         Navigator.of(Get.overlayContext!).pop();
+  //       },
+  //       child: const Text('cancel'),
+  //     ),
+  //   );
+  // }
+
   confirmInvoicePaymentDialog(int txnId) {
     // TODO: confirm if seller is sure to sell on credit
     Get.defaultDialog(
@@ -847,7 +876,7 @@ class CCheckoutController extends GetxController {
           for (var item in txnsController.transactionItems) {
             var lastModified =
                 DateFormat('yyyy-MM-dd @ kk:mm').format(clock.now());
-            ;
+
             syncAction = item.isSynced == 0 ? 'append' : 'update';
 
             var txnStatus = 'complete';

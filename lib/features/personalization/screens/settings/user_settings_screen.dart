@@ -1,13 +1,10 @@
+import 'package:c_ri/common/widgets/appbar/v2_app_bar.dart';
 import 'package:c_ri/common/widgets/divider/c_divider.dart';
-import 'package:c_ri/common/widgets/img_widgets/c_circular_img.dart';
 import 'package:c_ri/common/widgets/list_tiles/menu_tile.dart';
 import 'package:c_ri/common/widgets/txt_widgets/c_section_headings.dart';
 import 'package:c_ri/data/repos/auth/auth_repo.dart';
 import 'package:c_ri/features/personalization/controllers/user_controller.dart';
-import 'package:c_ri/features/store/controllers/nav_menu_controller.dart';
-import 'package:c_ri/nav_menu.dart';
 import 'package:c_ri/utils/constants/colors.dart';
-import 'package:c_ri/utils/constants/img_strings.dart';
 import 'package:c_ri/utils/constants/sizes.dart';
 import 'package:c_ri/utils/helpers/helper_functions.dart';
 import 'package:c_ri/utils/helpers/network_manager.dart';
@@ -20,61 +17,25 @@ class CUserSettingsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isConnectedToInternet = CNetworkManager.instance.hasConnection.value;
+    //final isConnectedToInternet = CNetworkManager.instance.hasConnection.value;
     final isDarkTheme = CHelperFunctions.isDarkMode(context);
-    final navController = Get.put(CNavMenuController());
+    //final navController = Get.put(CNavMenuController());
     final userController = Get.put(CUserController());
 
     return Container(
       color: isDarkTheme ? CColors.transparent : CColors.white,
       child: Scaffold(
-        appBar: AppBar(
-          automaticallyImplyLeading: false,
-          title: Padding(
-            padding: const EdgeInsets.only(
-              left: 0.5,
-              right: 0.5,
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Icon(
-                  Iconsax.menu,
-                  size: 25.0,
-                  color: CColors.rBrown,
-                ),
-                Obx(
-                  () {
-                    final networkImg = userController.user.value.profPic;
-
-                    final dpImg = networkImg.isNotEmpty && isConnectedToInternet
-                        ? networkImg
-                        : CImages.user;
-
-                    return InkWell(
-                      onTap: () {
-                        navController.selectedIndex.value = 4;
-                        Get.to(const NavMenu());
-                      },
-                      child: CCircularImg(
-                        isNetworkImg:
-                            networkImg.isNotEmpty && isConnectedToInternet,
-                        img: dpImg,
-                        width: 47.0,
-                        height: 47.0,
-                        padding: 1.0,
-                      ),
-                    );
-                  },
-                ),
-              ],
-            ),
-          ),
+        appBar: CVersion2AppBar(
+          autoImplyLeading: false,
         ),
         backgroundColor: CColors.rBrown.withValues(alpha: 0.2),
         body: SingleChildScrollView(
           child: Padding(
-            padding: const EdgeInsets.only(left: 20.0, right: 15.0, top: 10.0,),
+            padding: const EdgeInsets.only(
+              left: 20.0,
+              right: 15.0,
+              top: 10.0,
+            ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [

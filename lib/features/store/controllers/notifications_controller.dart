@@ -1,10 +1,32 @@
 import 'package:awesome_notifications/awesome_notifications.dart';
+import 'package:c_ri/features/personalization/controllers/user_controller.dart';
 import 'package:c_ri/features/store/controllers/nav_menu_controller.dart';
+import 'package:c_ri/features/store/models/notifications_model.dart';
 import 'package:c_ri/main.dart';
+import 'package:c_ri/utils/db/sqflite/db_helper.dart';
+import 'package:c_ri/utils/popups/snackbars.dart';
+import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 
 class CNotificationsController extends GetxController {
   static CNotificationsController get instance => Get.find();
+
+  /// -- variables --
+  DbHelper dbHelper = DbHelper.instance;
+  final isLoading = false.obs;
+  final RxList<CNotificationsModel> allNotifications =
+      <CNotificationsModel>[].obs;
+  final RxList<CNotificationsModel> readNotifications =
+      <CNotificationsModel>[].obs;
+  final RxList<CNotificationsModel> unreadNotifications =
+      <CNotificationsModel>[].obs;
+  final userController = Get.put(CUserController());
+
+  @override
+  void onInit() async {
+    await fetchUserNotifications();
+    super.onInit();
+  }
 
   /// Use this method to detect when a new notification or a schedule is created
   @pragma("vm:entry-point")
@@ -41,21 +63,106 @@ class CNotificationsController extends GetxController {
     globalNavigatorKey.currentState?.pushNamedAndRemoveUntil('/landing_screen',
         (route) => (route.settings.name != '/landing_screen') || route.isFirst,
         arguments: receivedAction);
+
+    // navController.selectedIndex.value = 4;
+    // Get.to(() => CNotificationsScreen());
   }
 
-  void notify() async {
+  void notify(int notificationId, String notificationTitle,
+      String notificationBody) async {
     AwesomeNotifications().createNotification(
       content: NotificationContent(
+        //actionType: ActionType.Default,
         actionType: ActionType.Default,
-        body: 'noma sana!',
+        body: notificationBody,
         channelKey: 'basic_channel',
         displayOnBackground: true,
         displayOnForeground: true,
         fullScreenIntent: true,
-        id: 0,
-        title: 'noma',
+        id: notificationId,
+        title: notificationTitle,
         wakeUpScreen: true,
       ),
     );
+  }
+
+  /// -- save notification details to sqflite db --
+  Future saveAndTriggerNotification(CNotificationsModel item) async {
+    try {
+      // -- start loader
+      isLoading.value = true;
+
+      // -- insert notification item into sqflite db --
+      //await dbHelper.addNotificationItem(item);
+      if (await dbHelper.addNotificationItem(item)) {
+        notify(
+          0,
+          'noma',
+          'noma sana!!',
+        );
+      }
+
+      // -- stop loader
+      isLoading.value = false;
+    } catch (e) {
+      // -- stop loader
+      isLoading.value = false;
+
+      if (kDebugMode) {
+        print(e);
+        CPopupSnackBar.errorSnackBar(
+          title: 'error saving notification',
+          message: e.toString(),
+        );
+      }
+    }
+  }
+
+  /// -- fetch user notifications from local db --
+  Future<List<CNotificationsModel>> fetchUserNotifications() async {
+    try {
+      // -- start loader --
+      isLoading.value = true;
+
+      // -- query local db for notifications --
+      var fetchedNotifications = await dbHelper
+          .fetchUserNotifications(userController.user.value.email);
+
+      // -- assign fetchedNotifications to allNotifications list --
+      allNotifications.assignAll(fetchedNotifications);
+
+      // -- assign read notifications to readNotifications list
+      var readNots = allNotifications
+          .where((readNotification) => readNotification.notificationIsRead == 1)
+          .toList();
+
+      readNotifications.assignAll(readNots);
+
+      // -- assign read notifications to readNotifications list
+      var unreadNots = allNotifications
+          .where((unreadNotification) =>
+              unreadNotification.notificationIsRead == 0)
+          .toList();
+
+      unreadNotifications.assignAll(unreadNots);
+
+      // -- stop loader --
+      isLoading.value = false;
+
+      return allNotifications;
+    } catch (e) {
+      // -- stop loader --
+      isLoading.value = false;
+
+      if (kDebugMode) {
+        print(e.toString());
+        CPopupSnackBar.errorSnackBar(
+          title: 'Oh Snap!',
+          message: e.toString(),
+        );
+      }
+
+      rethrow;
+    }
   }
 }

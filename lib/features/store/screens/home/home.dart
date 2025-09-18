@@ -178,7 +178,7 @@ class HomeScreen extends StatelessWidget {
                                                 toY: entry.value,
                                                 color: isConnectedToInternet
                                                     ? CColors.rBrown
-                                                    : CColors.black,
+                                                    : CColors.darkGrey,
                                                 borderRadius:
                                                     BorderRadius.circular(
                                                   CSizes.sm,

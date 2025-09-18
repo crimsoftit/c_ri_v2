@@ -1,6 +1,7 @@
 import 'package:c_ri/features/personalization/controllers/user_controller.dart';
 import 'package:c_ri/features/store/models/inv_dels_model.dart';
 import 'package:c_ri/features/store/models/inv_model.dart';
+import 'package:c_ri/features/store/models/notifications_model.dart';
 import 'package:c_ri/features/store/models/txns_model.dart';
 import 'package:c_ri/utils/helpers/helper_functions.dart';
 import 'package:c_ri/utils/popups/snackbars.dart';
@@ -29,10 +30,11 @@ class DbHelper extends GetxController {
 
   final userController = Get.put(CUserController());
 
-  final invTable = 'inventory';
-  final txnsTable = 'txns';
   final invDelsForSyncTable = 'invDelsForSyncTable';
+  final invTable = 'inventory';
+  final notificationsTable = 'notifications';
   final salesDelsForSyncTable = 'salesDelsForSyncTable';
+  final txnsTable = 'txns';
 
   final RxBool saleItemAddedToDb = false.obs;
 
@@ -123,6 +125,19 @@ class DbHelper extends GetxController {
             syncAction TEXT NOT NULL
           )
         ''');
+
+      database.execute('''
+          CREATE TABLE IF NOT EXISTS $notificationsTable (
+            notificationId INTEGER PRIMARY KEY AUTOINCREMENT,
+            notificationTitle TEXT NOT NULL,
+            notificationBody LONGTEXT NOT NULL,
+            notificationIsRead INTEGER NOT NULL,
+            productId INTEGER,
+            userEmail TEXT NOT NULL,
+            date TEXT NOT NULL,
+            FOREIGN KEY(productId) REFERENCES inventory(productId)
+          )
+        ''');
     }, version: version);
 
     saleItemAddedToDb.value = false;
@@ -167,7 +182,6 @@ class DbHelper extends GetxController {
   }
 
   /// --- ### CRUD OPERATIONS ON INVENTORY TABLE ### ---
-
   Future<void> addInventoryItem(CInventoryModel inventoryItem) async {
     // Get a reference to the database.
     final db = _db;
@@ -180,7 +194,7 @@ class DbHelper extends GetxController {
         conflictAlgorithm: ConflictAlgorithm.replace);
   }
 
-  /// -- fetch operation: get all inventory objects from the database --
+  /// -- fetch operation: get all inventory items from the database --
   Future<List<CInventoryModel>> fetchInventoryItems(String email) async {
     // Get a reference to the database.
     final db = _db;
@@ -435,7 +449,7 @@ class DbHelper extends GetxController {
         'SELECT * from $txnsTable where userEmail = ? ORDER BY soldItemId DESC',
         [email]);
 
-    // Convert the List<Map<String, dynamic> into a List<Note>.
+    // Convert the List<Map<String, dynamic> into a List<CTxnsModel>.
     return transactions.map((json) => CTxnsModel.fromMapObject(json)).toList();
   }
 
@@ -447,7 +461,7 @@ class DbHelper extends GetxController {
         'SELECT * from $txnsTable where userEmail = ? GROUP BY txnId ORDER BY lastModified DESC',
         [email]);
 
-    // Convert the List<Map<String, dynamic> into a List<Note>.
+    // Convert the List<Map<String, dynamic> into a List<CTxnsModel>.
     return transactions.map((json) => CTxnsModel.fromMapObject(json)).toList();
   }
 
@@ -507,13 +521,6 @@ class DbHelper extends GetxController {
         [syncStatus, sAction, soldItemId],
       );
 
-      // if (kDebugMode) {
-      //   CPopupSnackBar.customToast(
-      //     message: '$updateResult',
-      //     forInternetConnectivityStatus: false,
-      //   );
-      // }
-
       return updateResult;
     } catch (e) {
       if (kDebugMode) {
@@ -528,32 +535,6 @@ class DbHelper extends GetxController {
     }
   }
 
-  // Future<void> updateMultipleFieldsWithTransactionId(int transactionId,
-  //     String date, String syncAction, String txnStatus) async {
-  //   // Get a reference to the database.
-  //   final db = _db;
-
-  //   await db!.transaction((txn) async {
-  //     // Update multiple fields for all records where the transaction_id matches the provided ID
-  //     // The 'where' clause uses the transaction_id column and 'whereArgs' to safely pass the value
-  //     int count = await txn.update(
-  //       'txns',
-  //       {
-  //         'lastModified': date,
-  //         'syncAction': syncAction,
-  //         'txnStatus': txnStatus,
-  //       },
-  //       where:
-  //           'txnId = ?', // Replace 'transaction_id' with your actual column name
-  //       whereArgs: [transactionId], // Pass the transaction ID as a parameter
-  //     );
-
-  //     // The transaction is committed if no error is thrown. 'count' will indicate how many rows were updated.
-  //     if (kDebugMode) {
-  //       print('Updated $count rows with transaction ID: $transactionId');
-  //     }
-  //   });
-  // }
   Future<bool> updateMultipleFieldsWithTransactionId(int transactionId,
       String date, String syncAction, String txnStatus) async {
     try {
@@ -592,6 +573,66 @@ class DbHelper extends GetxController {
         message: e.toString(),
       );
       return false;
+    }
+  }
+
+  /// --- ### CRUD OPERATIONS ON NOTIFICATIONS TABLE ### ---
+
+  /// -- save notification to local db --
+  Future<bool> addNotificationItem(CNotificationsModel notification) async {
+    try {
+      // Get a reference to the database.
+      final db = _db;
+
+      // Insert the inventoryItem into the correct table. You might also specify the
+      // `conflictAlgorithm` to use in case the same inventoryItem is inserted twice... -In this case, replace any previous data.
+      await db?.insert(
+        notificationsTable,
+        notification.toMap(),
+        conflictAlgorithm: ConflictAlgorithm.replace,
+      );
+      if (kDebugMode) {
+        print('*** notification item added successfully ***');
+      }
+      return true;
+    } catch (e) {
+      if (kDebugMode) {
+        print(e.toString());
+        CPopupSnackBar.errorSnackBar(
+          title: 'error saving notification',
+          message: e.toString(),
+        );
+      }
+      //throw e.toString();
+      return false;
+    }
+  }
+
+  /// -- fetch operation: fetch all notifications from the local database --
+  Future<List<CNotificationsModel>> fetchUserNotifications(String email) async {
+    try {
+      // Get a reference to the database.
+      final db = _db;
+
+      // Query the table for notifications (list)
+      final demNotifications = await db!.rawQuery(
+          'SELECT * FROM $notificationsTable WHERE userEmail = ? ORDER BY date DESC',
+          [email]);
+
+      // convert the List<Map<String, dynamic> into a List<CNotificationsModel> and return it
+      return demNotifications
+          .map((json) => CNotificationsModel.fromMapObject(json))
+          .toList();
+    } catch (e) {
+      if (kDebugMode) {
+        print(e.toString());
+        CPopupSnackBar.errorSnackBar(
+          title: 'error fetching notifications!',
+          message: e.toString(),
+        );
+      }
+
+      rethrow;
     }
   }
 }
