@@ -1,3 +1,4 @@
+import 'package:c_ri/common/widgets/custom_shapes/containers/rounded_container.dart';
 import 'package:c_ri/common/widgets/divider/c_divider.dart';
 import 'package:c_ri/common/widgets/shimmers/vert_items_shimmer.dart';
 import 'package:c_ri/features/personalization/controllers/user_controller.dart';
@@ -8,6 +9,7 @@ import 'package:c_ri/features/store/controllers/search_bar_controller.dart';
 import 'package:c_ri/features/store/controllers/sync_controller.dart';
 import 'package:c_ri/features/store/controllers/txns_controller.dart';
 import 'package:c_ri/features/store/screens/search/widgets/no_results_screen.dart';
+import 'package:c_ri/utils/constants/app_icons.dart';
 import 'package:c_ri/utils/constants/colors.dart';
 import 'package:c_ri/utils/constants/img_strings.dart';
 import 'package:c_ri/utils/constants/sizes.dart';
@@ -26,6 +28,39 @@ class CTxnItemsListView extends StatelessWidget {
   });
 
   final String space;
+
+  Widget buildSalesDetails(
+      BuildContext context, String title, String subTitle) {
+    return CRoundedContainer(
+      bgColor: CColors.transparent,
+      showBorder: false,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            title,
+            style: Theme.of(context).textTheme.labelMedium!.apply(
+                  color: CColors.darkGrey,
+                  //fontSizeFactor: .8,
+                ),
+          ),
+          Text.rich(
+            TextSpan(
+              children: [
+                TextSpan(
+                  text: subTitle,
+                  style: Theme.of(context).textTheme.labelMedium!.apply(
+                        color: CColors.darkGrey,
+                        fontSizeFactor: .8,
+                      ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -46,6 +81,13 @@ class CTxnItemsListView extends StatelessWidget {
         () {
           var demItems = [];
           switch (space) {
+            case 'invoices':
+              demItems.assignAll(searchController.showSearchField.value &&
+                      searchController.txtSearchField.text != '' &&
+                      !txnsController.isLoading.value
+                  ? txnsController.foundInvoices
+                  : txnsController.invoices);
+              break;
             case 'receipts':
               demItems.assignAll(searchController.showSearchField.value &&
                       searchController.txtSearchField.text != '' &&
@@ -53,14 +95,15 @@ class CTxnItemsListView extends StatelessWidget {
                   ? txnsController.foundReceipts
                   : txnsController.receipts);
               break;
-            case 'invoices':
+
+            case 'sales':
               demItems.assignAll(searchController.showSearchField.value &&
                       searchController.txtSearchField.text != '' &&
                       !txnsController.isLoading.value
-                  ? txnsController.foundInvoices
-                  : txnsController.invoices);
-              //demItems.assignAll(txnsController.invoices);
+                  ? txnsController.foundSales
+                  : txnsController.sales);
               break;
+
             default:
               demItems.clear();
               CPopupSnackBar.errorSnackBar(
@@ -118,7 +161,10 @@ class CTxnItemsListView extends StatelessWidget {
                       ? CColors.rBrown
                       : CColors.darkGrey,
                   expansionCallback: (panelIndex, isExpanded) {
-                    if (isExpanded && !txnsController.isLoading.value) {
+                    if (isExpanded &&
+                        !txnsController.isLoading.value &&
+                        space != 'sales' &&
+                        space != 'refunds') {
                       txnsController.fetchTxnItems(demItems[panelIndex].txnId);
                       // Perform an action when the panel is expanded
                       if (kDebugMode) {
@@ -140,7 +186,9 @@ class CTxnItemsListView extends StatelessWidget {
                                   alpha: 0.3,
                                 )
                               : CColors.lightGrey,
-                          value: item.txnId,
+                          value: space == 'sales' || space == 'refunds'
+                              ? item.soldItemId
+                              : item.txnId,
                           canTapOnHeader: true,
                           headerBuilder: (_, isExpanded) {
                             return ListTile(
@@ -157,6 +205,9 @@ class CTxnItemsListView extends StatelessWidget {
                                         MainAxisAlignment.spaceBetween,
                                     children: [
                                       Text(
+                                        // space == 'sales' || space == 'refunds'
+                                        //     ? item.productName
+                                        //     : 'TXN #${item.txnId}',
                                         'TXN #${item.txnId}',
                                         style: Theme.of(context)
                                             .textTheme
@@ -169,7 +220,7 @@ class CTxnItemsListView extends StatelessWidget {
                                             ),
                                       ),
                                       Text(
-                                        '$userCurrency.${item.totalAmount}',
+                                        'txn Amt: $userCurrency.${item.totalAmount}',
                                         style: Theme.of(context)
                                             .textTheme
                                             .labelMedium!
@@ -187,57 +238,68 @@ class CTxnItemsListView extends StatelessWidget {
                                       const SizedBox(
                                         height: CSizes.spaceBtnInputFields / 4,
                                       ),
-                                      Row(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        //mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          Text(
-                                            'sold to:',
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .labelMedium!
-                                                .apply(
-                                                  color: isDarkTheme
-                                                      ? CColors.darkGrey
-                                                      : CColors.rBrown,
-                                                  //fontStyle: FontStyle.italic,
+                                      space == 'receipts' || space == 'invoices'
+                                          ? Row(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.center,
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              //mainAxisSize: MainAxisSize.min,
+                                              children: [
+                                                Text(
+                                                  'sold to:',
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .labelMedium!
+                                                      .apply(
+                                                        color: isDarkTheme
+                                                            ? CColors.darkGrey
+                                                            : CColors.rBrown,
+                                                        //fontStyle: FontStyle.italic,
+                                                      ),
                                                 ),
-                                          ),
-                                          Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.end,
-                                            children: [
-                                              Text(
-                                                'name: ${item.customerName.isEmpty ? 'N/A' : item.customerName}',
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .labelMedium!
-                                                    .apply(
-                                                      color: isDarkTheme
-                                                          ? CColors.darkGrey
-                                                          : CColors.rBrown,
-                                                      //fontStyle: FontStyle.italic,
+                                                Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.end,
+                                                  children: [
+                                                    Text(
+                                                      'name: ${item.customerName.isEmpty ? 'N/A' : item.customerName}',
+                                                      style: Theme.of(context)
+                                                          .textTheme
+                                                          .labelMedium!
+                                                          .apply(
+                                                            color: isDarkTheme
+                                                                ? CColors
+                                                                    .darkGrey
+                                                                : CColors
+                                                                    .rBrown,
+                                                            //fontStyle: FontStyle.italic,
+                                                          ),
                                                     ),
-                                              ),
-                                              Text(
-                                                'contacts: ${item.customerContacts.isEmpty ? "N/A" : item.customerContacts}',
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .labelMedium!
-                                                    .apply(
-                                                      color: isDarkTheme
-                                                          ? CColors.darkGrey
-                                                          : CColors.rBrown,
-                                                      //fontStyle: FontStyle.italic,
+                                                    Text(
+                                                      'contacts: ${item.customerContacts.isEmpty ? "N/A" : item.customerContacts}',
+                                                      style: Theme.of(context)
+                                                          .textTheme
+                                                          .labelMedium!
+                                                          .apply(
+                                                            color: isDarkTheme
+                                                                ? CColors
+                                                                    .darkGrey
+                                                                : CColors
+                                                                    .rBrown,
+                                                            //fontStyle: FontStyle.italic,
+                                                          ),
                                                     ),
-                                              ),
-                                            ],
-                                          ),
-                                        ],
-                                      ),
+                                                  ],
+                                                ),
+                                              ],
+                                            )
+                                          : buildSalesDetails(
+                                              context,
+                                              '${item.productName.toUpperCase()} (${item.lastModified.replaceAll(' @', '')})',
+                                              '${item.quantity} sold; ${item.qtyRefunded} refunded @: $userCurrency.${item.unitSellingPrice} #${item.productId}',
+                                            ),
                                     ],
                                   ),
                                 ],
@@ -258,65 +320,71 @@ class CTxnItemsListView extends StatelessWidget {
                                       : CColors.rBrown,
                                   startIndent: 0,
                                 ),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceEvenly,
-                                  children: [
-                                    Expanded(
-                                      flex: 2,
-                                      child: Text(
-                                        'item(s):',
-                                        //'${userController.user.value.currencyCode}.$totalAmount',
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .labelMedium!
-                                            .apply(
-                                              color: isDarkTheme
-                                                  ? CColors.softGrey
-                                                  : CColors.rBrown,
-                                              fontWeightDelta: -1,
+                                space == 'receipts' || space == 'invoices'
+                                    ? Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceEvenly,
+                                        children: [
+                                          Expanded(
+                                            flex: 2,
+                                            child: Text(
+                                              'item(s):',
+                                              //'${userController.user.value.currencyCode}.$totalAmount',
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .labelMedium!
+                                                  .apply(
+                                                    color: isDarkTheme
+                                                        ? CColors.softGrey
+                                                        : CColors.rBrown,
+                                                    fontWeightDelta: -1,
+                                                  ),
                                             ),
-                                      ),
-                                    ),
-                                    Expanded(
-                                      flex: 5,
-                                      child: ListView.separated(
-                                        itemBuilder: (context, index) {
-                                          return Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                '${txnsController.transactionItems[index].productName.toUpperCase()} (${txnsController.transactionItems[index].quantity} item(s) @ $userCurrency.${txnsController.transactionItems[index].unitSellingPrice})',
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .labelMedium!
-                                                    .apply(
-                                                      color: isDarkTheme
-                                                          ? CColors.softGrey
-                                                          : CColors.rBrown,
+                                          ),
+                                          Expanded(
+                                            flex: 5,
+                                            child: ListView.separated(
+                                              itemBuilder: (context, index) {
+                                                return Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    Text(
+                                                      '${txnsController.transactionItems[index].productName.toUpperCase()} (${txnsController.transactionItems[index].quantity} item(s) @ $userCurrency.${txnsController.transactionItems[index].unitSellingPrice})',
+                                                      style: Theme.of(context)
+                                                          .textTheme
+                                                          .labelMedium!
+                                                          .apply(
+                                                            color: isDarkTheme
+                                                                ? CColors
+                                                                    .softGrey
+                                                                : CColors
+                                                                    .rBrown,
+                                                          ),
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
+                                                      maxLines: 2,
                                                     ),
-                                                overflow: TextOverflow.ellipsis,
-                                                maxLines: 2,
-                                              ),
-                                            ],
-                                          );
-                                        },
-                                        itemCount: txnsController
-                                            .transactionItems.length,
-                                        physics: ClampingScrollPhysics(),
-                                        separatorBuilder: (_, __) {
-                                          return SizedBox(
-                                            height: CSizes.spaceBtnItems / 4,
-                                          );
-                                        },
-                                        scrollDirection: Axis.vertical,
-                                        shrinkWrap: true,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                if (space == 'invoices')
+                                                  ],
+                                                );
+                                              },
+                                              itemCount: txnsController
+                                                  .transactionItems.length,
+                                              physics: ClampingScrollPhysics(),
+                                              separatorBuilder: (_, __) {
+                                                return SizedBox(
+                                                  height:
+                                                      CSizes.spaceBtnItems / 4,
+                                                );
+                                              },
+                                              scrollDirection: Axis.vertical,
+                                              shrinkWrap: true,
+                                            ),
+                                          ),
+                                        ],
+                                      )
+                                    : SizedBox.shrink(),
+                                if (space == 'invoices' || space == 'sales')
                                   Container(
                                     alignment: Alignment.centerRight,
                                     child: SizedBox(
@@ -324,19 +392,34 @@ class CTxnItemsListView extends StatelessWidget {
                                           CHelperFunctions.screenWidth() * 0.45,
                                       child: TextButton.icon(
                                         onPressed: () {
-                                          if (txnsController
-                                              .transactionItems.isNotEmpty) {
-                                            checkoutController
-                                                .confirmInvoicePaymentDialog(
-                                                    item.txnId);
+                                          switch (space) {
+                                            case 'invoices':
+                                              if (txnsController
+                                                  .transactionItems
+                                                  .isNotEmpty) {
+                                                checkoutController
+                                                    .confirmInvoicePaymentDialog(
+                                                        item.txnId);
+                                              }
+                                              break;
+                                            case 'sales':
+                                              txnsController
+                                                  .refundItemActionModal(
+                                                      context, item);
+                                              break;
+                                            default:
                                           }
                                         },
                                         icon: Icon(
-                                          Iconsax.empty_wallet_tick,
+                                          space == 'invoices'
+                                              ? Iconsax.empty_wallet_tick
+                                              : CAppIcons.refundIcon,
                                           color: CColors.white,
                                         ),
                                         label: Text(
-                                          'complete txn',
+                                          space == 'invoices'
+                                              ? 'complete txn'
+                                              : 'refund',
                                           style: Theme.of(context)
                                               .textTheme
                                               .labelMedium!
@@ -346,10 +429,12 @@ class CTxnItemsListView extends StatelessWidget {
                                               ),
                                         ),
                                         style: ElevatedButton.styleFrom(
-                                          backgroundColor: CNetworkManager
-                                                  .instance.hasConnection.value
-                                              ? CColors.rBrown
-                                              : CColors.black,
+                                          backgroundColor: space == 'sales'
+                                              ? Colors.redAccent
+                                              : CNetworkManager.instance
+                                                      .hasConnection.value
+                                                  ? CColors.rBrown
+                                                  : CColors.black,
                                           foregroundColor: CColors.white,
                                           shape: RoundedRectangleBorder(
                                             borderRadius: BorderRadius.circular(

@@ -97,7 +97,6 @@ class CNotificationsController extends GetxController {
       isLoading.value = true;
 
       // -- insert notification item into sqflite db --
-      //await dbHelper.addNotificationItem(item);
       if (await dbHelper.addNotificationItem(notificationItem)) {
         notify(
           notId,

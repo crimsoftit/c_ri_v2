@@ -6,20 +6,10 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
 class CHelperFunctions {
-  static DateTime getStartOfWeek(DateTime date) {
+  /// -- get first day of current week --
+  static DateTime getStartOfCurrentWeek(DateTime date) {
     final int daysUntilMonday = date.weekday - 1;
     final DateTime startOfWeek = date.subtract(Duration(days: daysUntilMonday));
-
-    // return DateTime(
-    //   startOfWeek.year,
-    //   startOfWeek.month,
-    //   startOfWeek.day,
-    //   0,
-    //   0,
-    //   0,
-    //   0,
-    //   0,
-    // );
 
     var weekStart = DateTime(
       startOfWeek.year,
@@ -33,12 +23,12 @@ class CHelperFunctions {
     );
 
     if (kDebugMode) {
-      print('----------\n');
-      print('weekStart: $weekStart \n');
-      print('----------\n');
-      print('----------\n');
-      print('week day: ${startOfWeek.weekday} \n');
-      print('----------\n');
+      // print('----------\n');
+      // print('weekStart: $weekStart \n');
+      // print('----------\n');
+      // print('----------\n');
+      // print('week day: ${startOfWeek.weekday} \n');
+      // print('----------\n');
 
       // CPopupSnackBar.customToast(
       //   message: 'weekday: ${startOfWeek.weekday}',
@@ -46,6 +36,46 @@ class CHelperFunctions {
       // );
     }
     return weekStart;
+  }
+
+  /// -- get first day of last week --
+  static DateTime getStartOfLastWeek(DateTime date) {
+    // Get the current date and time
+    final now = DateTime.now();
+
+    // Calculate the start of last week (Monday of the previous week)
+    final startOfLastWeek = now.subtract(
+        Duration(days: now.weekday + 6)); // Subtract days to get to Monday
+
+    // Calculate the end of last week (Sunday of the previous week)
+    // final endOfWeek =
+    //     startOfLastWeek.add(Duration(days: 6)); // Add 6 days to get to Sunday
+
+    var lastWeekStart = DateTime(
+      startOfLastWeek.year,
+      startOfLastWeek.month,
+      startOfLastWeek.day,
+      startOfLastWeek.weekday,
+      startOfLastWeek.hour,
+      startOfLastWeek.minute,
+      0,
+      0,
+    );
+
+    if (kDebugMode) {
+      print('----------\n');
+      print('lastWeekStart: $lastWeekStart \n');
+      print('----------\n');
+      print('----------\n');
+      print('week day: ${startOfLastWeek.weekday} \n');
+      print('----------\n');
+
+      // CPopupSnackBar.customToast(
+      //   message: 'weekday: ${startOfWeek.weekday}',
+      //   forInternetConnectivityStatus: false,
+      // );
+    }
+    return lastWeekStart;
   }
 
   static void showSnackBar(String message) {

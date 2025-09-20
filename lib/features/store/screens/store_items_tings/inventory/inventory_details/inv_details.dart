@@ -8,6 +8,8 @@ import 'package:c_ri/features/store/screens/store_items_tings/inventory/widgets/
 import 'package:c_ri/utils/constants/colors.dart';
 import 'package:c_ri/utils/constants/sizes.dart';
 import 'package:c_ri/utils/helpers/helper_functions.dart';
+import 'package:c_ri/utils/popups/snackbars.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
@@ -198,17 +200,30 @@ class CInvDetails extends StatelessWidget {
                           subTitle: 'total units sold',
                           onTap: () {},
                         ),
-                        CMenuTile(
-                          icon: Iconsax.user,
-                          title: invItem.supplierName,
-                          subTitle: 'supplier name',
-                          onTap: () {},
-                        ),
+                        // CMenuTile(
+                        //   icon: Iconsax.user,
+                        //   title: invItem.supplierName,
+                        //   subTitle: 'supplier name',
+                        //   onTap: () {},
+                        // ),
                         CMenuTile(
                           icon: Icons.contact_mail,
-                          title: invItem.supplierContacts,
-                          subTitle: 'supplier contacts',
-                          onTap: () {},
+                          onTap: () {
+                            if (kDebugMode) {
+                              CPopupSnackBar.customToast(
+                                message: 'tap iko sawa',
+                                forInternetConnectivityStatus: false,
+                              );
+                            }
+                          },
+                          subTitle: 'supplier name, contacts',
+                          title: invItem.supplierName.isNotEmpty
+                              ? '${invItem.supplierName} (${invItem.supplierContacts})'
+                              : 'N/A',
+                          trailing: Icon(
+                            Iconsax.pen_add,
+                            color: CColors.rBrown,
+                          ),
                         ),
                         CMenuTile(
                           icon: Iconsax.notification,

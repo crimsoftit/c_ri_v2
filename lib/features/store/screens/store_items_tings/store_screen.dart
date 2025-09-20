@@ -45,7 +45,7 @@ class CStoreScreen extends StatelessWidget {
       animationDuration: Duration(
         seconds: 1,
       ),
-      length: 5,
+      length: 6,
       child: Obx(
         () {
           return Scaffold(
@@ -126,6 +126,9 @@ class CStoreScreen extends StatelessWidget {
                           child: Text('inventory'),
                         ),
                         Tab(
+                          child: Text('sales_raw'),
+                        ),
+                        Tab(
                           child: Text('sales (all)'),
                         ),
                         Tab(
@@ -152,6 +155,9 @@ class CStoreScreen extends StatelessWidget {
 
                   /// -- transactions list view --
                   CItemsListView(
+                    space: 'sales',
+                  ),
+                  CTxnItemsListView(
                     space: 'sales',
                   ),
 
