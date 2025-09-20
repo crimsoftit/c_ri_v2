@@ -189,15 +189,22 @@ class CProductCardVertical extends StatelessWidget {
                                             //         lowStockNotifierLimit!
                                             //     ? Colors.red
                                             //     : CColors.rBrown,
-                                            bgColor: int.parse(qtyAvailable!) <
-                                                    lowStockNotifierLimit!
-                                                ? Colors.red
-                                                : CColors.transparent,
+                                            bgColor: CColors.transparent,
+                                            editIconColor:
+                                                int.parse(qtyAvailable!) <
+                                                        lowStockNotifierLimit!
+                                                    ? Colors.red
+                                                    : isDarkTheme
+                                                        ? CColors.white
+                                                        : CColors.rBrown,
                                             includeEditBtn: true,
                                             onEdit: onAvatarIconTap,
-                                            txtColor: isDarkTheme
-                                                ? CColors.white
-                                                : CColors.rBrown,
+                                            txtColor: int.parse(qtyAvailable!) <
+                                                    lowStockNotifierLimit!
+                                                ? Colors.red
+                                                : isDarkTheme
+                                                    ? CColors.white
+                                                    : CColors.rBrown,
                                           ),
                                           const SizedBox(
                                             height: CSizes.spaceBtnInputFields /
@@ -239,7 +246,11 @@ class CProductCardVertical extends StatelessWidget {
                           title:
                               "${itemName.toUpperCase()} ($qtyAvailable stocked, $qtySold sold)",
                           txtColor:
-                              isDarkTheme ? CColors.white : CColors.rBrown,
+                              int.parse(qtyAvailable!) < lowStockNotifierLimit!
+                                  ? Colors.red
+                                  : isDarkTheme
+                                      ? CColors.white
+                                      : CColors.rBrown,
                           maxLines: 2,
                         ),
 
@@ -252,7 +263,7 @@ class CProductCardVertical extends StatelessWidget {
                               ),
                         ),
                         Text(
-                          'sku: $pCode',
+                          'sku: $pCode lsn: $lowStockNotifierLimit',
                           style: Theme.of(context).textTheme.labelSmall!.apply(
                                 color: isDarkTheme
                                     ? CColors.white
@@ -305,16 +316,6 @@ class CProductCardVertical extends StatelessWidget {
                                       fSizeFactor: 0.9,
                                     ),
                                   ),
-
-                                  /// -- button to edit inventory item's details --
-                                  // Positioned(
-                                  //   right: 0,
-                                  //   bottom: 30.0,
-                                  //   child: CSquareIconBtn(
-                                  //     bgColor: CColors.transparent,
-                                  //     onBtnTap: onEditBtnTapped,
-                                  //   ),
-                                  // ),
 
                                   /// -- add item to cart button --
                                   Positioned(

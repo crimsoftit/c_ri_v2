@@ -289,38 +289,6 @@ class CInvDetails extends StatelessWidget {
             floatingActionButton: Column(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                // cartController.countOfCartItems.value >= 1
-                //     ? Stack(
-                //         alignment: Alignment.centerRight,
-                //         children: [
-                //           FloatingActionButton(
-                //             onPressed: () {
-                //               //Get.to(() => const CCheckoutScreen());
-                //               final checkoutController =
-                //                   Get.put(CCheckoutController());
-                //               checkoutController.handleNavToCheckout();
-                //             },
-                //             backgroundColor: isConnectedToInternet
-                //                 ? Colors.brown
-                //                 : CColors.black,
-                //             foregroundColor: Colors.white,
-                //             heroTag: 'checkout',
-                //             child: const Icon(
-                //               Iconsax.wallet_check,
-                //             ),
-                //           ),
-                //           CPositionedCartCounterWidget(
-                //             counterBgColor: CColors.white,
-                //             counterTxtColor: CColors.rBrown,
-                //             rightPosition: 10.0,
-                //             topPosition: 8.0,
-                //           ),
-                //         ],
-                //       )
-                //     : SizedBox(),
-                // const SizedBox(
-                //   height: CSizes.spaceBtnSections / 8,
-                // ),
                 FloatingActionButton(
                   onPressed: () {
                     invController.itemExists.value = true;

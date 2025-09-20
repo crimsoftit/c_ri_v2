@@ -490,7 +490,7 @@ class CInventoryController extends GetxController {
       // -- start loader
       isLoading.value = true;
 
-      // -- update entry
+      // -- delete entry
       await dbHelper.deleteInventoryItem(inventoryItem);
 
       // -- refresh inventory list
@@ -507,10 +507,23 @@ class CInventoryController extends GetxController {
         message: '${inventoryItem.name} deleted successfully...',
       );
     } catch (e) {
-      CPopupSnackBar.errorSnackBar(
-        title: 'error deleting data',
-        message: e.toString(),
-      );
+      // -- stop loader
+      isLoading.value = false;
+
+      if (kDebugMode) {
+        print(e.toString());
+        CPopupSnackBar.errorSnackBar(
+          title: 'error deleting data',
+          message: e.toString(),
+        );
+      } else {
+        CPopupSnackBar.errorSnackBar(
+          title: 'error deleting data',
+          message: 'unable to delete this item... please try again later!',
+        );
+      }
+
+      rethrow;
     }
   }
 

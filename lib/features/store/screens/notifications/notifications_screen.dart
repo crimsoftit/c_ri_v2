@@ -4,8 +4,8 @@ import 'package:c_ri/common/widgets/divider/c_divider.dart';
 import 'package:c_ri/features/personalization/controllers/user_controller.dart';
 import 'package:c_ri/features/store/controllers/notifications_controller.dart';
 import 'package:c_ri/features/store/models/notifications_model.dart';
+import 'package:c_ri/features/store/screens/notifications/widgets/alerts_listview.dart';
 import 'package:c_ri/utils/constants/colors.dart';
-import 'package:c_ri/utils/constants/sizes.dart';
 import 'package:c_ri/utils/helpers/helper_functions.dart';
 import 'package:c_ri/utils/helpers/network_manager.dart';
 import 'package:clock/clock.dart';
@@ -63,95 +63,74 @@ class _CNotificationsScreenState extends State<CNotificationsScreen> {
 
         /// -- body --
         body: SingleChildScrollView(
-          child: Obx(
-            () {
-              //notsController.fetchUserNotifications();
-
-              return Padding(
-                padding: const EdgeInsets.only(
-                  left: 20.0,
-                  right: 15.0,
-                  top: 10.0,
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      userController.user.value.email,
-                      style: Theme.of(context).textTheme.labelSmall!.apply(
-                            color: CNetworkManager.instance.hasConnection.value
-                                ? CColors.rBrown
-                                : CColors.darkGrey,
-                          ),
-                    ),
-                    Text(
-                      'Alerts',
-                      style: Theme.of(context).textTheme.labelLarge!.apply(
-                            color: CNetworkManager.instance.hasConnection.value
-                                ? CColors.rBrown
-                                : CColors.darkGrey,
-                            fontSizeFactor: 2.5,
-                            fontWeightDelta: -7,
-                          ),
-                    ),
-                    CDivider(
-                      endIndent: 250.0,
-                      startIndent: 0,
-                    ),
-                    const SizedBox(
-                      height: CSizes.spaceBtnItems,
-                    ),
-
-                    // -- list notifications on an ExpansionPanelList.radio widget --
-                    Card(
-                      color: isDarkTheme
-                          ? CColors.rBrown.withValues(alpha: 0.3)
-                          : CColors.lightGrey,
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(
-                          CSizes.borderRadiusLg,
-                        ),
-                        child: ListView.separated(
-                          itemCount: notsController.allNotifications.length,
-                          itemBuilder: (_, index) {
-                            return Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'data',
-                                ),
-                              ],
-                            );
-                          },
-                          separatorBuilder: (_, __) {
-                            return SizedBox(
-                              height: CSizes.spaceBtnSections / 4,
-                            );
-                          },
-                          shrinkWrap: true,
-                        ),
-                      ),
-                    ),
-                    FilledButton(
-                      onPressed: () {
-                        var notification = CNotificationsModel(
-                          'noma',
-                          'noma sana!!',
-                          0,
-                          17564321,
+          child: Padding(
+            padding: const EdgeInsets.only(
+              left: 20.0,
+              right: 15.0,
+              top: 10.0,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Obx(
+                  () {
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
                           userController.user.value.email,
-                          DateFormat('yyyy-MM-dd @ kk:mm').format(clock.now()),
-                        );
-                        notsController.saveAndTriggerNotification(notification);
-                      },
-                      child: Text(
-                        'instant notifications',
-                      ),
-                    ),
-                  ],
+                          style: Theme.of(context).textTheme.labelSmall!.apply(
+                                color:
+                                    CNetworkManager.instance.hasConnection.value
+                                        ? CColors.rBrown
+                                        : CColors.darkGrey,
+                              ),
+                        ),
+                        Text(
+                          'Alerts',
+                          style: Theme.of(context).textTheme.labelLarge!.apply(
+                                color:
+                                    CNetworkManager.instance.hasConnection.value
+                                        ? CColors.rBrown
+                                        : CColors.darkGrey,
+                                fontSizeFactor: 2.5,
+                                fontWeightDelta: -7,
+                              ),
+                        ),
+                        CDivider(
+                          endIndent: 250.0,
+                          startIndent: 0,
+                        ),
+                      ],
+                    );
+                  },
                 ),
-              );
-            },
+
+                // -- list notifications on an ExpansionPanelList.radio widget --
+                CAlertsListView(),
+                FilledButton(
+                  onPressed: () {
+                    var notification = CNotificationsModel(
+                      'noma',
+                      'noma sana!!',
+                      0,
+                      17564321,
+                      userController.user.value.email,
+                      DateFormat('yyyy-MM-dd @ kk:mm').format(clock.now()),
+                    );
+                    notsController.saveAndTriggerNotification(
+                      notification,
+                      1,
+                      notification.notificationTitle,
+                      notification.notificationBody,
+                    );
+                  },
+                  child: Text(
+                    'instant notifications',
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

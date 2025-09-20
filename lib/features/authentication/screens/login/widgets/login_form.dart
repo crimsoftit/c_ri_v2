@@ -32,7 +32,9 @@ class LoginForm extends StatelessWidget {
                 height: 0.7,
               ),
               decoration: const InputDecoration(
-                prefixIcon: Icon(Iconsax.direct_right),
+                prefixIcon: Icon(
+                  Iconsax.direct_right,
+                ),
                 labelText: CTexts.email,
               ),
               validator: (value) {
@@ -65,7 +67,7 @@ class LoginForm extends StatelessWidget {
                           ? Iconsax.eye_slash
                           : Iconsax.eye,
                       color: loginController.hidePswdTxt.value
-                          ? CColors.grey
+                          ? CColors.darkGrey
                           : CColors.rBrown,
                     ),
                   ),

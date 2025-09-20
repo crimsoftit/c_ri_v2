@@ -8,10 +8,12 @@ import 'package:c_ri/features/personalization/controllers/user_controller.dart';
 import 'package:c_ri/features/store/controllers/cart_controller.dart';
 import 'package:c_ri/features/store/controllers/inv_controller.dart';
 import 'package:c_ri/features/store/controllers/nav_menu_controller.dart';
+import 'package:c_ri/features/store/controllers/notifications_controller.dart';
 import 'package:c_ri/features/store/controllers/sync_controller.dart';
 import 'package:c_ri/features/store/controllers/txns_controller.dart';
 import 'package:c_ri/features/store/models/cart_item_model.dart';
 import 'package:c_ri/features/store/models/inv_model.dart';
+import 'package:c_ri/features/store/models/notifications_model.dart';
 import 'package:c_ri/features/store/models/payment_method_model.dart';
 import 'package:c_ri/features/store/models/txns_model.dart';
 import 'package:c_ri/features/store/screens/store_items_tings/checkout/checkout_screen.dart';
@@ -81,6 +83,7 @@ class CCheckoutController extends GetxController {
   final cartController = Get.put(CCartController());
   final invController = Get.put(CInventoryController());
   final navController = Get.put(CNavMenuController());
+  final notificationsController = Get.put(CNotificationsController());
   final txnsController = Get.put(CTxnsController());
   final userController = Get.put(CUserController());
 
@@ -216,6 +219,37 @@ class CCheckoutController extends GetxController {
                   sAction, cartItem.productId);
 
               invController.fetchUserInventoryItems();
+              // -- check and implement low stock count alert --
+              if (invItem.quantity <= invItem.lowStockNotifierLimit) {
+                var alertBody = '';
+                switch (invItem.quantity) {
+                  case 0:
+                    alertBody = '${invItem.name} is out of stock!!';
+                    break;
+
+                  case >= 1:
+                    alertBody =
+                        'only ${invItem.quantity} item(s) of ${invItem.name} is (are) left!!';
+                    break;
+                  default:
+                    alertBody = '';
+                }
+
+                var alertItem = CNotificationsModel(
+                  'low stock alert',
+                  alertBody,
+                  0,
+                  invItem.productId,
+                  userController.user.value.email,
+                  DateFormat('yyyy-MM-dd @ kk:mm').format(clock.now()),
+                );
+                notificationsController.saveAndTriggerNotification(
+                  alertItem,
+                  CHelperFunctions.generateAlertId(),
+                  alertItem.notificationTitle,
+                  alertBody,
+                );
+              }
             } else {
               result = 'ERROR ADDING SALE ITEM';
             }
@@ -282,7 +316,7 @@ class CCheckoutController extends GetxController {
         );
       }
 
-      throw e.toString();
+      rethrow;
     }
   }
 

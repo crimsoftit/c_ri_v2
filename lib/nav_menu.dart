@@ -1,6 +1,8 @@
 import 'package:c_ri/features/store/controllers/cart_controller.dart';
 import 'package:c_ri/features/store/controllers/inv_controller.dart';
 import 'package:c_ri/features/store/controllers/nav_menu_controller.dart';
+import 'package:c_ri/features/store/controllers/notifications_controller.dart';
+import 'package:c_ri/features/store/screens/home/widgets/alerts_counter_widget.dart';
 import 'package:c_ri/utils/constants/colors.dart';
 import 'package:c_ri/utils/helpers/helper_functions.dart';
 import 'package:c_ri/utils/helpers/network_manager.dart';
@@ -18,6 +20,7 @@ class NavMenu extends StatelessWidget {
     final invController = Get.put(CInventoryController());
 
     final navController = Get.put(CNavMenuController());
+    final notsController = Get.put(CNotificationsController());
 
     Get.put(CInventoryController());
     Get.put(CCartController());
@@ -62,7 +65,7 @@ class NavMenu extends StatelessWidget {
                 : CNetworkManager.instance.hasConnection.value
                     ? CColors.rBrown.withValues(alpha: 0.3)
                     : CColors.black.withValues(alpha: 0.3),
-            destinations: const [
+            destinations: [
               NavigationDestination(
                 icon: Icon(
                   Iconsax.home,
@@ -100,9 +103,24 @@ class NavMenu extends StatelessWidget {
                 icon: Icon(Iconsax.user),
                 label: 'profile',
               ),
-              NavigationDestination(
-                icon: Icon(Iconsax.notification),
-                label: 'alerts',
+              SizedBox(
+                child: Stack(
+                  children: [
+                    NavigationDestination(
+                      icon: Icon(
+                        Iconsax.notification,
+                      ),
+                      label: 'alerts',
+                    ),
+                    if (notsController.allNotifications.isNotEmpty)
+                      CAlertsCounterWidget(
+                        counterBgColor: Colors.red,
+                        counterTxtColor: CColors.white,
+                        rightPosition: 15.0,
+                        topPosition: 10.0,
+                      ),
+                  ],
+                ),
               ),
             ],
           ),

@@ -611,10 +611,10 @@ class DbHelper extends GetxController {
   /// -- fetch operation: fetch all notifications from the local database --
   Future<List<CNotificationsModel>> fetchUserNotifications(String email) async {
     try {
-      // Get a reference to the database.
+      // get a reference to the database.
       final db = _db;
 
-      // Query the table for notifications (list)
+      // query the table for notifications (list)
       final demNotifications = await db!.rawQuery(
           'SELECT * FROM $notificationsTable WHERE userEmail = ? ORDER BY date DESC',
           [email]);
@@ -634,5 +634,19 @@ class DbHelper extends GetxController {
 
       rethrow;
     }
+  }
+
+  /// -- delete operation: delete notification from the local database --
+  Future<int> deleteNotification(CNotificationsModel deleteItem) async {
+    // get a reference to the database.
+    final db = _db;
+
+    int result = await db!.delete(
+      'notifications',
+      where: 'notificationId = ?',
+      whereArgs: [deleteItem.notificationId],
+    );
+
+    return result;
   }
 }

@@ -8,8 +8,8 @@ class CTextFormFieldTheme {
   static InputDecorationTheme lightInputDecorationTheme = InputDecorationTheme(
     // errorMaxLines: 3,
     errorMaxLines: 1,
-    prefixIconColor: CColors.grey,
-    suffixIconColor: CColors.grey,
+    prefixIconColor: CColors.darkGrey,
+    suffixIconColor: CColors.darkGrey,
     labelStyle: const TextStyle().copyWith(
       fontSize: 11.0,
       color: CColors.rBrown,
@@ -31,16 +31,20 @@ class CTextFormFieldTheme {
     ),
     border: const OutlineInputBorder().copyWith(
       borderRadius: BorderRadius.circular(5.0),
-      borderSide: const BorderSide(
+      borderSide: BorderSide(
         width: 1.0,
-        color: CColors.darkerGrey,
+        color: CColors.rBrown.withValues(
+          alpha: .5,
+        ),
       ),
     ),
     enabledBorder: const OutlineInputBorder().copyWith(
       borderRadius: BorderRadius.circular(5.0),
-      borderSide: const BorderSide(
+      borderSide: BorderSide(
         width: 1.0,
-        color: CColors.grey,
+        color: CColors.rBrown.withValues(
+          alpha: .5,
+        ),
       ),
     ),
     focusedBorder: const OutlineInputBorder().copyWith(

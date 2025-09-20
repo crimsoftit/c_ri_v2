@@ -24,7 +24,10 @@ class CNotificationsController extends GetxController {
 
   @override
   void onInit() async {
-    await fetchUserNotifications();
+    if (userController.user.value.email != '') {
+      fetchUserNotifications();
+    }
+
     super.onInit();
   }
 
@@ -87,20 +90,24 @@ class CNotificationsController extends GetxController {
   }
 
   /// -- save notification details to sqflite db --
-  Future saveAndTriggerNotification(CNotificationsModel item) async {
+  Future saveAndTriggerNotification(CNotificationsModel notificationItem,
+      int notId, String notTitle, String notBody) async {
     try {
       // -- start loader
       isLoading.value = true;
 
       // -- insert notification item into sqflite db --
       //await dbHelper.addNotificationItem(item);
-      if (await dbHelper.addNotificationItem(item)) {
+      if (await dbHelper.addNotificationItem(notificationItem)) {
         notify(
-          0,
-          'noma',
-          'noma sana!!',
+          notId,
+          notTitle,
+          notBody,
         );
       }
+
+      // -- refresh list --
+      fetchUserNotifications();
 
       // -- stop loader
       isLoading.value = false;
@@ -159,6 +166,45 @@ class CNotificationsController extends GetxController {
         CPopupSnackBar.errorSnackBar(
           title: 'Oh Snap!',
           message: e.toString(),
+        );
+      }
+
+      rethrow;
+    }
+  }
+
+  onDeleteBtnPressed(CNotificationsModel item) async {
+    deleteNotification(item);
+  }
+
+  /// -- delete notification from from local db --
+  Future<void> deleteNotification(CNotificationsModel item) async {
+    try {
+      // -- start loader
+      isLoading.value = true;
+
+      // -- delete entry
+      await dbHelper.deleteNotification(item);
+
+      // -- refresh notifications list
+      fetchUserNotifications();
+
+      // -- stop loader
+      isLoading.value = false;
+    } catch (e) {
+      // -- stop loader
+      isLoading.value = false;
+      if (kDebugMode) {
+        print(e.toString());
+        CPopupSnackBar.errorSnackBar(
+          title: 'error deleting notification!',
+          message: e.toString(),
+        );
+      } else {
+        CPopupSnackBar.errorSnackBar(
+          title: 'error deleting notification!',
+          message:
+              'an unknown error occurred while deleting this notification... please try again later!',
         );
       }
 

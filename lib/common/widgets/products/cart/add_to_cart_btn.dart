@@ -23,11 +23,12 @@ class CAddToCartBtn extends StatelessWidget {
       () {
         final cartController = CCartController.instance;
         final pQtyInCart = cartController.getItemQtyInCart(pId);
+        var invItem = invController.inventoryItems.firstWhere((item) =>
+            item.productId.toString() == pId.toString().toLowerCase());
         return InkWell(
           onTap: () {
             cartController.fetchCartItems();
-            var invItem = invController.inventoryItems.firstWhere((item) =>
-                item.productId.toString() == pId.toString().toLowerCase());
+
             final cartItem = cartController.convertInvToCartItem(invItem, 1);
             cartController.addSingleItemToCart(cartItem, false, null);
           },
@@ -35,9 +36,11 @@ class CAddToCartBtn extends StatelessWidget {
             decoration: BoxDecoration(
               color: pQtyInCart > 0
                   ? Colors.orange
-                  : CNetworkManager.instance.hasConnection.value
-                      ? CColors.rBrown
-                      : CColors.darkerGrey,
+                  : invItem.quantity <= invItem.lowStockNotifierLimit
+                      ? Colors.red
+                      : CNetworkManager.instance.hasConnection.value
+                          ? CColors.rBrown
+                          : CColors.darkerGrey,
               borderRadius: const BorderRadius.only(
                 topLeft: Radius.circular(CSizes.cardRadiusMd - 4),
                 bottomRight: Radius.circular(CSizes.pImgRadius - 4),

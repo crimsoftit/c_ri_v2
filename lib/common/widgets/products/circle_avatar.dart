@@ -1,6 +1,5 @@
 import 'package:c_ri/utils/constants/colors.dart';
 import 'package:c_ri/utils/constants/sizes.dart';
-import 'package:c_ri/utils/helpers/helper_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 
@@ -8,6 +7,7 @@ class CCircleAvatar extends StatelessWidget {
   const CCircleAvatar({
     super.key,
     this.bgColor = CColors.rBrown,
+    this.editIconColor = CColors.rBrown,
     this.includeEditBtn = false,
     this.onEdit,
     this.txtColor = CColors.white,
@@ -16,7 +16,7 @@ class CCircleAvatar extends StatelessWidget {
   });
 
   final bool includeEditBtn;
-  final Color? bgColor, txtColor;
+  final Color? bgColor, txtColor, editIconColor;
 
   final double? radius;
   final String avatarInitial;
@@ -24,7 +24,7 @@ class CCircleAvatar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDarkTheme = CHelperFunctions.isDarkMode(context);
+    //final isDarkTheme = CHelperFunctions.isDarkMode(context);
 
     return InkWell(
       onTap: onEdit,
@@ -52,7 +52,8 @@ class CCircleAvatar extends StatelessWidget {
                       child: Icon(
                         Iconsax.edit,
                         size: CSizes.iconXs,
-                        color: isDarkTheme ? CColors.white : CColors.rBrown,
+                        color: editIconColor,
+                        //color: isDarkTheme ? CColors.white : CColors.rBrown,
                       ),
                     ),
                   ],
