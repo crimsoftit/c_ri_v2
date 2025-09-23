@@ -185,7 +185,8 @@ class CTxnsController extends GetxController {
           message: e.toString(),
         );
       }
-      throw e.toString();
+      //throw e.toString();
+      rethrow;
     }
   }
 
@@ -244,7 +245,8 @@ class CTxnsController extends GetxController {
           message: e.toString(),
         );
       }
-      throw e.toString();
+      //throw e.toString();
+      rethrow;
     }
   }
 
@@ -293,7 +295,8 @@ class CTxnsController extends GetxController {
           message: e.toString(),
         );
       }
-      throw e.toString();
+      //throw e.toString();
+      rethrow;
     }
   }
 
@@ -353,7 +356,8 @@ class CTxnsController extends GetxController {
           message: e.toString(),
         );
       }
-      throw e.toString();
+      //throw e.toString();
+      rethrow;
     }
   }
 
@@ -402,7 +406,8 @@ class CTxnsController extends GetxController {
         );
       }
 
-      throw e.toString();
+      //throw e.toString();
+      rethrow;
     }
   }
 
@@ -492,7 +497,8 @@ class CTxnsController extends GetxController {
         title: 'error searching sales',
         message: '$e',
       );
-      throw e.toString();
+      //throw e.toString();
+      rethrow;
     }
   }
 
@@ -1175,7 +1181,8 @@ class CTxnsController extends GetxController {
         message: e.toString(),
       );
 
-      throw e.toString();
+      //throw e.toString();
+      rethrow;
     }
   }
 }

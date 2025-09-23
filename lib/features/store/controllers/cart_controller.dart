@@ -81,7 +81,8 @@ class CCartController extends GetxController {
         }
         //throw e.toString();
         cartItemsLoading.value = false;
-        return false;
+        //return false;
+        rethrow;
       }
     }
     // finally {

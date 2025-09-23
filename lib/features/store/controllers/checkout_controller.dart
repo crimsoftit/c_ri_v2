@@ -273,9 +273,13 @@ class CCheckoutController extends GetxController {
                     await CNetworkManager.instance.isConnected();
 
                 if (internetIsConnected) {
-                  await syncController.processSync();
                   if (await syncController.processSync()) {
-                    if (txnsController.unsyncedTxnAppends.isNotEmpty) {
+                    await txnsController.fetchSoldItems();
+                    await invController.fetchUserInventoryItems();
+                    if (invController.unSyncedAppends.isNotEmpty ||
+                        invController.unSyncedUpdates.isNotEmpty ||
+                        txnsController.unsyncedTxnAppends.isNotEmpty ||
+                        txnsController.unsyncedTxnUpdates.isNotEmpty) {
                       await syncController.processSync();
                     }
                   } else {
@@ -648,7 +652,6 @@ class CCheckoutController extends GetxController {
     if (cartController.qtyFieldControllers.isNotEmpty) {
       cartController.qtyFieldControllers.close();
     }
-    cartController.qtyFieldControllers.close();
     navController.selectedIndex.value = 1;
 
     Get.offAll(() => NavMenu());

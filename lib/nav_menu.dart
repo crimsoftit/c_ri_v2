@@ -40,7 +40,8 @@ class NavMenu extends StatelessWidget {
         if (cartController.cartItems.isEmpty &&
             !cartController.cartItemsLoading.value &&
             !invController.isLoading.value &&
-            navController.selectedIndex.value != 4) {
+            navController.selectedIndex.value != 4 &&
+            navController.selectedIndex.value != 1) {
           cartController.fetchCartItems();
         }
 

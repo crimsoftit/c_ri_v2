@@ -324,7 +324,7 @@ class AddUpdateInventoryForm extends StatelessWidget {
                         ),
                       ),
                       SizedBox(
-                        width: 7.0,
+                        width: 8.5,
                       ),
 
                       // -- buying price textfield --

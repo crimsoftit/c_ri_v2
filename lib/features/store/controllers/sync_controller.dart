@@ -21,34 +21,32 @@ class CSyncController extends GetxController {
   Future<bool> processSync() async {
     try {
       processingSync.value = true;
-      //await invController.cloudSyncInventory();
-      //await invController.cloudSyncInventory();
 
       if (await invController.cloudSyncInventory()) {
         await txnsController.addUpdateSalesDataToCloud().then(
           (_) async {
-            if (await txnsController.addUpdateSalesDataToCloud()) {
-              if (invController.syncIsLoading.value &&
-                  txnsController.txnsSyncIsLoading.value) {
-                processingSync.value = true;
-              } else {
-                processingSync.value = false;
-              }
+            if (invController.syncIsLoading.value &&
+                txnsController.txnsSyncIsLoading.value) {
+              processingSync.value = true;
+            } else {
+              processingSync.value = false;
             }
           },
         );
       }
+      await invController.fetchUserInventoryItems();
+      await txnsController.fetchSoldItems();
 
-      return true;
+      return processingSync.value;
     } catch (e) {
       if (kDebugMode) {
         print(e.toString());
         CPopupSnackBar.errorSnackBar(
-          title: 'error processing sync',
+          title: 'error processing sync (syncController)',
           message: e.toString(),
         );
       }
-      return false;
+      rethrow;
     }
   }
 }

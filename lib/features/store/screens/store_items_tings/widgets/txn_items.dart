@@ -33,7 +33,6 @@ class CTxnItemsListView extends StatelessWidget {
     BuildContext context,
     String title,
     String subTitle,
-    String date,
   ) {
     return CRoundedContainer(
       bgColor: CColors.transparent,
@@ -59,16 +58,6 @@ class CTxnItemsListView extends StatelessWidget {
                       ),
                 ),
               ],
-            ),
-          ),
-          CRoundedContainer(
-            child: Text(
-              date,
-              style: Theme.of(context).textTheme.labelSmall!.apply(
-                    color: CColors.rBrown,
-                    //fontSizeFactor: .8,
-                  ),
-              textAlign: TextAlign.right,
             ),
           ),
         ],
@@ -268,6 +257,8 @@ class CTxnItemsListView extends StatelessWidget {
                                     ],
                                   ),
                                   Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       const SizedBox(
                                         height: CSizes.spaceBtnInputFields / 4,
@@ -333,7 +324,22 @@ class CTxnItemsListView extends StatelessWidget {
                                               context,
                                               '${item.productName.toUpperCase()}',
                                               '${item.quantity} sold; ${item.qtyRefunded} refunded @: $userCurrency.${item.unitSellingPrice} #${item.productId}',
-                                              '${item.lastModified.replaceAll(' @', '')}'),
+                                              // '${item.lastModified.replaceAll(' @', '')}',
+                                            ),
+                                      CRoundedContainer(
+                                        bgColor: CColors.transparent,
+                                        child: Text(
+                                          '${item.lastModified.replaceAll(' @', '')}',
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .labelSmall!
+                                              .apply(
+                                                color: CColors.rBrown,
+                                                //fontSizeFactor: .8,
+                                              ),
+                                          textAlign: TextAlign.right,
+                                        ),
+                                      ),
                                     ],
                                   ),
                                 ],

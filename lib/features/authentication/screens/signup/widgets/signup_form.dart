@@ -142,7 +142,7 @@ class CSignupForm extends StatelessWidget {
                         ? Iconsax.eye_slash
                         : Iconsax.eye,
                     color: signupController.hidePswdTxt.value
-                        ? CColors.grey
+                        ? CColors.darkGrey
                         : CColors.rBrown,
                   ),
                 ),
@@ -176,7 +176,7 @@ class CSignupForm extends StatelessWidget {
                         ? Iconsax.eye_slash
                         : Iconsax.eye,
                     color: signupController.hideConfirmPswdTxt.value
-                        ? CColors.grey
+                        ? CColors.darkGrey
                         : CColors.rBrown,
                   ),
                 ),

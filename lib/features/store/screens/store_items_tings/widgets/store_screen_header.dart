@@ -8,6 +8,7 @@ import 'package:c_ri/features/store/screens/store_items_tings/inventory/widgets/
 import 'package:c_ri/utils/constants/colors.dart';
 import 'package:c_ri/utils/helpers/network_manager.dart';
 import 'package:c_ri/utils/popups/snackbars.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
@@ -144,7 +145,11 @@ class CStoreScreenHeader extends StatelessWidget {
                                       invController.unSyncedUpdates.isEmpty &&
                                       txnsController
                                           .unsyncedTxnAppends.isEmpty &&
-                                      txnsController.unsyncedTxnUpdates.isEmpty
+                                      txnsController
+                                          .unsyncedTxnUpdates.isEmpty &&
+                                      syncController.processingSync.value &&
+                                      invController.isLoading.value &&
+                                      txnsController.isLoading.value
                                   ? null
                                   : () async {
                                       // -- check internet connectivity --
@@ -153,7 +158,29 @@ class CStoreScreenHeader extends StatelessWidget {
                                               .isConnected();
 
                                       if (internetIsConnected) {
-                                        syncController.processSync();
+                                        // -- check if sync is really necessary --
+                                        await invController
+                                            .fetchUserInventoryItems();
+                                        await txnsController.fetchSoldItems();
+
+                                        if (invController.unSyncedAppends.isNotEmpty ||
+                                            invController
+                                                .unSyncedUpdates.isNotEmpty ||
+                                            txnsController.unsyncedTxnAppends
+                                                .isNotEmpty ||
+                                            txnsController.unsyncedTxnUpdates
+                                                .isNotEmpty) {
+                                          await syncController.processSync();
+                                        } else {
+                                          if (kDebugMode) {
+                                            print('rada safi mkuu!!');
+                                            CPopupSnackBar.customToast(
+                                              message: 'rada safi nani',
+                                              forInternetConnectivityStatus:
+                                                  false,
+                                            );
+                                          }
+                                        }
                                       } else {
                                         CPopupSnackBar.customToast(
                                           message:
