@@ -33,6 +33,10 @@ class AddUpdateItemDialog {
       invController.txtUnitSP.text = invController.txtUnitSP.text.isEmpty
           ? invModel.unitSellingPrice.toString()
           : invController.txtUnitSP.text.trim();
+      invController.txtStockNotifierLimit.text =
+          invController.txtStockNotifierLimit.text.isEmpty
+              ? invModel.lowStockNotifierLimit.toString()
+              : invController.txtStockNotifierLimit.text.trim();
     }
 
     return PopScope(

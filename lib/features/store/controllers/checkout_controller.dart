@@ -852,35 +852,6 @@ class CCheckoutController extends GetxController {
     processTxn(txnType);
   }
 
-  // confirmPaymentDeferment () {
-  //   Get.defaultDialog(
-  //     contentPadding: const EdgeInsets.all(CSizes.sm),
-  //     title: 'sell on credit?',
-  //     // middleText:
-  //     //     'Are you certain you want to refund ${soldItem.productName} for $userCurrency.${soldItem.unitSellingPrice * soldItem.quantity}? This action can\'t be undone!',
-  //     middleText: 'Are you certain you want to sell these?',
-  //     confirm: ElevatedButton(
-  //       onPressed: () async {},
-  //       style: ElevatedButton.styleFrom(
-  //         backgroundColor: Colors.red,
-  //         side: const BorderSide(
-  //           color: Colors.red,
-  //         ),
-  //       ),
-  //       child: const Padding(
-  //         padding: EdgeInsets.symmetric(horizontal: CSizes.sm),
-  //         child: Text('confirm refund'),
-  //       ),
-  //     ),
-  //     cancel: OutlinedButton(
-  //       onPressed: () {
-  //         Navigator.of(Get.overlayContext!).pop();
-  //       },
-  //       child: const Text('cancel'),
-  //     ),
-  //   );
-  // }
-
   confirmInvoicePaymentDialog(int txnId) {
     // TODO: confirm if seller is sure to sell on credit
     Get.defaultDialog(
@@ -903,41 +874,19 @@ class CCheckoutController extends GetxController {
             txnsController.fetchTxnItems(txnId);
           }
 
-          // final internetIsConnected =
-          //     await CNetworkManager.instance.isConnected();
-          var syncAction = '';
-
           for (var item in txnsController.transactionItems) {
-            var lastModified =
-                DateFormat('yyyy-MM-dd @ kk:mm').format(clock.now());
+            item.lastModified =
+                DateFormat('yyyy-MM-dd @ kk:mm').format(clock.now()).toString();
 
-            syncAction = item.isSynced == 0 ? 'append' : 'update';
+            item.syncAction = item.isSynced == 0 ? 'append' : 'update';
 
-            var txnStatus = 'complete';
+            item.txnStatus = 'complete';
 
             await dbHelper.updateMultipleFieldsWithTransactionId(
-                item.txnId, lastModified, syncAction, txnStatus);
-
-            if (await dbHelper.updateMultipleFieldsWithTransactionId(
-                item.txnId, lastModified, syncAction, txnStatus)) {
-              txnsController.fetchTxns();
-              txnsController.fetchSoldItems();
-              Navigator.of(Get.overlayContext!).pop();
-            }
-
-            // if (internetIsConnected) {
-
-            //   item.syncAction = syncAction;
-            //   item.txnStatus = txnStatus;
-
-            // } else {
-
-            //   CPopupSnackBar.customToast(
-            //     message: 'internet required for cloud sync!!',
-            //     forInternetConnectivityStatus: false,
-            //   );
-            // }
+                item.txnId, item.lastModified, item.syncAction, item.txnStatus);
           }
+          txnsController.fetchTxns();
+          Navigator.of(Get.overlayContext!).pop();
         },
         style: ElevatedButton.styleFrom(
           backgroundColor: Colors.red,

@@ -100,7 +100,7 @@ class CDashboardController extends GetxController {
       final String rawSaleDate = sale.lastModified.trim();
       var formattedDate = rawSaleDate.replaceAll(' @', '');
       final DateTime lastWeekSalesStart =
-          CHelperFunctions.getStartOfCurrentWeek(DateTime.parse(formattedDate));
+          CHelperFunctions.getStartOfLastWeek(DateTime.parse(formattedDate));
       return lastWeekSalesStart
               .isAfter(startOfLatsWeek.subtract(Duration(seconds: 1))) &&
           lastWeekSalesStart.isBefore(endOfWeek.add(Duration(seconds: 1)));

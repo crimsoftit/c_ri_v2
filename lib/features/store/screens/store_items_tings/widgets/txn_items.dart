@@ -30,7 +30,11 @@ class CTxnItemsListView extends StatelessWidget {
   final String space;
 
   Widget buildSalesDetails(
-      BuildContext context, String title, String subTitle) {
+    BuildContext context,
+    String title,
+    String subTitle,
+    String date,
+  ) {
     return CRoundedContainer(
       bgColor: CColors.transparent,
       showBorder: false,
@@ -57,6 +61,35 @@ class CTxnItemsListView extends StatelessWidget {
               ],
             ),
           ),
+          CRoundedContainer(
+            child: Text(
+              date,
+              style: Theme.of(context).textTheme.labelSmall!.apply(
+                    color: CColors.rBrown,
+                    //fontSizeFactor: .8,
+                  ),
+              textAlign: TextAlign.right,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget buildRefundDetails(BuildContext context, String msg) {
+    return CRoundedContainer(
+      bgColor: CColors.transparent,
+      showBorder: false,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            msg,
+            style: Theme.of(context).textTheme.labelMedium!.apply(
+                  color: CColors.darkGrey,
+                  //fontSizeFactor: .8,
+                ),
+          ),
         ],
       ),
     );
@@ -73,8 +106,6 @@ class CTxnItemsListView extends StatelessWidget {
     final userController = Get.put(CUserController());
     final userCurrency =
         CHelperFunctions.formatCurrency(userController.user.value.currencyCode);
-
-    /// -- TODO: implement loader while fetching txn items --
 
     return SingleChildScrollView(
       child: Obx(
@@ -104,16 +135,19 @@ class CTxnItemsListView extends StatelessWidget {
                   : txnsController.sales);
               break;
 
+            case 'refunds':
+              demItems.assignAll(searchController.showSearchField.value &&
+                      searchController.txtSearchField.text != '' &&
+                      !txnsController.isLoading.value
+                  ? txnsController.foundRefunds
+                  : txnsController.refunds);
+              break;
+
             default:
               demItems.clear();
               CPopupSnackBar.errorSnackBar(
                 title: 'invalid tab space',
               );
-          }
-
-          if (!txnsController.isLoading.value &&
-              txnsController.receipts.isEmpty) {
-            txnsController.fetchTxns();
           }
 
           if (searchController.showSearchField.value &&
@@ -297,9 +331,9 @@ class CTxnItemsListView extends StatelessWidget {
                                             )
                                           : buildSalesDetails(
                                               context,
-                                              '${item.productName.toUpperCase()} (${item.lastModified.replaceAll(' @', '')})',
+                                              '${item.productName.toUpperCase()}',
                                               '${item.quantity} sold; ${item.qtyRefunded} refunded @: $userCurrency.${item.unitSellingPrice} #${item.productId}',
-                                            ),
+                                              '${item.lastModified.replaceAll(' @', '')}'),
                                     ],
                                   ),
                                 ],
@@ -383,13 +417,21 @@ class CTxnItemsListView extends StatelessWidget {
                                           ),
                                         ],
                                       )
-                                    : SizedBox.shrink(),
+                                    : space == 'refunds'
+                                        ? buildRefundDetails(
+                                            context,
+                                            item.refundReason,
+                                          )
+                                        : SizedBox.shrink(),
                                 if (space == 'invoices' || space == 'sales')
                                   Container(
                                     alignment: Alignment.centerRight,
                                     child: SizedBox(
-                                      width:
-                                          CHelperFunctions.screenWidth() * 0.45,
+                                      width: space == 'invoices'
+                                          ? CHelperFunctions.screenWidth() *
+                                              0.45
+                                          : CHelperFunctions.screenWidth() *
+                                              0.30,
                                       child: TextButton.icon(
                                         onPressed: () {
                                           switch (space) {
@@ -438,7 +480,7 @@ class CTxnItemsListView extends StatelessWidget {
                                           foregroundColor: CColors.white,
                                           shape: RoundedRectangleBorder(
                                             borderRadius: BorderRadius.circular(
-                                              15.0,
+                                              10.0,
                                             ), // Set the desired radius here
                                           ),
                                         ),

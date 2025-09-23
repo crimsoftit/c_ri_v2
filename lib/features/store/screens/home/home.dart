@@ -96,7 +96,8 @@ class HomeScreen extends StatelessWidget {
                         !invController.isLoading.value) {
                       invController.fetchUserInventoryItems();
                     }
-                    if (invController.isLoading.value) {
+                    if (invController.isLoading.value &&
+                        invController.inventoryItems.isNotEmpty) {
                       return CHorizontalProductShimmer();
                     }
 
@@ -117,16 +118,12 @@ class HomeScreen extends StatelessWidget {
                             Get.to(() => const NavMenu());
                           },
                         ),
-                        // CDivider(
-                        //   endIndent: 250.0,
-                        //   startIndent: 0.0,
-                        // ),
-                        CTopSellers(),
-                        //Text('rada?'),
+                        invController.topSellers.isEmpty
+                            ? Text(
+                                'we are excited to have you!!',
+                              )
+                            : CTopSellers(),
 
-                        // SizedBox(
-                        //   height: CSizes.spaceBtnSections,
-                        // ),
                         CSectionHeading(
                           showActionBtn: true,
                           title: 'weekly sales...',

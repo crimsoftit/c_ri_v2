@@ -23,8 +23,6 @@ class AddUpdateInventoryForm extends StatelessWidget {
   final TextStyle? textStyle;
   final CInventoryModel inventoryItem;
 
-  /// -- TODO: check for txnId double entry before updating/saving data (form validation)
-
   @override
   Widget build(BuildContext context) {
     //AddUpdateItemDialog dialog = AddUpdateItemDialog();
@@ -208,11 +206,16 @@ class AddUpdateInventoryForm extends StatelessWidget {
                             int.parse(value.trim()),
                           );
                         }
+
+                        if (value.isNotEmpty) {
+                          invController.computeLowStockThreshold(
+                              int.parse(value.trim()));
+                        }
                       },
                     ),
                   ),
                   SizedBox(
-                    width: CHelperFunctions.screenWidth() * .44,
+                    width: CHelperFunctions.screenWidth() * .45,
                     height: 60.0,
                     child: TextFormField(
                       autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -259,75 +262,161 @@ class AddUpdateInventoryForm extends StatelessWidget {
               // const SizedBox(
               //   height: CSizes.spaceBtnInputFields / 1.5,
               // ),
-              TextFormField(
-                autovalidateMode: AutovalidateMode.onUserInteraction,
-                controller: invController.txtBP,
-                keyboardType: const TextInputType.numberWithOptions(
-                  decimal: true,
-                  signed: false,
-                ),
-                inputFormatters: <TextInputFormatter>[
-                  FilteringTextInputFormatter.allow(RegExp(r'^\d+(\.\d*)?')),
-                ],
-                decoration: InputDecoration(
-                  filled: true,
-                  fillColor:
-                      isDarkTheme ? CColors.transparent : CColors.lightGrey,
-                  labelStyle: textStyle,
-                  labelText: 'buying price',
-                  prefixIcon: Icon(
-                    // Iconsax.card_pos,
-                    Iconsax.bitcoin_card,
-                    color: CColors.darkGrey,
-                    size: CSizes.iconXs,
-                  ),
-                ),
-                onChanged: (value) {
-                  if (invController.txtQty.text.isNotEmpty &&
-                      value.isNotEmpty) {
-                    invController.computeUnitBP(
-                      double.parse(value),
-                      int.parse(invController.txtQty.text),
-                    );
-                  }
-                },
-                style: const TextStyle(
-                  fontWeight: FontWeight.normal,
-                ),
-                validator: (value) {
-                  return CValidator.validateNumber('buying price', value);
-                },
-              ),
-              Obx(
-                () {
-                  final userController = Get.put(CUserController());
-                  final currency = CHelperFunctions.formatCurrency(
-                      userController.user.value.currencyCode);
-                  return Visibility(
-                    visible: invController.txtBP.text.isEmpty &&
-                            invController.txtQty.text.isEmpty
-                        ? false
-                        : true,
-                    child: Container(
-                      padding: const EdgeInsets.all(
-                        0.0,
-                      ),
-                      width: CHelperFunctions.screenWidth() * .95,
-                      height: invController.txtBP.text.isEmpty &&
-                              invController.txtQty.text.isEmpty
-                          ? 0
-                          : 15.0,
-                      alignment: Alignment.topRight,
-                      child: Text(
-                        'unit BP: ~$currency.${invController.unitBP.value.toStringAsFixed(2)}',
-                        style: Theme.of(context).textTheme.labelSmall!.apply(
-                              fontStyle: FontStyle.italic,
+              Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      // -- textfield for low stock threshold limit
+                      SizedBox(
+                        width: CHelperFunctions.screenWidth() * .38,
+                        height: 60.0,
+                        child: TextFormField(
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                          controller: invController.txtStockNotifierLimit,
+                          keyboardType: const TextInputType.numberWithOptions(
+                            decimal: false,
+                            signed: false,
+                          ),
+                          inputFormatters: <TextInputFormatter>[
+                            FilteringTextInputFormatter.digitsOnly
+                          ],
+                          decoration: InputDecoration(
+                            constraints: BoxConstraints(
+                              minHeight: 60.0,
                             ),
+                            contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 0.0,
+                            ),
+                            filled: true,
+                            fillColor: isDarkTheme
+                                ? CColors.transparent
+                                : CColors.lightGrey,
+                            // label: Container(
+                            //   transform: Matrix4.translationValues(
+                            //     10.0,
+                            //     0.0,
+                            //     0.0,
+                            //   ),
+                            //   child: Text(
+                            //     'threshold',
+                            //   ),
+                            // ),
+                            // labelStyle: textStyle,
+                            labelText: 'alert threshold',
+                            prefixIcon: Icon(
+                              // Iconsax.card_pos,
+                              Iconsax.quote_down,
+                              color: CColors.darkGrey,
+                              size: CSizes.iconXs,
+                            ),
+                          ),
+                          onChanged: (value) {},
+                          style: const TextStyle(
+                            fontWeight: FontWeight.normal,
+                          ),
+                          validator: (value) {
+                            return CValidator.validateNumber(
+                                'alert threshold', value);
+                          },
+                        ),
                       ),
-                    ),
-                  );
-                },
+                      SizedBox(
+                        width: 7.0,
+                      ),
+
+                      // -- buying price textfield --
+                      SizedBox(
+                        width: CHelperFunctions.screenWidth() * .45,
+                        height: 60.0,
+                        child: TextFormField(
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                          controller: invController.txtBP,
+                          keyboardType: const TextInputType.numberWithOptions(
+                            decimal: true,
+                            signed: false,
+                          ),
+                          inputFormatters: <TextInputFormatter>[
+                            FilteringTextInputFormatter.allow(
+                                RegExp(r'^\d+(\.\d*)?')),
+                          ],
+                          decoration: InputDecoration(
+                            contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 1.0,
+                            ),
+                            constraints: BoxConstraints(
+                              minHeight: 60.0,
+                            ),
+                            filled: true,
+                            fillColor: isDarkTheme
+                                ? CColors.transparent
+                                : CColors.lightGrey,
+                            labelStyle: textStyle,
+                            labelText: 'buying price',
+                            prefixIcon: Icon(
+                              // Iconsax.card_pos,
+                              Iconsax.bitcoin_card,
+                              color: CColors.darkGrey,
+                              size: CSizes.iconXs,
+                            ),
+                          ),
+                          onChanged: (value) {
+                            if (invController.txtQty.text.isNotEmpty &&
+                                value.isNotEmpty) {
+                              invController.computeUnitBP(
+                                double.parse(value),
+                                int.parse(invController.txtQty.text),
+                              );
+                            }
+                          },
+                          style: const TextStyle(
+                            fontWeight: FontWeight.normal,
+                          ),
+                          validator: (value) {
+                            return CValidator.validateNumber(
+                                'buying price', value);
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                  Obx(
+                    () {
+                      final userController = Get.put(CUserController());
+                      final currency = CHelperFunctions.formatCurrency(
+                          userController.user.value.currencyCode);
+                      return Visibility(
+                        visible: invController.txtBP.text.isEmpty &&
+                                invController.txtQty.text.isEmpty
+                            ? false
+                            : true,
+                        replacement: SizedBox.shrink(),
+                        child: Container(
+                          padding: const EdgeInsets.all(
+                            0.0,
+                          ),
+                          width: CHelperFunctions.screenWidth() * .95,
+                          height: invController.txtBP.text.isEmpty &&
+                                  invController.txtQty.text.isEmpty
+                              ? 0
+                              : 10.0,
+                          alignment: Alignment.topRight,
+                          child: Text(
+                            'unit BP: ~$currency.${invController.unitBP.value.toStringAsFixed(2)}',
+                            style:
+                                Theme.of(context).textTheme.labelSmall!.apply(
+                                      fontStyle: FontStyle.italic,
+                                    ),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ],
               ),
+
               Obx(
                 () {
                   return Visibility(

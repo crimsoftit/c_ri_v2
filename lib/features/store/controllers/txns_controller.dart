@@ -140,16 +140,16 @@ class CTxnsController extends GetxController {
           await dbHelper.fetchAllSoldItems(userController.user.value.email);
 
       // assign sold items to sales list
-      sales.assignAll(soldItems);
+      sales.assignAll(soldItems.where((sale) => sale.quantity > 0));
 
       // assign values for unsynced txn appends
-      unsyncedTxnAppends.value = sales
+      unsyncedTxnAppends.value = soldItems
           .where((unAppendedTxn) =>
               unAppendedTxn.syncAction.toLowerCase().contains('append'))
           .toList();
 
       // assign values for unsynced txn updates
-      var txnsForUpdates = sales
+      var txnsForUpdates = soldItems
           .where((unUpdatedTxn) =>
               unUpdatedTxn.syncAction.toLowerCase().contains('update') &&
               unUpdatedTxn.isSynced == 1)
@@ -157,13 +157,15 @@ class CTxnsController extends GetxController {
       unsyncedTxnUpdates.assignAll(txnsForUpdates);
 
       // assign values for refunded items
-      var refundedItems =
-          sales.where((refundedItem) => refundedItem.qtyRefunded >= 1).toList();
+      var refundedItems = soldItems
+          .where((refundedItem) => refundedItem.qtyRefunded >= 1)
+          .toList();
       refunds.assignAll(refundedItems);
 
       if (searchController.showSearchField.value &&
           searchController.txtSearchField.text == '') {
-        foundSales.assignAll(soldItems);
+        // foundSales.assignAll(soldItems);
+        foundSales.assignAll(sales);
         foundRefunds.assignAll(refundedItems);
       }
 
@@ -256,7 +258,7 @@ class CTxnsController extends GetxController {
       fetchTxns().then(
         (_) {
           if (txns.isNotEmpty && soldItemsFetched.value && txnsFetched.value) {
-            var listToSearchFrom = foundTxns.isNotEmpty ? foundTxns : txns;
+            var listToSearchFrom = foundSales.isNotEmpty ? foundSales : sales;
             var txnItems = listToSearchFrom
                 .where((soldItem) =>
                     soldItem.txnId.toString().contains(txnId.toString()))

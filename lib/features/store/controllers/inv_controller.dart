@@ -544,7 +544,8 @@ class CInventoryController extends GetxController {
         inventoryItem.unitSellingPrice = double.parse(txtUnitSP.text);
         inventoryItem.lowStockNotifierLimit = txtStockNotifierLimit.text != ''
             ? int.parse(txtStockNotifierLimit.text.trim())
-            : (int.parse(txtQty.text.trim()) / 5).toInt();
+            : (int.parse(txtQty.text.trim()) / 5).toInt() + 1;
+
         inventoryItem.supplierName = txtSupplierName.text.trim();
         inventoryItem.supplierContacts = txtSupplierContacts.text.trim();
         inventoryItem.lastModified =
@@ -1099,7 +1100,12 @@ class CInventoryController extends GetxController {
     }
   }
 
-  // -- update
+  /// -- compute low stock threshold for alerts --
+  computeLowStockThreshold(int qty) {
+    var threshold = (qty * .2).toInt();
+    txtStockNotifierLimit.text =
+        threshold == 0 ? (threshold + 1).toString() : threshold.toString();
+  }
 
   /// -- compute unitBP --
   computeUnitBP(double bp, int qty) {
