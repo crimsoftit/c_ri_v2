@@ -273,6 +273,7 @@ class CCheckoutController extends GetxController {
                     await CNetworkManager.instance.isConnected();
 
                 if (internetIsConnected) {
+                  //await syncController.processSync();
                   if (await syncController.processSync()) {
                     await txnsController.fetchSoldItems();
                     await invController.fetchUserInventoryItems();
@@ -282,15 +283,16 @@ class CCheckoutController extends GetxController {
                         txnsController.unsyncedTxnUpdates.isNotEmpty) {
                       await syncController.processSync();
                     }
-                  } else {
-                    if (kDebugMode) {
-                      print('error processing cloud sync');
-                      CPopupSnackBar.errorSnackBar(
-                        title: 'error processing cloud sync',
-                        message: 'error processing cloud sync',
-                      );
-                    }
                   }
+                  // else {
+                  //   if (kDebugMode) {
+                  //     print('error processing cloud sync on checkout!');
+                  //     CPopupSnackBar.errorSnackBar(
+                  //       title: 'error processing cloud sync on checkout!',
+                  //       message: 'error processing cloud sync on checkout!',
+                  //     );
+                  //   }
+                  // }
                 } else {
                   if (kDebugMode) {
                     print('internet connection required for cloud sync!');

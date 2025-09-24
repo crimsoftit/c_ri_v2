@@ -7,7 +7,6 @@ import 'package:c_ri/features/store/controllers/checkout_controller.dart';
 import 'package:c_ri/features/store/controllers/search_bar_controller.dart';
 import 'package:c_ri/features/store/controllers/txns_controller.dart';
 import 'package:c_ri/features/store/screens/store_items_tings/widgets/inv_gridview_screen.dart';
-import 'package:c_ri/features/store/screens/store_items_tings/widgets/items_listview.dart';
 import 'package:c_ri/features/store/screens/store_items_tings/widgets/store_screen_header.dart';
 import 'package:c_ri/features/store/screens/store_items_tings/widgets/txn_items.dart';
 import 'package:c_ri/utils/constants/colors.dart';
@@ -43,9 +42,9 @@ class CStoreScreen extends StatelessWidget {
 
     return DefaultTabController(
       animationDuration: Duration(
-        seconds: 1,
+        milliseconds: 1500,
       ),
-      length: 6,
+      length: 5,
       child: Obx(
         () {
           return Scaffold(
@@ -125,9 +124,9 @@ class CStoreScreen extends StatelessWidget {
                         Tab(
                           child: Text('inventory'),
                         ),
-                        Tab(
-                          child: Text('sales_raw'),
-                        ),
+                        // Tab(
+                        //   child: Text('sales_raw'),
+                        // ),
                         Tab(
                           child: Text('sales (all)'),
                         ),
@@ -153,9 +152,10 @@ class CStoreScreen extends StatelessWidget {
                     mainAxisExtent: 182.0,
                   ),
 
-                  CItemsListView(
-                    space: 'sales',
-                  ),
+                  // -- almost obsolete --
+                  // CItemsListView(
+                  //   space: 'sales',
+                  // ),
 
                   /// -- transactions list view --
                   CTxnItemsListView(

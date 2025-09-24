@@ -33,6 +33,7 @@ class CTxnItemsListView extends StatelessWidget {
     BuildContext context,
     String title,
     String subTitle,
+    //String txnSatus,
   ) {
     return CRoundedContainer(
       bgColor: CColors.transparent,
@@ -41,9 +42,14 @@ class CTxnItemsListView extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            title,
+            // title.contains('invoiced')
+            //     ? title.replaceAll('invoiced', 'unpaid!')
+            //     : title,
+            title.replaceAll('invoiced', 'unpaid!'),
             style: Theme.of(context).textTheme.labelMedium!.apply(
-                  color: CColors.darkGrey,
+                  color: title.toLowerCase().contains('invoiced'.toLowerCase())
+                      ? Colors.amber
+                      : Colors.green,
                   //fontSizeFactor: .8,
                 ),
           ),
@@ -57,6 +63,13 @@ class CTxnItemsListView extends StatelessWidget {
                         fontSizeFactor: .8,
                       ),
                 ),
+                // TextSpan(
+                //   text: txnStatus,
+                //   style: Theme.of(context).textTheme.labelMedium!.apply(
+                //         color: CColors.darkGrey,
+                //         fontSizeFactor: .8,
+                //       ),
+                // ),
               ],
             ),
           ),
@@ -243,7 +256,9 @@ class CTxnItemsListView extends StatelessWidget {
                                             ),
                                       ),
                                       Text(
-                                        'txn Amt: $userCurrency.${item.totalAmount}',
+                                        space == 'sales' || space == 'refunds'
+                                            ? 'amt: $userCurrency.${(item.unitSellingPrice * item.quantity)}'
+                                            : 'txn Amt: $userCurrency.${item.totalAmount}',
                                         style: Theme.of(context)
                                             .textTheme
                                             .labelMedium!
@@ -322,9 +337,8 @@ class CTxnItemsListView extends StatelessWidget {
                                             )
                                           : buildSalesDetails(
                                               context,
-                                              '${item.productName.toUpperCase()}',
+                                              '${item.productName.toUpperCase()} (${item.txnStatus})',
                                               '${item.quantity} sold; ${item.qtyRefunded} refunded @: $userCurrency.${item.unitSellingPrice} #${item.productId}',
-                                              // '${item.lastModified.replaceAll(' @', '')}',
                                             ),
                                       CRoundedContainer(
                                         bgColor: CColors.transparent,

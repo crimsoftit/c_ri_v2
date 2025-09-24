@@ -140,7 +140,8 @@ class CTxnsController extends GetxController {
           await dbHelper.fetchAllSoldItems(userController.user.value.email);
 
       // assign sold items to sales list
-      sales.assignAll(soldItems.where((sale) => sale.quantity > 0));
+      // sales.assignAll(soldItems.where((sale) => sale.quantity > 0));
+      sales.assignAll(soldItems);
 
       // assign values for unsynced txn appends
       unsyncedTxnAppends.value = soldItems
@@ -1043,6 +1044,7 @@ class CTxnsController extends GetxController {
                                   txnItem.syncAction = txnItem.isSynced == 0
                                       ? 'append'
                                       : 'update';
+                                  //txnItem.txnStatus = 'refunded';
 
                                   dbHelper
                                       .updateReceiptItem(
@@ -1123,52 +1125,70 @@ class CTxnsController extends GetxController {
         );
       },
     ).whenComplete(() {
-      onBottomSheetClosed();
+      onRefundBottomSheetClose();
     });
   }
 
   /// -- reset refundQty to 0 when bottomSheetModal dismisses --
-  void onBottomSheetClosed() async {
-    final syncController = Get.put(CSyncController());
+  void onRefundBottomSheetClose() async {
+    try {
+      final syncController = Get.put(CSyncController());
 
-    final internetIsConnected = await CNetworkManager.instance.isConnected();
+      final internetIsConnected = await CNetworkManager.instance.isConnected();
 
-    if (refundDataUpdated.value) {
-      if (internetIsConnected) {
-        await syncController.processSync();
-        if (await syncController.processSync()) {
-          if (unsyncedTxnAppends.isNotEmpty) {
-            await syncController.processSync();
+      if (refundDataUpdated.value) {
+        if (internetIsConnected) {
+          //await syncController.processSync();
+          if (await syncController.processSync()) {
+            await fetchSoldItems();
+            await invController.fetchUserInventoryItems();
+            if (invController.unSyncedAppends.isNotEmpty ||
+                invController.unSyncedUpdates.isNotEmpty ||
+                unsyncedTxnAppends.isNotEmpty ||
+                unsyncedTxnUpdates.isNotEmpty) {
+              await syncController.processSync();
+            }
+          } else {
+            if (kDebugMode) {
+              print('error processing cloud sync');
+              CPopupSnackBar.errorSnackBar(
+                title: 'error processing cloud sync',
+                message: 'error processing cloud sync',
+              );
+            }
           }
         } else {
           if (kDebugMode) {
-            print('error processing cloud sync');
-            CPopupSnackBar.errorSnackBar(
-              title: 'error processing cloud sync',
-              message: 'error processing cloud sync',
+            print('internet connection required for cloud sync!');
+            CPopupSnackBar.customToast(
+              message: 'internet connection required for cloud sync!',
+              forInternetConnectivityStatus: true,
             );
           }
         }
-      } else {
-        if (kDebugMode) {
-          print('internet connection required for cloud sync!');
-          CPopupSnackBar.customToast(
-            message: 'internet connection required for cloud sync!',
-            forInternetConnectivityStatus: true,
-          );
-        }
       }
-    }
 
-    refundQty.value = 0;
-    updatesOnRefundDone.value = false;
-    resetSalesFields();
+      refundQty.value = 0;
+      updatesOnRefundDone.value = false;
+      resetSalesFields();
 
-    if (kDebugMode) {
-      print('------------------\n');
-      print('refundQty: ${refundQty.value} \n');
-      print('------------------\n');
-      print('bottomSheet closed');
+      if (kDebugMode) {
+        print('------------------\n');
+        print('refundQty: ${refundQty.value} \n');
+        print('------------------\n');
+        print('bottomSheet closed');
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print('### error syncing refund item ###\n');
+        print('$e\n');
+        print('### error syncing refund item ###\n');
+        CPopupSnackBar.errorSnackBar(
+          title: 'error syncing refund item!',
+          message: e.toString(),
+        );
+      }
+      rethrow;
     }
   }
 
