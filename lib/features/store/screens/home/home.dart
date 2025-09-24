@@ -81,7 +81,7 @@ class HomeScreen extends StatelessWidget {
                 showAppBarTitle: false,
               ),
               CDivider(
-                endIndent: 0.0,
+                endIndent: 250.0,
               ),
 
               Padding(

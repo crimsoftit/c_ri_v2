@@ -1,7 +1,7 @@
 import 'package:c_ri/features/personalization/screens/profile/profile.dart';
 import 'package:c_ri/features/personalization/screens/settings/user_settings_screen.dart';
 import 'package:c_ri/features/store/screens/home/home.dart';
-import 'package:c_ri/features/store/screens/notifications/notifications_screen.dart';
+import 'package:c_ri/features/personalization/screens/notifications/notifications_screen.dart';
 import 'package:c_ri/features/store/screens/store_items_tings/store_screen.dart';
 import 'package:get/get.dart';
 

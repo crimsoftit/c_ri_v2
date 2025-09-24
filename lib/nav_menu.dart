@@ -1,8 +1,9 @@
 import 'package:c_ri/features/store/controllers/cart_controller.dart';
 import 'package:c_ri/features/store/controllers/inv_controller.dart';
 import 'package:c_ri/features/store/controllers/nav_menu_controller.dart';
-import 'package:c_ri/features/store/controllers/notifications_controller.dart';
-import 'package:c_ri/features/store/screens/home/widgets/alerts_counter_widget.dart';
+import 'package:c_ri/features/personalization/controllers/notifications_controller.dart';
+import 'package:c_ri/features/personalization/screens/notifications/widgets/alerts_counter_widget.dart';
+import 'package:c_ri/features/store/models/notifications_model.dart';
 import 'package:c_ri/utils/constants/colors.dart';
 import 'package:c_ri/utils/helpers/helper_functions.dart';
 import 'package:c_ri/utils/helpers/network_manager.dart';
@@ -50,6 +51,22 @@ class NavMenu extends StatelessWidget {
             WidgetsBinding.instance.addPostFrameCallback(
               (_) {
                 cartController.fetchCartItems();
+              },
+            );
+          },
+        );
+
+        Iterable<CNotificationsModel> notifiedAlerts = <CNotificationsModel>[];
+        Future.delayed(
+          Duration.zero,
+          () {
+            WidgetsBinding.instance.addPostFrameCallback(
+              (_) {
+                notsController.fetchUserNotifications();
+
+                /// -- display count of only created notifications --
+                notifiedAlerts = notsController.allNotifications
+                    .where((notifiedAlert) => notifiedAlert.alertCreated == 1);
               },
             );
           },
@@ -123,7 +140,7 @@ class NavMenu extends StatelessWidget {
                       ),
                       label: 'alerts',
                     ),
-                    if (notsController.allNotifications.isNotEmpty)
+                    if (notifiedAlerts.isNotEmpty)
                       CAlertsCounterWidget(
                         counterBgColor: Colors.red,
                         counterTxtColor: CColors.white,

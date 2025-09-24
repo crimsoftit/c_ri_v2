@@ -149,6 +149,9 @@ dependencies:
   country_code_picker: any
   #flutter_sim_country_code: any
   country_codes: any
+
+
+  # double_tap_back_exit: any
   
 
 dev_dependencies:

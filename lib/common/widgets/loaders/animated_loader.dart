@@ -1,6 +1,8 @@
 import 'package:c_ri/utils/constants/colors.dart';
 import 'package:c_ri/utils/constants/sizes.dart';
+import 'package:c_ri/utils/helpers/network_manager.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
 
 /// -- a widget for displaying an animated loading indicator with optional text & action button --
@@ -33,6 +35,8 @@ class CAnimatedLoaderWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    //final isDarkTheme = CHelperFunctions.isDarkMode(context);
+
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -53,24 +57,31 @@ class CAnimatedLoaderWidget extends StatelessWidget {
             height: CSizes.defaultSpace,
           ),
           showActionBtn
-              ? SizedBox(
-                  width: actionBtnWidth,
-                  child: OutlinedButton(
-                    onPressed: onActionBtnPressed,
-                    style: OutlinedButton.styleFrom(
-                      //backgroundColor: CColors.rBrown,
-                      backgroundColor: CColors.dark,
-                    ),
-                    child: Text(
-                      actionBtnText!,
-                      style: Theme.of(context).textTheme.bodyMedium!.apply(
-                            color: CColors.light,
-                          ),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
+              ? Obx(
+                  () {
+                    return SizedBox(
+                      width: actionBtnWidth,
+                      child: OutlinedButton(
+                        onPressed: onActionBtnPressed,
+                        style: OutlinedButton.styleFrom(
+                          //backgroundColor: CColors.rBrown,
+                          backgroundColor:
+                              CNetworkManager.instance.hasConnection.value
+                                  ? CColors.rBrown
+                                  : CColors.dark,
+                        ),
+                        child: Text(
+                          actionBtnText!,
+                          style: Theme.of(context).textTheme.bodyMedium!.apply(
+                                color: CColors.light,
+                              ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    );
+                  },
                 )
-              : const SizedBox(),
+              : const SizedBox.shrink(),
         ],
       ),
     );

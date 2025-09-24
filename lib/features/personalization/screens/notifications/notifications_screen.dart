@@ -2,9 +2,9 @@ import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:c_ri/common/widgets/appbar/v2_app_bar.dart';
 import 'package:c_ri/common/widgets/divider/c_divider.dart';
 import 'package:c_ri/features/personalization/controllers/user_controller.dart';
-import 'package:c_ri/features/store/controllers/notifications_controller.dart';
+import 'package:c_ri/features/personalization/controllers/notifications_controller.dart';
 import 'package:c_ri/features/store/models/notifications_model.dart';
-import 'package:c_ri/features/store/screens/notifications/widgets/alerts_listview.dart';
+import 'package:c_ri/features/personalization/screens/notifications/widgets/alerts_listview.dart';
 import 'package:c_ri/utils/constants/colors.dart';
 import 'package:c_ri/utils/helpers/helper_functions.dart';
 import 'package:c_ri/utils/helpers/network_manager.dart';
@@ -87,7 +87,7 @@ class _CNotificationsScreenState extends State<CNotificationsScreen> {
                               ),
                         ),
                         Text(
-                          'Alerts',
+                          'alerts',
                           style: Theme.of(context).textTheme.labelLarge!.apply(
                                 color:
                                     CNetworkManager.instance.hasConnection.value
@@ -111,11 +111,11 @@ class _CNotificationsScreenState extends State<CNotificationsScreen> {
                 FilledButton(
                   onPressed: () {
                     var notification = CNotificationsModel(
-                      0,
+                      1,
                       'noma',
                       'noma sana!!',
                       0,
-                      17564321,
+                      0,
                       userController.user.value.email,
                       DateFormat('yyyy-MM-dd @ kk:mm').format(clock.now()),
                     );

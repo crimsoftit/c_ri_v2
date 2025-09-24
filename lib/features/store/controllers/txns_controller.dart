@@ -3,6 +3,7 @@ import 'package:barcode_scan2/barcode_scan2.dart';
 import 'package:c_ri/api/sheets/store_sheets_api.dart';
 import 'package:c_ri/common/widgets/custom_shapes/containers/rounded_container.dart';
 import 'package:c_ri/common/widgets/icon_buttons/circular_icon_btn.dart';
+import 'package:c_ri/features/personalization/controllers/notifications_controller.dart';
 import 'package:c_ri/features/personalization/controllers/user_controller.dart';
 import 'package:c_ri/features/store/controllers/inv_controller.dart';
 import 'package:c_ri/features/store/controllers/search_bar_controller.dart';
@@ -29,31 +30,6 @@ import 'package:simple_barcode_scanner/flutter_barcode_scanner.dart';
 class CTxnsController extends GetxController {
   static CTxnsController get instance {
     return Get.find();
-  }
-
-  @override
-  void onInit() async {
-    await dbHelper.openDb();
-
-    await fetchSoldItems();
-    await fetchTxns();
-    await initTxnsSync();
-
-    showAmountIssuedField.value = true;
-    refundQty.value = 0;
-    super.onInit();
-  }
-
-  /// -- initialize cloud sync --
-  Future initTxnsSync() async {
-    if (localStorage.read('SyncTxnsDataWithCloud') == true) {
-      await importTxnsFromCloud();
-      if (await importTxnsFromCloud()) {
-        localStorage.write('SyncTxnsDataWithCloud', false);
-      }
-
-      await fetchSoldItems();
-    }
   }
 
   /// -- variables --
@@ -123,8 +99,49 @@ class CTxnsController extends GetxController {
   final userController = Get.put(CUserController());
   final searchController = Get.put(CSearchBarController());
   final invController = Get.put(CInventoryController());
-
+  final notsController = Get.put(CNotificationsController());
   final txnsFormKey = GlobalKey<FormState>();
+
+  @override
+  void onInit() async {
+    dbHelper.openDb();
+
+    fetchSoldItems();
+    fetchTxns();
+    initTxnsSync();
+    //notsController.fetchUserNotifications();
+    // Future.delayed(
+    //   Duration.zero,
+    //   () {
+    //     WidgetsBinding.instance.addPostFrameCallback(
+    //       (_) async {
+    //         await dbHelper.openDb();
+
+    //         await fetchSoldItems();
+    //         await fetchTxns();
+    //         await initTxnsSync();
+    //         await notsController.fetchUserNotifications();
+    //       },
+    //     );
+    //   },
+    // );
+
+    showAmountIssuedField.value = true;
+    refundQty.value = 0;
+    super.onInit();
+  }
+
+  /// -- initialize cloud sync --
+  Future initTxnsSync() async {
+    if (localStorage.read('SyncTxnsDataWithCloud') == true) {
+      await importTxnsFromCloud();
+      if (await importTxnsFromCloud()) {
+        localStorage.write('SyncTxnsDataWithCloud', false);
+      }
+
+      await fetchSoldItems();
+    }
+  }
 
   /// -- fetch sold items from sqflite db --
   Future<List<CTxnsModel>> fetchSoldItems() async {
@@ -169,6 +186,24 @@ class CTxnsController extends GetxController {
         foundSales.assignAll(sales);
         foundRefunds.assignAll(refundedItems);
       }
+
+      await notsController.fetchUserNotifications().then(
+        (_) {
+          if (notsController.pendingAlerts.isNotEmpty) {
+            for (var pendingAlert in notsController.pendingAlerts) {
+              notsController.notify(
+                CHelperFunctions.generateAlertId(),
+                pendingAlert.notificationTitle,
+                pendingAlert.notificationBody,
+              );
+
+              pendingAlert.alertCreated = 1;
+
+              dbHelper.updateNotificationItem(pendingAlert);
+            }
+          }
+        },
+      );
 
       // stop loader
       isLoading.value = false;

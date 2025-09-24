@@ -663,4 +663,27 @@ class DbHelper extends GetxController {
 
     return result;
   }
+
+  /// -- update notification details --
+  Future<int> updateNotificationItem(CNotificationsModel alertItem) async {
+    try {
+      var result = await _db!.update(
+        notificationsTable,
+        alertItem.toMap(),
+        where: 'notificationId = ?',
+        whereArgs: [alertItem.notificationId],
+      );
+
+      return result;
+    } catch (e) {
+      if (kDebugMode) {
+        print(e.toString());
+        CPopupSnackBar.errorSnackBar(
+          title: 'error updating notification item',
+          message: e.toString(),
+        );
+      }
+      rethrow;
+    }
+  }
 }

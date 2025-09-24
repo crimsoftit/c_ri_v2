@@ -189,6 +189,8 @@ class CStoreScreen extends StatelessWidget {
                       label: Text(
                         'CHECKOUT',
                         style: Theme.of(context).textTheme.labelSmall!.apply(
+                              color: CColors.white,
+                              fontSizeDelta: 1.2,
                               fontWeightDelta: -1,
                             ),
                       ),

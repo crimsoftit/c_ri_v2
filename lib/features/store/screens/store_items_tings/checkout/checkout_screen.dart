@@ -38,7 +38,6 @@ class CCheckoutScreen extends StatelessWidget {
     final checkoutController = Get.put(CCheckoutController());
     final isDarkTheme = CHelperFunctions.isDarkMode(context);
     final invController = Get.put(CInventoryController());
-    //final isConnectedToInternet = CNetworkManager.instance.hasConnection.value;
 
     final navController = Get.put(CNavMenuController());
     final scrollController = ScrollController();
@@ -65,7 +64,6 @@ class CCheckoutScreen extends StatelessWidget {
               color: CColors.rBrown,
             ),
             onPressed: () {
-              //Get.back();
               Navigator.pop(context);
             },
           ),
@@ -85,19 +83,6 @@ class CCheckoutScreen extends StatelessWidget {
                     : Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          // IconButton(
-                          //   icon: Icon(
-                          //     Iconsax.arrow_left,
-                          //     size: CSizes.iconMd,
-                          //     color: CColors.rBrown,
-                          //   ),
-                          //   onPressed: () {
-                          //     searchBarController
-                          //         .showAnimatedTypeAheadField.value = false;
-                          //     //Get.back();
-                          //     Navigator.pop(context);
-                          //   },
-                          // ),
                           SizedBox(
                             width: CHelperFunctions.screenWidth() * 0.72,
                           ),
@@ -151,7 +136,10 @@ class CCheckoutScreen extends StatelessWidget {
                     );
                   },
                 ),
-                CDivider(),
+                CDivider(
+                  endIndent: 200,
+                  startIndent: 0,
+                ),
                 Obx(
                   () {
                     /// -- empty data widget --

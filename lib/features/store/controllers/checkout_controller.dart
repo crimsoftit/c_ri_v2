@@ -8,7 +8,7 @@ import 'package:c_ri/features/personalization/controllers/user_controller.dart';
 import 'package:c_ri/features/store/controllers/cart_controller.dart';
 import 'package:c_ri/features/store/controllers/inv_controller.dart';
 import 'package:c_ri/features/store/controllers/nav_menu_controller.dart';
-import 'package:c_ri/features/store/controllers/notifications_controller.dart';
+import 'package:c_ri/features/personalization/controllers/notifications_controller.dart';
 import 'package:c_ri/features/store/controllers/sync_controller.dart';
 import 'package:c_ri/features/store/controllers/txns_controller.dart';
 import 'package:c_ri/features/store/models/cart_item_model.dart';
@@ -240,7 +240,7 @@ class CCheckoutController extends GetxController {
                   'low stock alert',
                   alertBody,
                   0,
-                  invItem.productId,
+                  invItem.productId ?? 0,
                   userController.user.value.email,
                   DateFormat('yyyy-MM-dd @ kk:mm').format(clock.now()),
                 );
@@ -249,7 +249,7 @@ class CCheckoutController extends GetxController {
                   CHelperFunctions.generateAlertId(),
                   alertItem.notificationTitle,
                   alertBody,
-                  false,
+                  alertItem.alertCreated == 1 ? true : false,
                 );
               }
             } else {

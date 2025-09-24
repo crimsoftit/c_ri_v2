@@ -1,4 +1,4 @@
-import 'package:c_ri/features/store/controllers/notifications_controller.dart';
+import 'package:c_ri/features/personalization/controllers/notifications_controller.dart';
 import 'package:c_ri/utils/constants/colors.dart';
 import 'package:c_ri/utils/helpers/helper_functions.dart';
 import 'package:flutter/material.dart';
@@ -36,8 +36,12 @@ class CAlertsCounterWidget extends StatelessWidget {
         child: Center(
           child: Obx(() {
             notsController.fetchUserNotifications();
+
+            /// -- display count of only created notifications --
+            var notifiedAlerts = notsController.allNotifications
+                .where((notifiedAlert) => notifiedAlert.alertCreated == 1);
             return Text(
-              notsController.allNotifications.length.toString(),
+              notifiedAlerts.length.toString(),
               style: Theme.of(context).textTheme.labelSmall!.apply(
                     color: counterTxtColor ??
                         (isDarkTheme ? CColors.rBrown : CColors.white),

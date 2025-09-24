@@ -3,6 +3,7 @@ import 'package:c_ri/features/personalization/controllers/user_controller.dart';
 import 'package:c_ri/features/store/controllers/nav_menu_controller.dart';
 import 'package:c_ri/features/store/models/notifications_model.dart';
 import 'package:c_ri/main.dart';
+import 'package:c_ri/nav_menu.dart';
 import 'package:c_ri/utils/db/sqflite/db_helper.dart';
 import 'package:c_ri/utils/popups/snackbars.dart';
 import 'package:flutter/foundation.dart';
@@ -16,10 +17,12 @@ class CNotificationsController extends GetxController {
   final isLoading = false.obs;
   final RxList<CNotificationsModel> allNotifications =
       <CNotificationsModel>[].obs;
+  final RxList<CNotificationsModel> pendingAlerts = <CNotificationsModel>[].obs;
   final RxList<CNotificationsModel> readNotifications =
       <CNotificationsModel>[].obs;
   final RxList<CNotificationsModel> unreadNotifications =
       <CNotificationsModel>[].obs;
+
   final userController = Get.put(CUserController());
 
   @override
@@ -62,13 +65,11 @@ class CNotificationsController extends GetxController {
 
     final navController = Get.put(CNavMenuController());
 
-    navController.selectedIndex.value = 4;
     globalNavigatorKey.currentState?.pushNamedAndRemoveUntil('/landing_screen',
         (route) => (route.settings.name != '/landing_screen') || route.isFirst,
         arguments: receivedAction);
-
-    // navController.selectedIndex.value = 4;
-    // Get.to(() => CNotificationsScreen());
+    navController.selectedIndex.value = 4;
+    Get.to(() => NavMenu());
   }
 
   void notify(int notificationId, String notificationTitle,
@@ -153,6 +154,12 @@ class CNotificationsController extends GetxController {
           .toList();
 
       unreadNotifications.assignAll(unreadNots);
+
+      // -- assign pending notifications --
+      var pendingNots = allNotifications
+          .where((pendingNot) => pendingNot.alertCreated == 0)
+          .toList();
+      pendingAlerts.assignAll(pendingNots);
 
       // -- stop loader --
       isLoading.value = false;

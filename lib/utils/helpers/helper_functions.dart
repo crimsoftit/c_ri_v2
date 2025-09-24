@@ -191,8 +191,8 @@ class CHelperFunctions {
   }
 
   static int generateAlertId() {
-    final now = DateTime.now();
-    return now.millisecondsSinceEpoch - generateRandom4DigitNumber();
+    //final now = DateTime.now();
+    return generateRandom4DigitNumber();
   }
 
   static String generateProductCode() {
