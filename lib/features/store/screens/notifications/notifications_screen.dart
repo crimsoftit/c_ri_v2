@@ -111,6 +111,7 @@ class _CNotificationsScreenState extends State<CNotificationsScreen> {
                 FilledButton(
                   onPressed: () {
                     var notification = CNotificationsModel(
+                      0,
                       'noma',
                       'noma sana!!',
                       0,
@@ -118,11 +119,12 @@ class _CNotificationsScreenState extends State<CNotificationsScreen> {
                       userController.user.value.email,
                       DateFormat('yyyy-MM-dd @ kk:mm').format(clock.now()),
                     );
-                    notsController.saveAndTriggerNotification(
+                    notsController.saveAndOrTriggerNotification(
                       notification,
                       1,
                       notification.notificationTitle,
                       notification.notificationBody,
+                      true,
                     );
                   },
                   child: Text(

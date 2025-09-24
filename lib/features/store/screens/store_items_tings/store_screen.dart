@@ -2,7 +2,6 @@ import 'package:c_ri/common/widgets/appbar/app_bar.dart';
 import 'package:c_ri/common/widgets/appbar/tab_bar.dart';
 import 'package:c_ri/common/widgets/products/cart/positioned_cart_counter_widget.dart';
 import 'package:c_ri/common/widgets/search_bar/animated_search_bar.dart';
-import 'package:c_ri/features/store/controllers/cart_controller.dart';
 import 'package:c_ri/features/store/controllers/checkout_controller.dart';
 import 'package:c_ri/features/store/controllers/search_bar_controller.dart';
 import 'package:c_ri/features/store/controllers/txns_controller.dart';
@@ -180,75 +179,84 @@ class CStoreScreen extends StatelessWidget {
             ),
 
             /// -- floating action button to scan item for sale --
-            floatingActionButton: Obx(
-              () {
-                final cartController = Get.put(CCartController());
-                return Column(
-                  mainAxisAlignment: MainAxisAlignment.end,
+            floatingActionButton: Column(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Stack(
+                  alignment: Alignment.centerRight,
                   children: [
-                    cartController.countOfCartItems.value >= 1
-                        ? Stack(
-                            alignment: Alignment.centerRight,
-                            children: [
-                              FloatingActionButton(
-                                onPressed: () {
-                                  checkoutController.handleNavToCheckout();
-                                },
-                                backgroundColor: isConnectedToInternet
-                                    ? Colors.brown
-                                    : CColors.black,
-                                foregroundColor: Colors.white,
-                                heroTag: 'checkout',
-                                child: const Icon(
-                                  Iconsax.wallet_check,
-                                ),
-                              ),
-                              CPositionedCartCounterWidget(
-                                counterBgColor: CColors.white,
-                                counterTxtColor: CColors.rBrown,
-                                rightPosition: 10.0,
-                                topPosition: 8.0,
-                              ),
-                            ],
-                          )
-                        : SizedBox(),
-                    const SizedBox(
-                      height: CSizes.spaceBtnSections / 8,
+                    FloatingActionButton.extended(
+                      label: Text(
+                        'CHECKOUT',
+                        style: Theme.of(context).textTheme.labelSmall!.apply(
+                              fontWeightDelta: -1,
+                            ),
+                      ),
+                      onPressed: () {
+                        checkoutController.handleNavToCheckout();
+                      },
+                      backgroundColor: isConnectedToInternet
+                          ? CColors.rBrown
+                          : CColors.black,
+                      foregroundColor: Colors.white,
+                      heroTag: 'checkout',
+                      icon: const Icon(
+                        Iconsax.wallet_check,
+                        size: CSizes.iconSm + 4,
+                      ),
                     ),
-                    // FloatingActionButton(
-                    //   //elevation: 0, // -- removes shadow
-                    //   onPressed: () {
-                    //     invController.resetInvFields();
-                    //     showDialog(
-                    //       context: context,
-                    //       useRootNavigator: false,
-                    //       builder: (BuildContext context) => dialog.buildDialog(
-                    //         context,
-                    //         CInventoryModel('', '', '', '', '', 0, 0, 0, 0, 0.0,
-                    //             0.0, 0.0, 0, '', '', '', '', 0, ''),
-                    //         true,
-                    //       ),
-                    //     );
-                    //   },
-                    //   backgroundColor:
-                    //       CNetworkManager.instance.hasConnection.value
-                    //           ? Colors.brown
-                    //           : CColors.black,
-                    //   //backgroundColor: CColors.transparent,
-                    //   foregroundColor: CColors.white,
-                    //   heroTag: 'add',
-                    //   child: Icon(
-                    //     // Iconsax.scan_barcode,
-                    //     Iconsax.add,
-                    //   ),
-                    // ),
-                    // const SizedBox(
-                    //   height: CSizes.spaceBtnSections / 8,
-                    // ),
+                    CPositionedCartCounterWidget(
+                      containerHeight: 14.0,
+                      containerWidth: 14.0,
+                      counterBgColor: CColors.white,
+                      counterTxtColor: CColors.rBrown,
+                      rightPosition: 75.0,
+                      topPosition: 12.0,
+                    ),
                   ],
-                );
-              },
+                ),
+              ],
             ),
+            // Obx(
+            //   () {
+            //     final cartController = Get.put(CCartController());
+            //     return Column(
+            //       mainAxisAlignment: MainAxisAlignment.end,
+            //       children: [
+            //         cartController.countOfCartItems.value >= 1
+            //             ? Stack(
+            //                 alignment: Alignment.centerRight,
+            //                 children: [
+            //                   FloatingActionButton(
+            //                     onPressed: () {
+            //                       checkoutController.handleNavToCheckout();
+            //                     },
+            //                     backgroundColor: isConnectedToInternet
+            //                         ? Colors.brown
+            //                         : CColors.black,
+            //                     foregroundColor: Colors.white,
+            //                     heroTag: 'checkout',
+            //                     child: const Icon(
+            //                       Iconsax.wallet_check,
+            //                     ),
+            //                   ),
+            //                   CPositionedCartCounterWidget(
+            //                     counterBgColor: CColors.white,
+            //                     counterTxtColor: CColors.rBrown,
+            //                     rightPosition: 10.0,
+            //                     topPosition: 8.0,
+            //                   ),
+            //                 ],
+            //               )
+            //             : SizedBox.shrink(),
+            //         const SizedBox(
+            //           height: CSizes.spaceBtnSections / 8,
+            //         ),
+
+            //       ],
+            //     );
+            //   },
+            // ),
           );
         },
       ),

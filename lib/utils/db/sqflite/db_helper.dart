@@ -8,6 +8,7 @@ import 'package:c_ri/utils/popups/snackbars.dart';
 import 'package:clock/clock.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -129,6 +130,7 @@ class DbHelper extends GetxController {
       database.execute('''
           CREATE TABLE IF NOT EXISTS $notificationsTable (
             notificationId INTEGER PRIMARY KEY AUTOINCREMENT,
+            alertCreated INTEGER NOT NULL,
             notificationTitle TEXT NOT NULL,
             notificationBody LONGTEXT NOT NULL,
             notificationIsRead INTEGER NOT NULL,
@@ -170,9 +172,21 @@ class DbHelper extends GetxController {
       'none',
     );
 
-    await _db!.execute('INSERT INTO $invTable VALUES (${invItem.productId})');
+    await _db!.execute('INSERT INTO $invTable VALUES ($invItem)');
     await _db!.execute(
         'INSERT INTO $txnsTable VALUES (0, "as23df45", "sindani254@gmail.com", "Manu", "143d", "apples", 13, 15, 10.0, "Cash", "2/1/2022")');
+
+    var alertItem = CNotificationsModel(
+      0,
+      "_notificationTitle",
+      "_notificationBody",
+      0,
+      12345678,
+      userController.user.value.email,
+      DateFormat('yyyy-MM-dd @ kk:mm').format(clock.now()),
+    );
+    await _db!.execute('INSERT INTO $notificationsTable VALUES ($alertItem)');
+
     List inventory = await _db!.rawQuery('select * from inventory');
     List sales = await _db!.rawQuery('select * from sales');
     if (kDebugMode) {

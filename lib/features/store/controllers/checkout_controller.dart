@@ -236,6 +236,7 @@ class CCheckoutController extends GetxController {
                 }
 
                 var alertItem = CNotificationsModel(
+                  0,
                   'low stock alert',
                   alertBody,
                   0,
@@ -243,11 +244,12 @@ class CCheckoutController extends GetxController {
                   userController.user.value.email,
                   DateFormat('yyyy-MM-dd @ kk:mm').format(clock.now()),
                 );
-                notificationsController.saveAndTriggerNotification(
+                notificationsController.saveAndOrTriggerNotification(
                   alertItem,
                   CHelperFunctions.generateAlertId(),
                   alertItem.notificationTitle,
                   alertBody,
+                  false,
                 );
               }
             } else {

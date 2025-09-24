@@ -90,19 +90,21 @@ class CNotificationsController extends GetxController {
   }
 
   /// -- save notification details to sqflite db --
-  Future saveAndTriggerNotification(CNotificationsModel notificationItem,
-      int notId, String notTitle, String notBody) async {
+  Future saveAndOrTriggerNotification(CNotificationsModel notificationItem,
+      int notId, String notTitle, String notBody, bool triggerAlert) async {
     try {
       // -- start loader
       isLoading.value = true;
 
       // -- insert notification item into sqflite db --
       if (await dbHelper.addNotificationItem(notificationItem)) {
-        notify(
-          notId,
-          notTitle,
-          notBody,
-        );
+        if (triggerAlert) {
+          notify(
+            notId,
+            notTitle,
+            notBody,
+          );
+        }
       }
 
       // -- refresh list --

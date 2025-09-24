@@ -3,6 +3,7 @@
 class CNotificationsModel {
   int? _notificationId;
 
+  int _alertCreated = 0;
   String _notificationTitle = '';
   String _notificationBody = '';
   int _notificationIsRead = 0;
@@ -11,6 +12,7 @@ class CNotificationsModel {
   String _date = '';
 
   CNotificationsModel(
+    this._alertCreated,
     this._notificationTitle,
     this._notificationBody,
     this._notificationIsRead,
@@ -21,6 +23,7 @@ class CNotificationsModel {
 
   CNotificationsModel.withId(
     this._notificationId,
+    this._alertCreated,
     this._notificationTitle,
     this._notificationBody,
     this._notificationIsRead,
@@ -31,6 +34,7 @@ class CNotificationsModel {
 
   CNotificationsModel empty() {
     return CNotificationsModel(
+      0,
       '',
       '',
       0,
@@ -41,12 +45,17 @@ class CNotificationsModel {
   }
 
   int? get notificationId => _notificationId;
+  int get alertCreated => _alertCreated;
   String get notificationTitle => _notificationTitle;
   String get notificationBody => _notificationBody;
   int get notificationIsRead => _notificationIsRead;
   int? get productId => _productId;
   String get userEmail => _userEmail;
   String get date => _date;
+
+  set alertCreated(int newAlertCreated) {
+    _alertCreated = newAlertCreated;
+  }
 
   set notificationTitle(String newTitle) {
     _notificationTitle = newTitle;
@@ -78,6 +87,7 @@ class CNotificationsModel {
     if (notificationId != null) {
       map['notificationId'] = _notificationId;
     }
+    map['alertCreated'] = _alertCreated;
     map['notificationTitle'] = _notificationTitle;
     map['notificationBody'] = _notificationBody;
     map['notificationIsRead'] = _notificationIsRead;
@@ -93,6 +103,7 @@ class CNotificationsModel {
   /// -- extract a CNotificationsModel object from a Map object
   CNotificationsModel.fromMapObject(Map<String, dynamic> map) {
     _notificationId = map['notificationId'];
+    _alertCreated = map['alertCreated'];
     _notificationTitle = map['notificationTitle'];
     _notificationBody = map['notificationBody'];
     _notificationIsRead = map['notificationIsRead'];

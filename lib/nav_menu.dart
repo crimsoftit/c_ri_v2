@@ -37,13 +37,23 @@ class NavMenu extends StatelessWidget {
           invController.onInit();
         }
 
-        if (cartController.cartItems.isEmpty &&
-            !cartController.cartItemsLoading.value &&
-            !invController.isLoading.value &&
-            navController.selectedIndex.value != 4 &&
-            navController.selectedIndex.value != 1) {
-          cartController.fetchCartItems();
-        }
+        // if (cartController.cartItems.isEmpty &&
+        //     !cartController.cartItemsLoading.value &&
+        //     !invController.isLoading.value &&
+        //     navController.selectedIndex.value != 4 &&
+        //     navController.selectedIndex.value != 1) {
+        //   cartController.fetchCartItems();
+        // }
+        Future.delayed(
+          Duration.zero,
+          () {
+            WidgetsBinding.instance.addPostFrameCallback(
+              (_) {
+                cartController.fetchCartItems();
+              },
+            );
+          },
+        );
 
         return Scaffold(
           bottomNavigationBar: NavigationBar(

@@ -11,12 +11,14 @@ class CPositionedCartCounterWidget extends StatelessWidget {
     required this.counterTxtColor,
     this.rightPosition,
     this.topPosition,
+    this.containerWidth,
+    this.containerHeight,
   });
 
   final Color? counterBgColor;
   final Color? counterTxtColor;
 
-  final double? rightPosition, topPosition;
+  final double? containerWidth, containerHeight, rightPosition, topPosition;
 
   @override
   Widget build(BuildContext context) {
@@ -26,8 +28,8 @@ class CPositionedCartCounterWidget extends StatelessWidget {
       right: rightPosition ?? 0,
       top: topPosition ?? 5.0,
       child: Container(
-        width: 18,
-        height: 18,
+        width: containerWidth ?? 18.0,
+        height: containerHeight ?? 18.0,
         decoration: BoxDecoration(
           color: counterBgColor,
           borderRadius: BorderRadius.circular(100),

@@ -28,9 +28,9 @@ class CCartController extends GetxController {
   RxList<TextEditingController> qtyFieldControllers =
       <TextEditingController>[].obs;
 
-  CCartController() {
-    fetchCartItems();
-  }
+  // CCartController() {
+  //   fetchCartItems();
+  // }
 
   @override
   void onInit() async {
@@ -61,29 +61,31 @@ class CCartController extends GetxController {
       cartItemsLoading.value = false;
       return true;
     } catch (e) {
-      final cartItemsStrings =
-          CLocalStorage.instance().readData<List<dynamic>>('cartItems');
-      if (cartItemsStrings != null) {
-        cartItems.assignAll(cartItemsStrings.map(
-            (item) => CCartItemModel.fromJson(item as Map<String, dynamic>)));
+      // final cartItemsStrings =
+      //     CLocalStorage.instance().readData<List<dynamic>>('cartItems');
+      // if (cartItemsStrings != null) {
+      //   cartItems.assignAll(cartItemsStrings.map(
+      //       (item) => CCartItemModel.fromJson(item as Map<String, dynamic>)));
 
-        updateCartTotals();
-        cartItemsLoading.value = false;
-        return true;
-      } else {
-        //cartItemsLoading.value = false;
-        if (kDebugMode) {
-          print('$e');
-          CPopupSnackBar.errorSnackBar(
-            title: 'error loading cart items',
-            message: 'an unknown error occurred while fetching cart items: $e',
-          );
-        }
-        //throw e.toString();
-        cartItemsLoading.value = false;
-        //return false;
-        rethrow;
-      }
+      //   updateCartTotals();
+      //   cartItemsLoading.value = false;
+      //   return true;
+      // }
+      // else {
+      //   cartItemsLoading.value = false;
+      //   if (kDebugMode) {
+      //     print('$e');
+      //     CPopupSnackBar.errorSnackBar(
+      //       title: 'error loading cart items',
+      //       message: 'an unknown error occurred while fetching cart items: $e',
+      //     );
+      //   }
+      //   //throw e.toString();
+      //   cartItemsLoading.value = false;
+      //   //return false;
+      //   //rethrow;
+      // }
+      rethrow;
     }
     // finally {
     //   cartItemsLoading.value = false;

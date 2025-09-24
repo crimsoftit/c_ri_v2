@@ -24,7 +24,6 @@ import 'package:c_ri/utils/constants/img_strings.dart';
 import 'package:c_ri/utils/constants/sizes.dart';
 import 'package:c_ri/utils/helpers/helper_functions.dart';
 import 'package:c_ri/utils/helpers/network_manager.dart';
-import 'package:c_ri/utils/popups/snackbars.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -176,10 +175,10 @@ class CCheckoutScreen extends StatelessWidget {
                       );
                     }
 
-                    if (cartController.cartItems.isEmpty &&
-                        !cartController.cartItemsLoading.value) {
-                      cartController.fetchCartItems();
-                    }
+                    // if (cartController.cartItems.isEmpty &&
+                    //     !cartController.cartItemsLoading.value) {
+                    //   cartController.fetchCartItems();
+                    // }
 
                     if (cartController.cartItems.isEmpty &&
                         !cartController.cartItemsLoading.value) {
@@ -567,107 +566,113 @@ class CCheckoutScreen extends StatelessWidget {
                                 child: Column(
                                   children: [
                                     // pricing
-                                    CBillingAmountSection(),
+                                    if (cartController.cartItems.isNotEmpty)
+                                      CBillingAmountSection(),
                                     //const SizedBox(height: CSizes.spaceBtnItems),
 
                                     // divider
-                                    Divider(),
+                                    if (cartController.cartItems.isNotEmpty)
+                                      Divider(),
                                     //const SizedBox(height: CSizes.spaceBtnItems),
                                     // payment methods
-                                    CPaymentMethodSection(
-                                      platformName: checkoutController
-                                                      .selectedPaymentMethod
-                                                      .value
-                                                      .platformName ==
-                                                  'cash' ||
-                                              checkoutController
-                                                      .selectedPaymentMethod
-                                                      .value
-                                                      .platformName ==
-                                                  'mPesa' ||
-                                              checkoutController
-                                                      .selectedPaymentMethod
-                                                      .value
-                                                      .platformName ==
-                                                  'credit'
-                                          ? checkoutController
-                                              .selectedPaymentMethod
-                                              .value
-                                              .platformName
-                                          : '',
-                                      platformLogo: checkoutController
-                                          .selectedPaymentMethod
-                                          .value
-                                          .platformLogo,
-                                      txtFieldSpace: checkoutController
-                                                  .selectedPaymentMethod
-                                                  .value
-                                                  .platformName ==
-                                              'cash'
-                                          ? Row(
-                                              children: [
-                                                const SizedBox(
-                                                  width: CSizes.spaceBtnItems *
-                                                      1.3,
-                                                  height: 38.0,
-                                                ),
-                                                CAmountIssuedTxtField(
-                                                  txtFieldWidth:
-                                                      CHelperFunctions
-                                                              .screenWidth() *
-                                                          0.5,
-                                                ),
-                                              ],
-                                            )
-                                          : Row(
-                                              children: [
-                                                const SizedBox(
-                                                  width: CSizes.spaceBtnItems *
-                                                      1.1,
-                                                  height: 38.0,
-                                                ),
-                                                CRoundedContainer(
-                                                  width: CHelperFunctions
-                                                          .screenWidth() *
-                                                      0.5,
-                                                  bgColor: CColors.transparent,
-                                                  child: Column(
-                                                    children: [
-                                                      //TextFormField(),
-                                                      CCustomTxtField(
-                                                        labelTxt: checkoutController
-                                                                        .selectedPaymentMethod
-                                                                        .value
-                                                                        .platformName ==
-                                                                    'mPesa' ||
-                                                                checkoutController
-                                                                        .selectedPaymentMethod
-                                                                        .value
-                                                                        .platformName ==
-                                                                    'credit'
-                                                            ? 'customer name'
-                                                            : 'customer name(optional)',
-                                                        txtFieldController:
-                                                            checkoutController
-                                                                .customerNameFieldController,
-                                                      ),
-                                                      const SizedBox(
-                                                        height: 4.0,
-                                                      ),
-                                                      // -- phone number field --
-                                                      CCustomTxtField(
-                                                        txtFieldController:
-                                                            checkoutController
-                                                                .customerContactsFieldController,
-                                                        labelTxt:
-                                                            'customer contacts',
-                                                      ),
-                                                    ],
+                                    if (cartController.cartItems.isNotEmpty)
+                                      CPaymentMethodSection(
+                                        platformName: checkoutController
+                                                        .selectedPaymentMethod
+                                                        .value
+                                                        .platformName ==
+                                                    'cash' ||
+                                                checkoutController
+                                                        .selectedPaymentMethod
+                                                        .value
+                                                        .platformName ==
+                                                    'mPesa' ||
+                                                checkoutController
+                                                        .selectedPaymentMethod
+                                                        .value
+                                                        .platformName ==
+                                                    'credit'
+                                            ? checkoutController
+                                                .selectedPaymentMethod
+                                                .value
+                                                .platformName
+                                            : '',
+                                        platformLogo: checkoutController
+                                            .selectedPaymentMethod
+                                            .value
+                                            .platformLogo,
+                                        txtFieldSpace: checkoutController
+                                                    .selectedPaymentMethod
+                                                    .value
+                                                    .platformName ==
+                                                'cash'
+                                            ? Row(
+                                                children: [
+                                                  const SizedBox(
+                                                    width:
+                                                        CSizes.spaceBtnItems *
+                                                            1.3,
+                                                    height: 38.0,
                                                   ),
-                                                ),
-                                              ],
-                                            ),
-                                    ),
+                                                  CAmountIssuedTxtField(
+                                                    txtFieldWidth:
+                                                        CHelperFunctions
+                                                                .screenWidth() *
+                                                            0.5,
+                                                  ),
+                                                ],
+                                              )
+                                            : Row(
+                                                children: [
+                                                  const SizedBox(
+                                                    width:
+                                                        CSizes.spaceBtnItems *
+                                                            1.1,
+                                                    height: 38.0,
+                                                  ),
+                                                  CRoundedContainer(
+                                                    width: CHelperFunctions
+                                                            .screenWidth() *
+                                                        0.5,
+                                                    bgColor:
+                                                        CColors.transparent,
+                                                    child: Column(
+                                                      children: [
+                                                        //TextFormField(),
+                                                        CCustomTxtField(
+                                                          labelTxt: checkoutController
+                                                                          .selectedPaymentMethod
+                                                                          .value
+                                                                          .platformName ==
+                                                                      'mPesa' ||
+                                                                  checkoutController
+                                                                          .selectedPaymentMethod
+                                                                          .value
+                                                                          .platformName ==
+                                                                      'credit'
+                                                              ? 'customer name'
+                                                              : 'customer name(optional)',
+                                                          txtFieldController:
+                                                              checkoutController
+                                                                  .customerNameFieldController,
+                                                        ),
+                                                        const SizedBox(
+                                                          height: 4.0,
+                                                        ),
+                                                        // -- phone number field --
+                                                        CCustomTxtField(
+                                                          txtFieldController:
+                                                              checkoutController
+                                                                  .customerContactsFieldController,
+                                                          labelTxt:
+                                                              'customer contacts',
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                      ),
                                   ],
                                 ),
                               ),
@@ -736,11 +741,11 @@ class CCheckoutScreen extends StatelessWidget {
                 ),
               );
             } else {
-              CPopupSnackBar.errorSnackBar(
-                title: 'no cart items',
-                message: 'no cart items found for checkout',
-              );
-              return SizedBox();
+              // if (kDebugMode) {
+              //   print('no cart items found for checkout');
+              // }
+
+              return SizedBox.shrink();
             }
           },
         ),
