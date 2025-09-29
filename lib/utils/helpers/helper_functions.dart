@@ -38,46 +38,6 @@ class CHelperFunctions {
     return weekStart;
   }
 
-  /// -- get first day of last week --
-  static DateTime getStartOfLastWeek(DateTime date) {
-    // Get the current date and time
-    final now = DateTime.now();
-
-    // Calculate the start of last week (Monday of the previous week)
-    final startOfLastWeek = now.subtract(
-        Duration(days: now.weekday + 6)); // Subtract days to get to Monday
-
-    // calculate the end of last week (Sunday of the previous week)
-    final endOfLastWeek =
-        startOfLastWeek.add(Duration(days: 6)); // Add 6 days to get to Sunday
-
-    var lastWeekStart = DateTime(
-      startOfLastWeek.year,
-      startOfLastWeek.month,
-      startOfLastWeek.day,
-      startOfLastWeek.weekday,
-      startOfLastWeek.hour,
-      startOfLastWeek.minute,
-      0,
-      0,
-    );
-
-    if (kDebugMode) {
-      print('----------\n');
-      print('lastWeekStart: $lastWeekStart \n');
-      print('----------\n');
-      print('----------\n');
-      print('lastWeekEnd: $endOfLastWeek \n');
-      print('----------\n');
-
-      // CPopupSnackBar.customToast(
-      //   message: 'weekday: ${startOfWeek.weekday}',
-      //   forInternetConnectivityStatus: false,
-      // );
-    }
-    return lastWeekStart;
-  }
-
   static void showSnackBar(String message) {
     ScaffoldMessenger.of(Get.context!).showSnackBar(
       SnackBar(content: Text(message)),

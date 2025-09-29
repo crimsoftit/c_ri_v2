@@ -74,7 +74,7 @@ class HomeScreen extends StatelessWidget {
 
               /// -- dashboard header widget --
               DashboardHeaderWidget(
-                actionsSection: SizedBox(),
+                actionsSection: SizedBox.shrink(),
                 appBarTitle: CTexts.homeAppbarTitle,
                 isHomeScreen: true,
                 screenTitle: '',
@@ -136,69 +136,98 @@ class HomeScreen extends StatelessWidget {
                         ),
 
                         /// -- weekly sales bar graph --
-                        CRoundedContainer(
-                          bgColor: CColors.grey,
-                          borderRadius: CSizes.cardRadiusSm,
-                          padding: const EdgeInsets.only(
-                            top: 20.0,
-                          ),
-                          child: SizedBox(
-                            height: 200.0,
-                            child: Obx(
-                              () {
-                                return BarChart(
-                                  BarChartData(
-                                    titlesData:
-                                        dashboardController.buildFlTitlesData(),
-                                    borderData: FlBorderData(
-                                      show: true,
-                                      border: const Border(
-                                        top: BorderSide.none,
-                                        right: BorderSide.none,
+                        Obx(
+                          () {
+                            return CRoundedContainer(
+                              bgColor:
+                                  isDarkTheme ? CColors.darkGrey : CColors.grey,
+                              borderRadius: CSizes.cardRadiusSm,
+                              padding: const EdgeInsets.only(
+                                top: 15.0,
+                              ),
+                              child: Column(
+                                children: [
+                                  SizedBox(
+                                    width: CHelperFunctions.screenWidth(),
+                                    height: 15.0,
+                                    child: Stack(
+                                      children: [
+                                        Positioned(
+                                          right: 0,
+                                          child: Text(
+                                            dashboardController
+                                                .lastWeekSales.value
+                                                .toStringAsFixed(2),
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .labelMedium!
+                                                .apply(
+                                                  color: CColors.rBrown,
+                                                ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: 200.0,
+                                    child: BarChart(
+                                      BarChartData(
+                                        titlesData: dashboardController
+                                            .buildFlTitlesData(),
+                                        borderData: FlBorderData(
+                                          show: true,
+                                          border: const Border(
+                                            top: BorderSide.none,
+                                            right: BorderSide.none,
+                                          ),
+                                        ),
+                                        gridData: FlGridData(
+                                          show: true,
+                                          drawHorizontalLine: true,
+                                          drawVerticalLine: false,
+                                          horizontalInterval: 200,
+                                        ),
+                                        barGroups: dashboardController
+                                            .weeklySales
+                                            .asMap()
+                                            .entries
+                                            .map(
+                                              (entry) => BarChartGroupData(
+                                                x: entry.key,
+                                                barRods: [
+                                                  BarChartRodData(
+                                                    width: 25.0,
+                                                    toY: entry.value,
+                                                    color: isConnectedToInternet
+                                                        ? CColors.rBrown
+                                                        : CColors.darkerGrey,
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                      CSizes.sm,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            )
+                                            .toList(),
+                                        groupsSpace: CSizes.spaceBtnItems / 2,
+                                        barTouchData: BarTouchData(
+                                            touchTooltipData:
+                                                BarTouchTooltipData(
+                                              getTooltipColor: (group) {
+                                                return CColors.secondary;
+                                              },
+                                            ),
+                                            touchCallback: (barTouchEvent,
+                                                barTouchResponse) {}),
                                       ),
                                     ),
-                                    gridData: FlGridData(
-                                      show: true,
-                                      drawHorizontalLine: true,
-                                      drawVerticalLine: false,
-                                      horizontalInterval: 200,
-                                    ),
-                                    barGroups: dashboardController.weeklySales
-                                        .asMap()
-                                        .entries
-                                        .map(
-                                          (entry) => BarChartGroupData(
-                                            x: entry.key,
-                                            barRods: [
-                                              BarChartRodData(
-                                                width: 25.0,
-                                                toY: entry.value,
-                                                color: isConnectedToInternet
-                                                    ? CColors.rBrown
-                                                    : CColors.darkGrey,
-                                                borderRadius:
-                                                    BorderRadius.circular(
-                                                  CSizes.sm,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        )
-                                        .toList(),
-                                    groupsSpace: CSizes.spaceBtnItems / 2,
-                                    barTouchData: BarTouchData(
-                                        touchTooltipData: BarTouchTooltipData(
-                                          getTooltipColor: (group) {
-                                            return CColors.secondary;
-                                          },
-                                        ),
-                                        touchCallback: (barTouchEvent,
-                                            barTouchResponse) {}),
                                   ),
-                                );
-                              },
-                            ),
-                          ),
+                                ],
+                              ),
+                            );
+                          },
                         ),
                       ],
                     );

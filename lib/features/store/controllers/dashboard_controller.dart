@@ -20,7 +20,7 @@ class CDashboardController extends GetxController {
   final invController = Get.put(CInventoryController());
   final RxDouble weeklySalesHighestAmount = 0.0.obs;
   final txnsController = Get.put(CTxnsController());
-  final RxList<double> lastWeekSales = <double>[].obs;
+  final RxDouble lastWeekSales = 0.0.obs;
   final RxList<double> weeklySales = <double>[].obs;
 
   @override
@@ -34,6 +34,7 @@ class CDashboardController extends GetxController {
             await txnsController.fetchSoldItems().then(
               (result) async {
                 calculateCurrentWeekSales();
+                calculateLastWeekSales();
               },
             );
           },
@@ -84,15 +85,14 @@ class CDashboardController extends GetxController {
         if (kDebugMode) {
           print('weekly sales: $weeklySales');
         }
-        calculateLastWeekSales();
       },
     );
   }
 
   /// -- calculate last week's sales --
   void calculateLastWeekSales() {
-    // reset lastWeekSales values to zero
-    lastWeekSales.value = List<double>.filled(7, 0.0);
+    // reset lastWeekSales value to zero
+    lastWeekSales.value = 0.0;
 
     final now = DateTime.now();
     final lastWeekStart =
@@ -115,23 +115,20 @@ class CDashboardController extends GetxController {
               (result) {
                 if (result.isNotEmpty) {
                   // Filter sales data for last week
-                  final lastWeekSales = txnsController.sales.where((sale) {
+                  lastWeekSales.value = txnsController.sales.where((sale) {
                     final String rawSaleDate = sale.lastModified.trim();
                     var formattedDate = rawSaleDate.replaceAll(' @', '');
-                    final DateTime lastWeekSalesStart =
-                        CHelperFunctions.getStartOfLastWeek(
-                            DateTime.parse(formattedDate));
-                    return lastWeekSalesStart.isAfter(
-                            lastWeekStart.subtract(Duration(days: 1))) &&
-                        lastWeekStart
-                            .isBefore(lastWeekEnd.add(Duration(days: 1)));
+
+                    return DateTime.parse(formattedDate)
+                            .isAfter(lastWeekStart) &&
+                        DateTime.parse(formattedDate).isBefore(lastWeekEnd);
                   }).fold(
                       0.0,
                       (sum, sale) =>
                           sum + (sale.unitSellingPrice * sale.quantity));
 
                   if (kDebugMode) {
-                    print('Total sales for last week: $lastWeekSales');
+                    print('total sales for last week: $lastWeekSales.');
                   }
                 }
               },
@@ -141,47 +138,6 @@ class CDashboardController extends GetxController {
       },
     );
   }
-
-  // /// -- calculate last week's sales --
-  // void calculateLastWeekSales(CTxnsModel allSales) {
-  //   // Get the current date and time
-  //   final now = DateTime.now();
-
-  //   // Calculate the start of last week (Monday of the previous week)
-  //   final startOfLastWeek = now.subtract(
-  //       Duration(days: now.weekday + 6)); // Subtract days to get to Monday
-
-  //   // Calculate the end of last week (Sunday of the previous week)
-  //   final endOfLastWeek =
-  //       startOfLastWeek.add(Duration(days: 6)); // Add 6 days to get to Sunday
-
-  //   if (kDebugMode) {
-  //     print('last week end date: $endOfLastWeek');
-  //   }
-
-  //   // Filter sales data for the last week
-  //   final lastWeekSales = txnsController.sales.where((sale) {
-  //     final String rawSaleDate = sale.lastModified.trim();
-  //     var formattedDate = rawSaleDate.replaceAll(' @', '');
-  //     final DateTime lastWeekSalesStart =
-  //         CHelperFunctions.getStartOfLastWeek(DateTime.parse(formattedDate));
-  //     return lastWeekSalesStart
-  //             .isAfter(startOfLastWeek.subtract(Duration(seconds: 1))) &&
-  //         lastWeekSalesStart.isBefore(endOfLastWeek.add(Duration(seconds: 1)));
-  //   }).toList();
-
-  //   // Calculate total sales for last week
-  //   final totalSales = lastWeekSales.fold(
-  //       0.0, (sum, sale) => sum + (sale.quantity * sale.unitSellingPrice));
-
-  //   // Print results
-  //   if (kDebugMode) {
-  //     print('*********\n');
-  //     print('Last week sales: $totalSales');
-  //     print('Sales details: $lastWeekSales');
-  //     print('*********\n');
-  //   }
-  // }
 
   FlTitlesData buildFlTitlesData() {
     final isConnectedToInternet = CNetworkManager.instance.hasConnection.value;
@@ -237,6 +193,7 @@ class CDashboardController extends GetxController {
                 style: TextStyle(
                   color:
                       isConnectedToInternet ? CColors.rBrown : CColors.darkGrey,
+                  fontSize: 10.0,
                 ),
               ),
             );
@@ -255,4 +212,7 @@ class CDashboardController extends GetxController {
       ),
     );
   }
+
+  /// -- compare last week's total sales to this week's --
+  compareWeeklySales(double lastWeekSales, double thisWeekSales) {}
 }
