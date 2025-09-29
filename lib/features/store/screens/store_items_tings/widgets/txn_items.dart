@@ -49,7 +49,7 @@ class CTxnItemsListView extends StatelessWidget {
             style: Theme.of(context).textTheme.labelMedium!.apply(
                   color: title.toLowerCase().contains('invoiced'.toLowerCase())
                       ? Colors.amber
-                      : Colors.green,
+                      : CColors.rBrown,
                   //fontSizeFactor: .8,
                 ),
           ),

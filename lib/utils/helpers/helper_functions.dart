@@ -47,9 +47,9 @@ class CHelperFunctions {
     final startOfLastWeek = now.subtract(
         Duration(days: now.weekday + 6)); // Subtract days to get to Monday
 
-    // Calculate the end of last week (Sunday of the previous week)
-    // final endOfWeek =
-    //     startOfLastWeek.add(Duration(days: 6)); // Add 6 days to get to Sunday
+    // calculate the end of last week (Sunday of the previous week)
+    final endOfLastWeek =
+        startOfLastWeek.add(Duration(days: 6)); // Add 6 days to get to Sunday
 
     var lastWeekStart = DateTime(
       startOfLastWeek.year,
@@ -67,7 +67,7 @@ class CHelperFunctions {
       print('lastWeekStart: $lastWeekStart \n');
       print('----------\n');
       print('----------\n');
-      print('week day: ${startOfLastWeek.weekday} \n');
+      print('lastWeekEnd: $endOfLastWeek \n');
       print('----------\n');
 
       // CPopupSnackBar.customToast(
