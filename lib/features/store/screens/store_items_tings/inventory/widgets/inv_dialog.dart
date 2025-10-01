@@ -12,8 +12,6 @@ class AddUpdateItemDialog {
 
     final invController = Get.put(CInventoryController());
 
-    /// -- TODO: check for txnId double entry before updating/saving data (form validation)
-
     if (!isNew) {
       invController.txtId.text = invModel.productId.toString();
       invController.txtNameController.text =

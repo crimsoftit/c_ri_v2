@@ -445,7 +445,9 @@ class CInventoryController extends GetxController {
                 .toString()
                 .toLowerCase()
                 .contains(value.toLowerCase()) ||
-            element.pCode.toLowerCase().contains(value.toLowerCase()))
+            element.pCode.toLowerCase().contains(value.toLowerCase()) ||
+            element.dateAdded.toLowerCase().contains(value.toLowerCase()) ||
+            element.lastModified.toLowerCase().contains(value.toLowerCase()))
         .toList();
 
     foundInventoryItems.assignAll(invSearchItems);

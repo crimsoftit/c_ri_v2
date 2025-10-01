@@ -3,6 +3,7 @@ import 'package:c_ri/common/widgets/divider/c_divider.dart';
 import 'package:c_ri/common/widgets/products/cart/cart_counter_icon.dart';
 import 'package:c_ri/common/widgets/shimmers/horizontal_items_shimmer.dart';
 import 'package:c_ri/common/widgets/txt_widgets/c_section_headings.dart';
+import 'package:c_ri/features/personalization/controllers/user_controller.dart';
 import 'package:c_ri/features/store/controllers/dashboard_controller.dart';
 import 'package:c_ri/features/store/controllers/inv_controller.dart';
 import 'package:c_ri/features/store/controllers/nav_menu_controller.dart';
@@ -34,7 +35,9 @@ class HomeScreen extends StatelessWidget {
     final isDarkTheme = CHelperFunctions.isDarkMode(context);
 
     final navController = Get.put(CNavMenuController());
-    //final txnsController = Get.put(CTxnsController());
+    final userController = Get.put(CUserController());
+    final userCurrency =
+        CHelperFunctions.formatCurrency(userController.user.value.currencyCode);
 
     Get.put(CDashboardController());
 
@@ -138,9 +141,19 @@ class HomeScreen extends StatelessWidget {
                         /// -- weekly sales bar graph --
                         Obx(
                           () {
+                            /// -- compare last week's total sales to this week's --
+
+                            dashboardController.weeklyPercentageChange.value =
+                                ((dashboardController.currentWeekSales.value -
+                                            dashboardController
+                                                .lastWeekSales.value) /
+                                        dashboardController
+                                            .lastWeekSales.value) *
+                                    100;
                             return CRoundedContainer(
-                              bgColor:
-                                  isDarkTheme ? CColors.darkGrey : CColors.grey,
+                              // bgColor:
+                              //     isDarkTheme ? CColors.darkGrey : CColors.grey,
+                              bgColor: CColors.grey,
                               borderRadius: CSizes.cardRadiusSm,
                               padding: const EdgeInsets.only(
                                 top: 15.0,
@@ -149,18 +162,93 @@ class HomeScreen extends StatelessWidget {
                                 children: [
                                   SizedBox(
                                     width: CHelperFunctions.screenWidth(),
-                                    height: 15.0,
+                                    height: 45.0,
                                     child: Stack(
                                       children: [
+                                        // CircularPercentIndicator(
+                                        //   radius: 100.0,
+                                        //   lineWidth: 10.0,
+                                        //   percent:
+                                        //       0.7, // Represents 70% sales progress
+                                        //   center: Text(
+                                        //     "70%",
+                                        //     style: TextStyle(
+                                        //         fontWeight: FontWeight.bold,
+                                        //         fontSize: 20.0),
+                                        //   ),
+                                        //   footer: Text(
+                                        //     "Sales this week",
+                                        //     style: TextStyle(
+                                        //         fontWeight: FontWeight.bold,
+                                        //         fontSize: 17.0),
+                                        //   ),
+                                        //   progressColor: Colors.green,
+                                        // ),
+
                                         Positioned(
                                           right: 0,
+                                          top: 10.0,
+                                          child: dashboardController
+                                                      .weeklyPercentageChange
+                                                      .value >=
+                                                  0.0
+                                              ? Icon(
+                                                  Iconsax.trend_up,
+                                                  color: Colors.green,
+                                                  size: CSizes.iconMd,
+                                                )
+                                              : Icon(
+                                                  Iconsax.trend_down,
+                                                  color: Colors.red,
+                                                  size: CSizes.iconMd,
+                                                ),
+                                        ),
+                                        Positioned(
+                                          top: 0,
+                                          right: 27.0,
                                           child: Text(
-                                            dashboardController
-                                                .lastWeekSales.value
-                                                .toStringAsFixed(2),
+                                            'trend:${dashboardController.weeklyPercentageChange.value.toStringAsFixed(2)}%',
                                             style: Theme.of(context)
                                                 .textTheme
                                                 .labelMedium!
+                                                .apply(
+                                                  color: dashboardController
+                                                              .weeklyPercentageChange
+                                                              .value >
+                                                          0
+                                                      ? Colors.green
+                                                      : dashboardController
+                                                                  .weeklyPercentageChange
+                                                                  .value ==
+                                                              0.0
+                                                          ? CColors.rBrown
+                                                          : Colors.redAccent,
+                                                ),
+                                          ),
+                                        ),
+
+                                        Positioned(
+                                          top: 15.0,
+                                          right: 27.0,
+                                          child: Text(
+                                            '$userCurrency.${dashboardController.lastWeekSales.value.toStringAsFixed(2)}(last week)',
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .labelSmall!
+                                                .apply(
+                                                  color: CColors.rBrown,
+                                                  fontStyle: FontStyle.italic,
+                                                ),
+                                          ),
+                                        ),
+                                        Positioned(
+                                          top: 30.0,
+                                          right: 27.0,
+                                          child: Text(
+                                            '$userCurrency.${dashboardController.currentWeekSales.value.toStringAsFixed(2)}(this week)',
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .labelSmall!
                                                 .apply(
                                                   color: CColors.rBrown,
                                                 ),
@@ -169,6 +257,10 @@ class HomeScreen extends StatelessWidget {
                                       ],
                                     ),
                                   ),
+                                  // CDivider(
+                                  //   endIndent: 0,
+                                  //   startIndent: 250.0,
+                                  // ),
                                   SizedBox(
                                     height: 200.0,
                                     child: BarChart(

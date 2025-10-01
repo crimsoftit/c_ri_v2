@@ -867,9 +867,7 @@ class CCheckoutController extends GetxController {
       middleText: 'are you certain payment is complete?',
       confirm: ElevatedButton(
         onPressed: () async {
-          // -- check internet connectivity
-          //final isConnected = await CNetworkManager.instance.isConnected();
-          //txnsController.receiptItems.clear();
+          // -- check internet connectivity --
           if (txnsController.transactionItems.isEmpty) {
             if (kDebugMode) {
               print('receipt items cleared!!');

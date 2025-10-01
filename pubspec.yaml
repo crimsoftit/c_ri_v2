@@ -150,6 +150,7 @@ dependencies:
   #flutter_sim_country_code: any
   country_codes: any
   in_date_utils: ^1.2.4+1
+  percent_indicator: ^4.2.5
 
 
   # double_tap_back_exit: any

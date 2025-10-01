@@ -198,9 +198,6 @@ class AddUpdateInventoryFormRaw extends StatelessWidget {
                       },
                     ),
                   ),
-
-                  /// -- TODO: validator text should not affect textfield height
-
                   SizedBox(
                     width: CHelperFunctions.screenWidth() * .42,
                     height: 60.0,

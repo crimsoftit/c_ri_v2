@@ -20,7 +20,10 @@ class CDashboardController extends GetxController {
   final invController = Get.put(CInventoryController());
   final RxDouble weeklySalesHighestAmount = 0.0.obs;
   final txnsController = Get.put(CTxnsController());
+  final RxDouble currentWeekSales = 0.0.obs;
   final RxDouble lastWeekSales = 0.0.obs;
+  final RxDouble weeklyPercentageChange = 0.0.obs;
+
   final RxList<double> weeklySales = <double>[].obs;
 
   @override
@@ -49,6 +52,7 @@ class CDashboardController extends GetxController {
   void calculateCurrentWeekSales() async {
     // reset weeklySales values to zero
     weeklySales.value = List<double>.filled(7, 0.0);
+    //currentWeekSales.value = 0.0;
 
     txnsController.fetchSoldItems().then(
       (result) {
@@ -70,6 +74,7 @@ class CDashboardController extends GetxController {
               // ensure the index is non-negative
               index = index < 0 ? index + 7 : index;
               weeklySales[index] += (sale.unitSellingPrice * sale.quantity);
+              currentWeekSales.value += (sale.unitSellingPrice * sale.quantity);
 
               if (kDebugMode) {
                 print(
@@ -93,6 +98,7 @@ class CDashboardController extends GetxController {
   void calculateLastWeekSales() {
     // reset lastWeekSales value to zero
     lastWeekSales.value = 0.0;
+    weeklyPercentageChange.value = 0.0;
 
     final now = DateTime.now();
     final lastWeekStart =
@@ -214,5 +220,9 @@ class CDashboardController extends GetxController {
   }
 
   /// -- compare last week's total sales to this week's --
-  compareWeeklySales(double lastWeekSales, double thisWeekSales) {}
+  // double computePercentageChange(double initialValue, double currentValue) {
+  //   var percentageChange = ((currentValue - initialValue) / initialValue) * 100;
+  //   //weeklyPercentageChange.value = percentageChange;
+  //   return percentageChange;
+  // }
 }

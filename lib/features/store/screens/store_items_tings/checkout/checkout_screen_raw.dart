@@ -866,56 +866,6 @@ class CCheckoutScreenRaw extends StatelessWidget {
                   ),
                 ),
               ),
-              // TODO: IMPLEMENT ABILITY TO SUSPEND TXN USING THIS BUTTON BELOW
-              // Row(
-              //   children: [
-
-              //     const SizedBox(
-              //       width: CSizes.spaceBtnInputFields,
-              //     ),
-
-              //     /// -- button to mark txn as pending --
-              //     SizedBox(
-              //       width: CHelperFunctions.screenWidth() * 0.45,
-              //       child: ElevatedButton.icon(
-              //         onPressed: () {
-              //           //checkoutController.suspendTxn();
-              //         },
-              //         label: SizedBox(
-              //           height: 34.1,
-              //           child: Column(
-              //             crossAxisAlignment: CrossAxisAlignment.center,
-              //             mainAxisAlignment: MainAxisAlignment.end,
-              //             children: [
-              //               Text(
-              //                 'SUSPEND',
-              //                 style:
-              //                     Theme.of(context).textTheme.bodyMedium!.apply(
-              //                           color: CColors.white,
-              //                           fontSizeFactor: 0.88,
-              //                           fontWeightDelta: 1,
-              //                         ),
-              //               ),
-              //               Text(
-              //                 '$currencySymbol.${cartController.totalCartPrice.value.toStringAsFixed(2)}',
-              //                 style:
-              //                     Theme.of(context).textTheme.bodyMedium!.apply(
-              //                           color: CColors.white,
-              //                           fontSizeFactor: 1.10,
-              //                           fontWeightDelta: 2,
-              //                         ),
-              //               ),
-              //             ],
-              //           ),
-              //         ),
-              //         icon: Icon(
-              //           Iconsax.money_time,
-              //           color: CColors.white,
-              //         ),
-              //       ),
-              //     ),
-              //   ],
-              // ),
             );
           } else {
             CPopupSnackBar.errorSnackBar(

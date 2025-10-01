@@ -38,13 +38,6 @@ class NavMenu extends StatelessWidget {
           invController.onInit();
         }
 
-        // if (cartController.cartItems.isEmpty &&
-        //     !cartController.cartItemsLoading.value &&
-        //     !invController.isLoading.value &&
-        //     navController.selectedIndex.value != 4 &&
-        //     navController.selectedIndex.value != 1) {
-        //   cartController.fetchCartItems();
-        // }
         Future.delayed(
           Duration.zero,
           () {
@@ -65,8 +58,9 @@ class NavMenu extends StatelessWidget {
                 notsController.fetchUserNotifications();
 
                 /// -- display count of only created notifications --
-                notifiedAlerts = notsController.allNotifications
-                    .where((notifiedAlert) => notifiedAlert.alertCreated == 1);
+                // notifiedAlerts = notsController.allNotifications
+                //     .where((notifiedAlert) => notifiedAlert.alertCreated == 1);
+                notifiedAlerts = notsController.allNotifications;
               },
             );
           },

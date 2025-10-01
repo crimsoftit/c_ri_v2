@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:barcode_scan2/barcode_scan2.dart';
 import 'package:c_ri/api/sheets/store_sheets_api.dart';
 import 'package:c_ri/common/widgets/custom_shapes/containers/rounded_container.dart';
@@ -187,23 +188,46 @@ class CTxnsController extends GetxController {
         foundRefunds.assignAll(refundedItems);
       }
 
-      await notsController.fetchUserNotifications().then(
-        (_) {
-          if (notsController.pendingAlerts.isNotEmpty) {
-            for (var pendingAlert in notsController.pendingAlerts) {
-              notsController.notify(
-                CHelperFunctions.generateAlertId(),
-                pendingAlert.notificationTitle,
-                pendingAlert.notificationBody,
-              );
+      // -- check for any pending alerts --
+      // -- TODO: check if notifications are allowed --
 
-              pendingAlert.alertCreated = 1;
+      // Only after at least the action method is set, the notification events are delivered
+      AwesomeNotifications().setListeners(
+          onActionReceivedMethod:
+              CNotificationsController.onActionReceivedMethod,
+          onNotificationCreatedMethod:
+              CNotificationsController.onNotificationCreatedMethod,
+          onNotificationDisplayedMethod:
+              CNotificationsController.onNotificationDisplayedMethod,
+          onDismissActionReceivedMethod:
+              CNotificationsController.onDismissActionReceivedMethod);
 
-              dbHelper.updateNotificationItem(pendingAlert);
-            }
-          }
-        },
-      );
+      AwesomeNotifications().isNotificationAllowed().then((isAllowed) async {
+        if (!isAllowed) {
+          // This is just a basic example. For real apps, you must show some
+          // friendly dialog box before call the request method.
+          // This is very important to not harm the user experience
+          AwesomeNotifications().requestPermissionToSendNotifications();
+        } else {
+          await notsController.fetchUserNotifications().then(
+            (_) {
+              if (notsController.pendingAlerts.isNotEmpty) {
+                for (var pendingAlert in notsController.pendingAlerts) {
+                  notsController.notify(
+                    CHelperFunctions.generateAlertId(),
+                    pendingAlert.notificationTitle,
+                    pendingAlert.notificationBody,
+                  );
+
+                  pendingAlert.alertCreated = 1;
+
+                  dbHelper.updateNotificationItem(pendingAlert);
+                }
+              }
+            },
+          );
+        }
+      });
 
       // stop loader
       isLoading.value = false;
@@ -469,7 +493,8 @@ class CTxnsController extends GetxController {
               soldItem.productId
                   .toString()
                   .toLowerCase()
-                  .contains(value.toLowerCase()))
+                  .contains(value.toLowerCase()) ||
+              soldItem.lastModified.toLowerCase().contains(value.toLowerCase()))
           .toList();
       foundSales.assignAll(salesFound);
 
@@ -488,6 +513,9 @@ class CTxnsController extends GetxController {
                   .contains(value.toLowerCase()) ||
               refundedItem.txnId
                   .toString()
+                  .toLowerCase()
+                  .contains(value.toLowerCase()) ||
+              refundedItem.lastModified
                   .toLowerCase()
                   .contains(value.toLowerCase()))
           .toList();
@@ -509,6 +537,9 @@ class CTxnsController extends GetxController {
               completeTxn.txnId
                   .toString()
                   .toLowerCase()
+                  .contains(value.toLowerCase()) ||
+              completeTxn.lastModified
+                  .toLowerCase()
                   .contains(value.toLowerCase()))
           .toList();
       foundReceipts.assignAll(receiptsFound);
@@ -525,7 +556,8 @@ class CTxnsController extends GetxController {
               invoice.txnId
                   .toString()
                   .toLowerCase()
-                  .contains(value.toLowerCase()))
+                  .contains(value.toLowerCase()) ||
+              invoice.lastModified.toLowerCase().contains(value.toLowerCase()))
           .toList();
       foundInvoices.assignAll(invoicesFound);
     } catch (e) {

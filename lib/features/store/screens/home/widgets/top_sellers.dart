@@ -60,10 +60,10 @@ class CTopSellers extends StatelessWidget {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Text(
-                            invController.topSellers[index].name,
+                            invController.topSellers[index].name.toUpperCase(),
                             style:
                                 Theme.of(context).textTheme.labelMedium!.apply(
-                                      fontWeightDelta: 2,
+                                      fontWeightDelta: -2,
                                       color: isDarkTheme
                                           ? CColors.grey
                                           : CColors.rBrown,
