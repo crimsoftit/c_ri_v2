@@ -41,7 +41,7 @@ class CStoreScreen extends StatelessWidget {
 
     return DefaultTabController(
       animationDuration: Duration(
-        milliseconds: 1500,
+        milliseconds: 1000,
       ),
       length: 5,
       child: Obx(

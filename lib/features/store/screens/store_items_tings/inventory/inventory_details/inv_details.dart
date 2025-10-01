@@ -1,3 +1,4 @@
+import 'package:c_ri/common/widgets/divider/c_divider.dart';
 import 'package:c_ri/common/widgets/list_tiles/menu_tile.dart';
 import 'package:c_ri/common/widgets/txt_widgets/c_section_headings.dart';
 import 'package:c_ri/features/personalization/controllers/user_controller.dart';
@@ -52,6 +53,15 @@ class CInvDetails extends StatelessWidget {
                       color: isDarkTheme ? CColors.grey : CColors.rBrown,
                     ),
               ),
+              actions: [
+                IconButton(
+                  onPressed: () {},
+                  icon: Icon(
+                    Iconsax.notification,
+                    color: isDarkTheme ? CColors.white : CColors.rBrown,
+                  ),
+                ),
+              ],
             ),
             backgroundColor: CColors.rBrown.withValues(alpha: 0.2),
             body: SingleChildScrollView(
@@ -81,21 +91,22 @@ class CInvDetails extends StatelessWidget {
                             fontSizeFactor: 0.6,
                           ),
                     ),
-                    trailing: IconButton(
-                      onPressed: () {},
-                      icon: Icon(
-                        Iconsax.notification,
-                        color: isDarkTheme ? CColors.white : CColors.rBrown,
-                      ),
-                    ),
+                    // trailing: IconButton(
+                    //   onPressed: () {},
+                    //   icon: Icon(
+                    //     Iconsax.notification,
+                    //     color: isDarkTheme ? CColors.white : CColors.rBrown,
+                    //   ),
+                    // ),
                   ),
-                  Divider(
-                    //color: isDarkTheme ? CColors.grey : CColors.rBrown,
-                    color: CColors.rBrown,
-                    endIndent: 5.0,
-                    indent: 5.0,
-                    thickness: 0.4,
-                  ),
+                  CDivider(),
+                  // Divider(
+                  //   //color: isDarkTheme ? CColors.grey : CColors.rBrown,
+                  //   color: CColors.rBrown,
+                  //   endIndent: 5.0,
+                  //   indent: 5.0,
+                  //   thickness: 0.4,
+                  // ),
                   Padding(
                     padding: const EdgeInsets.all(CSizes.defaultSpace / 3),
                     child: Column(
@@ -138,17 +149,18 @@ class CInvDetails extends StatelessWidget {
 
                         CMenuTile(
                           icon: Iconsax.shopping_cart,
-                          title: '${(invItem.quantity)}',
-                          subTitle: 'Qty/units available',
+                          title:
+                              '${(invItem.quantity)} (${(invItem.qtyRefunded)} refunded)',
+                          subTitle: 'in stock',
                           onTap: () {},
                         ),
 
-                        CMenuTile(
-                          icon: Iconsax.shopping_cart,
-                          title: '${(invItem.qtyRefunded)}',
-                          subTitle: 'Qty/units refunded',
-                          onTap: () {},
-                        ),
+                        // CMenuTile(
+                        //   icon: Iconsax.shopping_cart,
+                        //   title: '${(invItem.qtyRefunded)}',
+                        //   subTitle: 'Qty/units refunded',
+                        //   onTap: () {},
+                        // ),
 
                         CMenuTile(
                           icon: Iconsax.bitcoin_card,

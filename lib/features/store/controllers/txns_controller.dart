@@ -643,12 +643,14 @@ class CTxnsController extends GetxController {
 
   /// -- reset sales --
   resetSalesFields() {
+    customerBal.value = 0.0;
     sellItemScanResults.value = '';
     selectedPaymentMethod.value == 'Cash';
     itemExists.value = false;
     showAmountIssuedField.value = true;
     updatesOnRefundDone.value = false;
     refundDataUpdated.value = false;
+    refundQty.value = 0;
     isLoading.value = false;
 
     saleItemName.value = '';
@@ -659,7 +661,6 @@ class CTxnsController extends GetxController {
     saleItemUsp.value = 0.0;
     deposit.value = 0.0;
     totalAmount.value = 0.0;
-    customerBal.value = 0.0;
 
     txtSaleItemQty.text = '';
     txtAmountIssued.text = '';
@@ -1215,15 +1216,16 @@ class CTxnsController extends GetxController {
                 unsyncedTxnUpdates.isNotEmpty) {
               await syncController.processSync();
             }
-          } else {
-            if (kDebugMode) {
-              print('error processing cloud sync');
-              CPopupSnackBar.errorSnackBar(
-                title: 'error processing cloud sync',
-                message: 'error processing cloud sync',
-              );
-            }
           }
+          // else {
+          //   if (kDebugMode) {
+          //     print('error processing cloud sync');
+          //     CPopupSnackBar.errorSnackBar(
+          //       title: 'error processing cloud sync',
+          //       message: 'error processing cloud sync',
+          //     );
+          //   }
+          // }
         } else {
           if (kDebugMode) {
             print('internet connection required for cloud sync!');
@@ -1235,7 +1237,6 @@ class CTxnsController extends GetxController {
         }
       }
 
-      refundQty.value = 0;
       updatesOnRefundDone.value = false;
       resetSalesFields();
 

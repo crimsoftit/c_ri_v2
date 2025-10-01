@@ -82,15 +82,20 @@ class CTxnItemsListView extends StatelessWidget {
     return CRoundedContainer(
       bgColor: CColors.transparent,
       showBorder: false,
+      width: CHelperFunctions.screenWidth() * .95,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            msg,
-            style: Theme.of(context).textTheme.labelMedium!.apply(
-                  color: CColors.darkGrey,
-                  //fontSizeFactor: .8,
-                ),
+          Row(
+            children: [
+              Text(
+                msg,
+                style: Theme.of(context).textTheme.labelMedium!.apply(
+                      color: CColors.darkGrey,
+                      //fontSizeFactor: .8,
+                    ),
+              ),
+            ],
           ),
         ],
       ),
@@ -440,71 +445,102 @@ class CTxnItemsListView extends StatelessWidget {
                                     : space == 'refunds'
                                         ? buildRefundDetails(
                                             context,
-                                            item.refundReason,
+                                            'reason for refund: ${item.refundReason}',
                                           )
                                         : SizedBox.shrink(),
                                 if (space == 'invoices' || space == 'sales')
                                   Container(
                                     alignment: Alignment.centerRight,
-                                    child: SizedBox(
-                                      width: space == 'invoices'
-                                          ? CHelperFunctions.screenWidth() *
-                                              0.45
-                                          : CHelperFunctions.screenWidth() *
-                                              0.30,
-                                      child: TextButton.icon(
-                                        onPressed: () {
-                                          switch (space) {
-                                            case 'invoices':
-                                              if (txnsController
-                                                  .transactionItems
-                                                  .isNotEmpty) {
-                                                checkoutController
-                                                    .confirmInvoicePaymentDialog(
-                                                        item.txnId);
+                                    child: Row(
+                                      mainAxisAlignment: space == 'sales'
+                                          ? MainAxisAlignment.spaceBetween
+                                          : MainAxisAlignment.end,
+                                      children: [
+                                        if (space == 'sales')
+                                          TextButton.icon(
+                                            label: Text(
+                                              'info',
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .labelMedium!
+                                                  .apply(
+                                                    color: isDarkTheme
+                                                        ? CColors.white
+                                                        : CColors.rBrown,
+                                                  ),
+                                            ),
+                                            icon: Icon(
+                                              Iconsax.information,
+                                            ),
+                                            onPressed: () {
+                                              Get.toNamed(
+                                                '/sales/sold_item_details',
+                                                arguments: item.soldItemId,
+                                              );
+                                            },
+                                          ),
+                                        SizedBox(
+                                          width: space == 'invoices'
+                                              ? CHelperFunctions.screenWidth() *
+                                                  0.45
+                                              : CHelperFunctions.screenWidth() *
+                                                  0.30,
+                                          child: TextButton.icon(
+                                            onPressed: () {
+                                              switch (space) {
+                                                case 'invoices':
+                                                  if (txnsController
+                                                      .transactionItems
+                                                      .isNotEmpty) {
+                                                    checkoutController
+                                                        .confirmInvoicePaymentDialog(
+                                                            item.txnId);
+                                                  }
+                                                  break;
+                                                case 'sales':
+                                                  txnsController
+                                                      .refundItemActionModal(
+                                                          context, item);
+                                                  break;
+                                                default:
                                               }
-                                              break;
-                                            case 'sales':
-                                              txnsController
-                                                  .refundItemActionModal(
-                                                      context, item);
-                                              break;
-                                            default:
-                                          }
-                                        },
-                                        icon: Icon(
-                                          space == 'invoices'
-                                              ? Iconsax.empty_wallet_tick
-                                              : CAppIcons.refundIcon,
-                                          color: CColors.white,
-                                        ),
-                                        label: Text(
-                                          space == 'invoices'
-                                              ? 'complete txn'
-                                              : 'refund',
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .labelMedium!
-                                              .apply(
-                                                color: CColors.white,
-                                                fontSizeFactor: 1.2,
+                                            },
+                                            icon: Icon(
+                                              space == 'invoices'
+                                                  ? Iconsax.empty_wallet_tick
+                                                  : CAppIcons.refundIcon,
+                                              color: CColors.white,
+                                            ),
+                                            label: Text(
+                                              space == 'invoices'
+                                                  ? 'complete txn'
+                                                  : 'refund',
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .labelMedium!
+                                                  .apply(
+                                                    color: CColors.white,
+                                                    fontSizeFactor: 1.2,
+                                                  ),
+                                            ),
+                                            style: ElevatedButton.styleFrom(
+                                              backgroundColor: space == 'sales'
+                                                  ? Colors.redAccent
+                                                  : CNetworkManager.instance
+                                                          .hasConnection.value
+                                                      ? CColors.rBrown
+                                                      : CColors.black,
+                                              foregroundColor: CColors.white,
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(
+                                                  10.0,
+                                                ), // Set the desired radius here
                                               ),
-                                        ),
-                                        style: ElevatedButton.styleFrom(
-                                          backgroundColor: space == 'sales'
-                                              ? Colors.redAccent
-                                              : CNetworkManager.instance
-                                                      .hasConnection.value
-                                                  ? CColors.rBrown
-                                                  : CColors.black,
-                                          foregroundColor: CColors.white,
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(
-                                              10.0,
-                                            ), // Set the desired radius here
+                                            ),
                                           ),
                                         ),
-                                      ),
+                                      ],
                                     ),
                                   ),
                               ],
