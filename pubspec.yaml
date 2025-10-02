@@ -46,12 +46,8 @@ dependencies:
 
   # -- payment integration tings --
   #mpesa_flutter_plugin: any
-  #mpesa_flutter_plugin: ^1.0.0
-  #mpesa_flutter_plugin: ^1.6.1
   flutter_mpesa_package: ^0.0.4
-  #flutter_mpesa_package: any
-
-
+  flutter_mpesa_stk: ^1.1.0
   expansion_tile_list: ^2.0.0
 
 
@@ -95,9 +91,7 @@ dependencies:
   cupertino_icons: any
   iconsax: any
 
-  # -- money matters --
-  flutter_mpesa_stk: ^1.1.0
-  mpesa_flutter_plugin: ^1.6.1
+  
 
   # -- scanners --
   barcode_scan2: any
@@ -116,13 +110,15 @@ dependencies:
   awesome_notifications_core: any
   awesome_notifications_fcm: any
   awesome_notifications: ^0.10.1
+  #awesome_notifications: ^0.7.4+1
 
   # -- utility packages
   jiffy: ^6.4.3
   timezone: any
   csv: any
   http: any
-  intl: any
+  # intl: ^0.17.0
+  intl: ^0.20.0
   logger: any
   lottie: any
   url_launcher: any

@@ -57,7 +57,10 @@ class CDashboardController extends GetxController {
     txnsController.fetchSoldItems().then(
       (result) {
         if (result.isNotEmpty) {
-          for (var sale in txnsController.sales) {
+          var demLegitSales = txnsController.sales
+              .where((soldItem) => soldItem.quantity >= 1)
+              .toList();
+          for (var sale in demLegitSales) {
             final String rawSaleDate = sale.lastModified.trim();
             var formattedDate = rawSaleDate.replaceAll(' @', '');
             final DateTime currentWeekSalesStart =
@@ -120,8 +123,11 @@ class CDashboardController extends GetxController {
             txnsController.fetchSoldItems().then(
               (result) {
                 if (result.isNotEmpty) {
+                  var demLegitSales = txnsController.sales
+                      .where((soldItem) => soldItem.quantity >= 1)
+                      .toList();
                   // Filter sales data for last week
-                  lastWeekSales.value = txnsController.sales.where((sale) {
+                  lastWeekSales.value = demLegitSales.where((sale) {
                     final String rawSaleDate = sale.lastModified.trim();
                     var formattedDate = rawSaleDate.replaceAll(' @', '');
 

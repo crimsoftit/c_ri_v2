@@ -558,6 +558,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.0.4"
+  flutter_mpesa_stk:
+    dependency: "direct main"
+    description:
+      name: flutter_mpesa_stk
+      sha256: "807011f91135e06c4f86140f2062cce84a795d427f01deefc538c46750a4f2ff"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.1.0"
   flutter_native_splash:
     dependency: "direct main"
     description:
