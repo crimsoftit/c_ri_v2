@@ -471,6 +471,9 @@ class CTxnItemsListView extends StatelessWidget {
                                             ),
                                             icon: Icon(
                                               Iconsax.information,
+                                              color: isDarkTheme
+                                                  ? CColors.white
+                                                  : CColors.rBrown,
                                             ),
                                             onPressed: () {
                                               Get.toNamed(

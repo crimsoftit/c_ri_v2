@@ -2,9 +2,11 @@ import 'package:c_ri/common/widgets/divider/c_divider.dart';
 import 'package:c_ri/common/widgets/list_tiles/menu_tile.dart';
 import 'package:c_ri/features/personalization/controllers/user_controller.dart';
 import 'package:c_ri/features/store/controllers/txns_controller.dart';
+import 'package:c_ri/utils/constants/app_icons.dart';
 import 'package:c_ri/utils/constants/colors.dart';
 import 'package:c_ri/utils/constants/sizes.dart';
 import 'package:c_ri/utils/helpers/helper_functions.dart';
+import 'package:c_ri/utils/popups/snackbars.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
@@ -45,8 +47,10 @@ class CSoldItemDetails extends StatelessWidget {
               iconTheme: IconThemeData(
                 color: isDarkTheme ? CColors.white : CColors.rBrown,
               ),
+              elevation: 1.0,
+              shadowColor: CColors.rBrown.withValues(alpha: 0.1),
               title: Text(
-                'TXN #${saleItem.txnId}',
+                'TXN/RECIEPT #${saleItem.txnId}',
                 style: Theme.of(context).textTheme.labelMedium!.apply(
                       color: isDarkTheme ? CColors.grey : CColors.rBrown,
                     ),
@@ -66,6 +70,9 @@ class CSoldItemDetails extends StatelessWidget {
               child: Column(
                 children: [
                   ListTile(
+                    // contentPadding: const EdgeInsets.only(
+                    //   left: CSizes.defaultSpace / 3,
+                    // ),
                     leading: CircleAvatar(
                       backgroundColor: Colors.brown[300],
                       child: Text(
@@ -79,6 +86,7 @@ class CSoldItemDetails extends StatelessWidget {
                       saleItem.productName.toUpperCase(),
                       style: Theme.of(context).textTheme.labelMedium!.apply(
                             color: isDarkTheme ? CColors.grey : CColors.rBrown,
+                            fontSizeDelta: 2.0,
                           ),
                     ),
                     subtitle: Text(
@@ -112,8 +120,9 @@ class CSoldItemDetails extends StatelessWidget {
                         ),
                         CMenuTile(
                           icon: Iconsax.hashtag5,
-                          title: saleItem.productId.toString(),
-                          subTitle: 'product/item id',
+                          title:
+                              '${saleItem.productId} - #${saleItem.soldItemId}',
+                          subTitle: 'product id - #',
                           onTap: () {},
                         ),
                         CMenuTile(
@@ -125,9 +134,43 @@ class CSoldItemDetails extends StatelessWidget {
                         CMenuTile(
                           icon: Iconsax.bitcoin_card,
                           title:
-                              '$userCurrency.${(saleItem.quantity * saleItem.unitSellingPrice).toStringAsFixed(2)} (${(saleItem.quantity)} units)',
+                              '$userCurrency.${(saleItem.quantity * saleItem.unitSellingPrice).toStringAsFixed(2)} (${saleItem.quantity} sold; ${saleItem.qtyRefunded} refunded)',
                           subTitle: 'total amount',
                           onTap: () {},
+                        ),
+                        CMenuTile(
+                          icon: saleItem.txnStatus == 'complete'
+                              ? Iconsax.money_tick
+                              : Iconsax.money_time,
+                          title: saleItem.txnStatus == 'complete'
+                              ? saleItem.txnStatus
+                              : 'deferred(${saleItem.txnStatus})',
+                          subTitle: 'txn/payment status',
+                          onTap: () {},
+                        ),
+                        CMenuTile(
+                          icon: CAppIcons.contactDetails,
+                          onTap: () {},
+                          title: saleItem.customerName == ''
+                              ? 'N/A'
+                              : '${saleItem.customerName}(${saleItem.customerContacts == '' ? 'N/A' : saleItem.customerContacts})',
+                          subTitle: 'customer details',
+                          trailing: InkWell(
+                            child: Icon(
+                              saleItem.customerName == '' &&
+                                      saleItem.customerContacts == ''
+                                  ? Iconsax.card_add
+                                  : Iconsax.card_edit,
+                              color: CColors.darkGrey,
+                              size: CSizes.iconMd,
+                            ),
+                            onTap: () {
+                              CPopupSnackBar.customToast(
+                                message: 'rada safi',
+                                forInternetConnectivityStatus: false,
+                              );
+                            },
+                          ),
                         ),
                       ],
                     ),

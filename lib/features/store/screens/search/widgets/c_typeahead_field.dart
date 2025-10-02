@@ -106,7 +106,18 @@ class CTypeAheadSearchField extends StatelessWidget {
 
           return matches
               .where((item) =>
-                  item.name.toLowerCase().contains(pattern.toLowerCase()))
+                  item.name.toLowerCase().contains(pattern.toLowerCase()) ||
+                  item.productId
+                      .toString()
+                      .toLowerCase()
+                      .contains(pattern.toLowerCase()) ||
+                  item.pCode.toLowerCase().contains(pattern.toLowerCase()) ||
+                  item.dateAdded
+                      .toLowerCase()
+                      .contains(pattern.toLowerCase()) ||
+                  item.lastModified
+                      .toLowerCase()
+                      .contains(pattern.toLowerCase()))
               .toList();
         },
         itemBuilder: (context, suggestion) {
@@ -144,7 +155,7 @@ class CTypeAheadSearchField extends StatelessWidget {
                   maxLines: 2,
                 ),
                 Text(
-                  '#${suggestion.pCode}; (${suggestion.quantity} stocked)',
+                  '#${suggestion.productId}; code: ${suggestion.pCode}; (${suggestion.quantity} stocked)',
                   style: Theme.of(context).textTheme.labelSmall!.apply(
                         color: CColors.rBrown,
                       ),

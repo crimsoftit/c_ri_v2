@@ -95,6 +95,10 @@ dependencies:
   cupertino_icons: any
   iconsax: any
 
+  # -- money matters --
+  flutter_mpesa_stk: ^1.1.0
+  mpesa_flutter_plugin: ^1.6.1
+
   # -- scanners --
   barcode_scan2: any
   simple_barcode_scanner: any

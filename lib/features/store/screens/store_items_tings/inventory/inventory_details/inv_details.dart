@@ -44,6 +44,8 @@ class CInvDetails extends StatelessWidget {
           return Scaffold(
             appBar: AppBar(
               automaticallyImplyLeading: true,
+              elevation: 1.0,
+              shadowColor: CColors.rBrown.withValues(alpha: 0.1),
               iconTheme: IconThemeData(
                 color: isDarkTheme ? CColors.white : CColors.rBrown,
               ),
@@ -81,8 +83,8 @@ class CInvDetails extends StatelessWidget {
                     title: Text(
                       invItem.name.toUpperCase(),
                       style: Theme.of(context).textTheme.labelMedium!.apply(
-                            color: isDarkTheme ? CColors.grey : CColors.rBrown,
-                          ),
+                          color: isDarkTheme ? CColors.grey : CColors.rBrown,
+                          fontSizeDelta: 2.0),
                     ),
                     subtitle: Text(
                       invItem.lastModified,

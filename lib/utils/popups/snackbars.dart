@@ -21,7 +21,7 @@ class CPopupSnackBar extends GetxController {
 
     ScaffoldMessenger.of(Get.context!).showSnackBar(
       SnackBar(
-        elevation: 0,
+        elevation: 1,
         duration: const Duration(seconds: 4),
         backgroundColor: Colors.transparent,
         content: Container(
@@ -53,21 +53,31 @@ class CPopupSnackBar extends GetxController {
                           size: CSizes.iconSm,
                         ),
                       ),
-                      SizedBox(
-                        width: CSizes.spaceBtnInputFields / 4,
-                      ),
+                      // SizedBox(
+                      //   width: CSizes.spaceBtnInputFields / 4,
+                      // ),
                       Expanded(
-                        flex: 6,
+                        flex: 7,
                         child: Text(
                           message,
-                          style: Theme.of(Get.context!).textTheme.labelLarge,
+                          style: Theme.of(Get.context!)
+                              .textTheme
+                              .labelLarge!
+                              .apply(
+                                color: CColors.black,
+                              ),
                         ),
                       ),
                     ],
                   )
                 : Text(
                     message,
-                    style: Theme.of(Get.context!).textTheme.labelLarge,
+                    // style: Theme.of(Get.context!).textTheme.labelLarge!.apply(
+                    //       color: CColors.black,
+                    //     ),
+                    style: Theme.of(Get.context!).textTheme.labelLarge!.apply(
+                          color: CColors.rBrown,
+                        ),
                   ),
           ),
         ),
@@ -157,7 +167,9 @@ class CPopupSnackBar extends GetxController {
       colorText: CColors.white,
       backgroundColor: Colors.red.shade600,
       snackPosition: SnackPosition.BOTTOM,
-      duration: const Duration(seconds: 420),
+      duration: const Duration(
+        seconds: 4,
+      ),
       margin: const EdgeInsets.all(20.0),
       icon: const Icon(
         Iconsax.warning_2,
